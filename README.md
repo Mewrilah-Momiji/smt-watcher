@@ -14,7 +14,7 @@ Spam and phishing are hard to judge from an email program, and reporting them of
 - Gives one of three levels with reasons. There is no percentage and no all-clear: "no signs found" does not make an email safe.
 - Prepares reports to checked reporting bodies of the chosen country, such as the Bundesnetzagentur in Germany, and to the abuse contact of the sending network. Where no body is checked for a case, the page says so. The user reviews and sends every report.
 - Gives senders a few short, general tips for emails that are easier to trust.
-- Runs as a web page and as a Thunderbird extension that checks the open email.
+- Runs as a web page and as a [Thunderbird extension](https://addons.thunderbird.net/thunderbird/addon/smt-watcher/) that checks the open email.
 
 The levels were tuned on one recipient's emails and checked on public spam, phishing and mailing list collections. They are not yet measured on other people's emails. See the [roadmap](docs/roadmap.md#measurements).
 

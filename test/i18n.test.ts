@@ -43,7 +43,7 @@ describe('texts', () => {
     for (const lang of LANGS) {
       setLang(lang);
       const titles = Object.entries(t().static).filter(([key]) => /^guide.+Title$/.test(key));
-      expect(titles.length).toBe(12);
+      expect(titles.length).toBe(13);
       for (const [key, title] of titles) expect(title, `${lang} ${key}`).toMatch(/^[^,]+.*, [^,]+$/);
     }
   });
