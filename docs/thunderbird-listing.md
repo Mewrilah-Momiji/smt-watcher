@@ -65,7 +65,7 @@ The privacy policy of the web page applies in addition: https://smtw.pixel-heave
 
 **Source code and build.** The add-on is built with Vite and TypeScript from the repository at the tag of the submitted version, for example `v0.5.28`. The source archive is the repository at that tag without tests. To rebuild:
 
-1. Environment: Node.js 20.19, 22.12 or later, and npm. The submitted package was built on Windows 11 with Node.js 26.13.0 and npm 11.20.0. The build only uses Node.js, so it should run the same on Linux and macOS, which was not tested. No other programs are needed: `npm ci` installs the build tools (TypeScript and Vite) in the exact versions of `package-lock.json`.
+1. Environment: Node.js 20.19, 22.12 or later, and npm. The submitted package was built on Windows 11 with Node.js 26.13.0 and npm 11.20.0. A build on Ubuntu 26.04 with Node.js 22.22.1 and npm 9.2.0 gave the same files, byte for byte. macOS was not tested. No other programs are needed: `npm ci` installs the build tools (TypeScript and Vite) in the exact versions of `package-lock.json`.
 2. Create a file `.env.local` in the project folder with these two lines. They are the address of the server and the add-on ID of this listing, not secrets:
 
    ```
