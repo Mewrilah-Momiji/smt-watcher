@@ -4,7 +4,7 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
-## 0.5.28 - not uploaded yet
+## 0.5.28 - 2026-11-05
 
 - Before sending an answer to the sender database, the page now explains in plain words what would be sent.
 - The privacy policy names the public spam and phishing collections that the sender database starts with, and the legal basis for them.
