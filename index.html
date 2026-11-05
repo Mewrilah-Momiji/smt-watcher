@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SMT Watcher</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  </head>
+  <body>
+    <div class="sky" aria-hidden="true"></div>
+    <header class="top">
+      <span class="brand"><span class="shield" aria-hidden="true"></span><span data-i18n="brand">SMT Watcher</span></span>
+      <span class="slogan" data-i18n="slogan">Spammers' beloved foe</span>
+    </header>
+    <main>
+      <div class="start">
+        <p class="kicker" data-i18n="kicker">Simple Mail Transfer Watcher</p>
+        <h1 data-i18n="question">Is this email genuine?</h1>
+        <p class="lead" data-i18n="lead"></p>
+
+        <label id="dropzone" for="file">
+          <strong data-i18n="drop"></strong>
+          <span data-i18n="dropHint"></span>
+          <input id="file" type="file" accept=".msg,.eml,.txt" multiple />
+        </label>
+
+        <p class="privacy" data-i18n="privacy"></p>
+        <p id="error" role="alert" hidden></p>
+
+        <details class="fold">
+          <summary data-i18n="pasteTitle"></summary>
+          <label for="pasted" data-i18n="pasteLabel"></label>
+          <textarea id="pasted" rows="6" spellcheck="false"></textarea>
+          <button id="pasted-check" type="button" data-i18n="pasteButton"></button>
+          <p class="hint" data-i18n="pasteHint"></p>
+        </details>
+
+        <details class="fold">
+          <summary data-i18n="guideTitle"></summary>
+          <div class="guide">
+            <details class="guide-app">
+              <summary data-i18n-program="guideOutlookTitle"></summary>
+              <dl>
+                <dt data-i18n-kind="guideOutlookFileTitle"></dt>
+                <dd><span data-i18n="guideOutlookFile"></span> <a href="https://support.microsoft.com/office/4821bcd4-7687-4d6d-a486-b89a291a56e2" target="_blank" rel="noopener noreferrer" data-i18n="source"></a></dd>
+                <dt data-i18n-kind="guideOutlookTitle"></dt>
+                <dd><span data-i18n="guideOutlook"></span> <a href="https://support.microsoft.com/office/cd039382-dc6e-4264-ac74-c048563d212c" target="_blank" rel="noopener noreferrer" data-i18n="source"></a></dd>
+              </dl>
+            </details>
+            <details class="guide-app">
+              <summary data-i18n-program="guideNewOutlookTitle"></summary>
+              <dl>
+                <dt data-i18n="guideNewOutlookFileTitle"></dt>
+                <dd><span data-i18n="guideNewOutlookFile"></span> <a href="https://support.microsoft.com/office/4821bcd4-7687-4d6d-a486-b89a291a56e2" target="_blank" rel="noopener noreferrer" data-i18n="source"></a></dd>
+                <dt data-i18n="guideOutlookWebFileTitle"></dt>
+                <dd><span data-i18n="guideOutlookWebFile"></span> <a href="https://support.microsoft.com/office/4821bcd4-7687-4d6d-a486-b89a291a56e2" target="_blank" rel="noopener noreferrer" data-i18n="source"></a></dd>
+                <dt data-i18n-kind="guideNewOutlookTitle"></dt>
+                <dd><span data-i18n="guideNewOutlook"></span> <a href="https://support.microsoft.com/office/cd039382-dc6e-4264-ac74-c048563d212c" target="_blank" rel="noopener noreferrer" data-i18n="source"></a></dd>
+              </dl>
+            </details>
+            <details class="guide-app">
+              <summary data-i18n-program="guideGmailTitle"></summary>
+              <dl>
+                <dt data-i18n-kind="guideGmailFileTitle"></dt>
+                <dd><span data-i18n="guideGmailFile"></span> <a href="https://support.google.com/mail/answer/9261412" target="_blank" rel="noopener noreferrer" data-i18n="source"></a></dd>
+                <dt data-i18n-kind="guideGmailTitle"></dt>
+                <dd><span data-i18n="guideGmail"></span> <a href="https://support.google.com/mail/answer/29436" target="_blank" rel="noopener noreferrer" data-i18n="source"></a></dd>
+              </dl>
+            </details>
+            <details class="guide-app">
+              <summary data-i18n-program="guideGmxTitle"></summary>
+              <dl>
+                <dt data-i18n-kind="guideGmxTitle"></dt>
+                <dd><span data-i18n="guideWebmail"></span> <a href="https://hilfe.gmx.net/email/empfangen-und-lesen/email-drucken-speichern.html" target="_blank" rel="noopener noreferrer" data-i18n="source"></a></dd>
+              </dl>
+            </details>
+            <details class="guide-app">
+              <summary data-i18n-program="guideWebdeTitle"></summary>
+              <dl>
+                <dt data-i18n-kind="guideWebdeTitle"></dt>
+                <dd><span data-i18n="guideWebmail"></span> <a href="https://hilfe.web.de/email/empfangen-und-lesen/email-drucken-speichern.html" target="_blank" rel="noopener noreferrer" data-i18n="source"></a></dd>
+              </dl>
+            </details>
+            <details class="guide-app">
+              <summary data-i18n-program="guideThunderbirdTitle"></summary>
+              <dl>
+                <dt data-i18n-kind="guideThunderbirdFileTitle"></dt>
+                <dd><span data-i18n="guideThunderbirdFile"></span> <a href="https://support.mozilla.org/kb/getting-started-thunderbird-main-window-supernova" target="_blank" rel="noopener noreferrer" data-i18n="source"></a></dd>
+                <dt data-i18n-kind="guideThunderbirdTitle"></dt>
+                <dd><span data-i18n="guideThunderbird"></span> <a href="https://support.mozilla.org/kb/getting-started-thunderbird-main-window-supernova" target="_blank" rel="noopener noreferrer" data-i18n="source"></a></dd>
+              </dl>
+            </details>
+            <details class="guide-app">
+              <summary data-i18n-program="guideMobileTitle"></summary>
+              <dl>
+                <dt data-i18n-kind="guideMobileTitle"></dt>
+                <dd data-i18n="guideMobile"></dd>
+              </dl>
+            </details>
+          </div>
+        </details>
+      </div>
+
+      <section id="result" hidden></section>
+    </main>
+    <footer class="foot">
+      <a href="imprint.html" data-i18n="imprintLink">Imprint</a>
+      <a href="help.html" data-i18n="helpLink">How it works</a>
+      <a href="privacy.html" data-i18n="privacyLink">Privacy policy</a>
+    </footer>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

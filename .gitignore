@@ -1,0 +1,21 @@
+node_modules/
+dist/
+*.local
+
+# Real emails contain personal data and must never enter the repository
+SpamMails/
+LegitimeMails/
+*.msg
+*.pst
+*.ost
+*.mbox
+dist-thunderbird/
+test-results/
+legit-review.csv
+legit-review-*.csv
+.deploy.env
+WS_FTP.LOG
+.database.env
+*.xpi
+seed-spam.json
+seed-public.json

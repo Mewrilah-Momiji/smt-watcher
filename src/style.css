@@ -1,0 +1,1317 @@
+:root {
+  color-scheme: dark;
+  --night: #0b1220;
+  --panel: #131c2e;
+  --sunken: #0e1626;
+  --blue: #4cc2ff;
+  --red: #ff4d4f;
+  --soft-red: #ff8f8f;
+  --accent: #5cc8ff;
+  --accent-2: #8c9cff;
+  --glow: rgba(92, 200, 255, 0.28);
+  --on-accent: #06202f;
+  --segment-off: 0.22;
+  --title-end: var(--accent-2);
+  --line: #2a3850;
+  --line-soft: #1f2b3f;
+  --hover: #ffffff;
+  --top-bg: rgba(11, 18, 32, 0.92);
+  --grid: rgba(92, 200, 255, 0.045);
+  --badge-ok: #4fd18b;
+  --scale-red: #ff5a5f;
+  --scale-orange: #ffa53d;
+  --scale-green: #3ecf7a;
+  --text: #e6ecf5;
+  --muted: #9dabc0;
+  --sans: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono: ui-monospace, 'Cascadia Mono', Consolas, 'Liberation Mono', monospace;
+  --gutter: clamp(16px, 5vw, 56px);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    color-scheme: light;
+    --night: #f6f8fb;
+    --panel: #ffffff;
+    --sunken: #eef2f7;
+    --blue: #084f99;
+    --red: #c62828;
+    --soft-red: #b3261e;
+    --accent: #084f99;
+    --accent-2: #4a2fb0;
+    --glow: rgba(11, 92, 173, 0.1);
+    --on-accent: #ffffff;
+    --segment-off: 0.4;
+    --title-end: var(--accent);
+    --line: #aab7c8;
+    --line-soft: #cfd8e4;
+    --text: #0b1422;
+    --muted: #36445a;
+    --hover: #083f78;
+    --top-bg: rgba(255, 255, 255, 0.94);
+    --grid: rgba(11, 92, 173, 0.025);
+    --badge-ok: #12733f;
+    --scale-red: #d12c22;
+    --scale-orange: #c96a06;
+    --scale-green: #1a8a4c;
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --night: #f6f8fb;
+  --panel: #ffffff;
+  --sunken: #eef2f7;
+  --blue: #084f99;
+  --red: #c62828;
+  --soft-red: #b3261e;
+  --accent: #084f99;
+  --accent-2: #4a2fb0;
+  --glow: rgba(11, 92, 173, 0.1);
+  --on-accent: #ffffff;
+  --segment-off: 0.4;
+  --title-end: var(--accent);
+  --line: #aab7c8;
+  --line-soft: #cfd8e4;
+  --text: #0b1422;
+  --muted: #36445a;
+  --hover: #083f78;
+  --top-bg: rgba(255, 255, 255, 0.94);
+  --grid: rgba(11, 92, 173, 0.025);
+  --badge-ok: #12733f;
+  --scale-red: #d12c22;
+  --scale-orange: #c96a06;
+  --scale-green: #1a8a4c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--night);
+  color: var(--text);
+  font: 400 1rem/1.6 var(--sans);
+  overflow-x: hidden;
+}
+
+/* A calm technical grid. */
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 32px 32px,
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 32px 32px,
+    var(--night);
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--hover);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+h1,
+h2,
+h3 {
+  margin: 1.25rem 0 0.4rem;
+  font-size: 1.05rem;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+h3 {
+  margin: 1.25rem 0 0.4rem;
+  font-size: 1.1rem;
+}
+
+p {
+  margin: 0.5rem 0;
+}
+
+/* Header */
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 1.5rem;
+  min-height: 3.5rem;
+  padding: 0.3rem var(--gutter);
+  background: var(--top-bg);
+  backdrop-filter: blur(10px);
+}
+
+.top::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: var(--line);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+/* Drawn with CSS, as the page's security rules allow no outside images. */
+.shield {
+  flex: none;
+  width: 1.05rem;
+  height: 1.25rem;
+  background: var(--accent);
+  clip-path: polygon(50% 0, 100% 16%, 100% 55%, 82% 80%, 50% 100%, 18% 80%, 0 55%, 0 16%);
+}
+
+main {
+  max-width: calc(42rem + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: clamp(1.5rem, 5vh, 3.5rem) var(--gutter) 3rem;
+}
+
+/* Start */
+
+body[data-view] .start {
+  display: none;
+}
+
+.start {
+  text-align: center;
+}
+
+.kicker {
+  margin: 0 0 0.6rem;
+  color: var(--accent);
+  font: 600 0.78rem/1.4 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lead {
+  margin: 0.9rem auto 0;
+  max-width: 32rem;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+#dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin: 2rem 0 1.25rem;
+  padding: clamp(2rem, 6vh, 3.25rem) 1rem;
+  background: var(--panel);
+  border: 1.5px dashed var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+#dropzone strong {
+  color: var(--text);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+#dropzone span {
+  color: var(--muted);
+}
+
+#dropzone:hover,
+#dropzone:focus-within,
+#dropzone.active {
+  border-color: var(--accent);
+  background: var(--sunken);
+}
+
+#dropzone input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+#error {
+  margin: 0 0 1rem;
+  color: var(--soft-red);
+}
+
+.start .fold {
+  text-align: left;
+}
+
+.start label[for='pasted'] {
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+/* Buttons and fields */
+
+button {
+  padding: 0.3rem 0.9rem;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+button:hover {
+  color: var(--hover);
+  background: var(--sunken);
+  border-color: var(--accent);
+}
+
+.btn {
+  padding: 0.6rem 1.3rem;
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.btn:hover {
+  color: var(--on-accent);
+  background: var(--accent);
+  filter: brightness(1.12);
+}
+
+.btn-ghost {
+  color: var(--accent);
+  background: transparent;
+  border-color: var(--line);
+  font-weight: 500;
+}
+
+.btn-ghost:hover {
+  color: var(--hover);
+  background: var(--sunken);
+  border-color: var(--accent);
+  filter: none;
+}
+
+.back {
+  padding: 0;
+  margin-bottom: 1rem;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+
+.back::before {
+  content: '\2190\00a0';
+}
+
+.back:hover {
+  color: var(--hover);
+  background: none;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin: 1.5rem 0;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  color: var(--text);
+  background: var(--sunken);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: 0.84rem/1.45 var(--mono);
+  resize: vertical;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.3rem;
+  vertical-align: text-bottom;
+  accent-color: var(--accent);
+}
+
+/* Assessment: the left edge shows the level, like a status panel. */
+
+.assessment {
+  padding: 1.4rem 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--scale-green);
+  border-radius: 10px;
+}
+
+.assessment h1 {
+  display: block;
+  color: var(--text);
+  font-size: clamp(1.35rem, 3.5vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.assessment p:last-child {
+  margin-bottom: 0;
+}
+
+.assessment.many-signs {
+  border-left-color: var(--scale-red);
+}
+
+.assessment.many-signs h1 {
+  color: var(--soft-red);
+}
+
+.assessment.some-signs {
+  border-left-color: var(--scale-orange);
+}
+
+ul.issues {
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul.issues li {
+  position: relative;
+  padding: 0.55rem 0 0.55rem 1.4rem;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+ul.issues li:last-child {
+  border-bottom: 0;
+}
+
+ul.issues li::before {
+  content: '';
+  position: absolute;
+  top: 1.05rem;
+  left: 0.15rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--scale-orange);
+  border-radius: 50%;
+}
+
+ul.issues li.warning::before {
+  background: var(--scale-red);
+}
+
+ul.issues strong,
+ul.issues span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+ul.issues strong {
+  font-weight: 600;
+}
+
+ul.issues span {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+/* Folds */
+
+.fold {
+  border-top: 1px solid var(--line);
+}
+
+.fold:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.fold > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 2.75rem;
+  padding: 0.4rem 0;
+  color: var(--text);
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+}
+
+.fold > summary::-webkit-details-marker {
+  display: none;
+}
+
+.fold > summary::after {
+  content: '+';
+  flex: none;
+  color: var(--accent);
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.fold[open] > summary::after {
+  content: '\2013';
+}
+
+.fold > summary:hover {
+  color: var(--accent);
+}
+
+.fold[open] {
+  padding-bottom: 1rem;
+}
+
+/* Guide on getting an email: one quieter fold per program inside the main fold */
+
+.guide {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.guide-app {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 0.8rem;
+}
+
+.guide-app summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 2.5rem;
+  color: var(--text);
+  cursor: pointer;
+  list-style: none;
+}
+
+.guide-app summary::-webkit-details-marker {
+  display: none;
+}
+
+.guide-app summary::after {
+  content: '+';
+  flex: none;
+  color: var(--accent);
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.guide-app[open] summary::after {
+  content: '\2013';
+}
+
+.guide-app summary:hover {
+  color: var(--accent);
+}
+
+.guide-app[open] {
+  padding-bottom: 0.75rem;
+}
+
+.guide-app dt {
+  margin-top: 0.6rem;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.guide-app dt:first-child {
+  margin-top: 0.15rem;
+}
+
+.guide-app dd {
+  line-height: 1.5;
+}
+
+/* Reporting */
+
+.report fieldset {
+  margin: 1.25rem 0 0.75rem;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  padding: 0;
+  margin-bottom: 0.3rem;
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+fieldset label,
+.consent {
+  display: block;
+  padding: 0.15rem 0;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+fieldset small {
+  display: block;
+  color: var(--muted);
+}
+
+.abuse-lookup {
+  margin: 0.5rem 0;
+}
+
+.phone-entry {
+  margin-top: 0.75rem;
+  cursor: default;
+}
+
+.phone-entry span {
+  display: block;
+}
+
+.phone-entry input {
+  width: min(100%, 18rem);
+  min-height: 2.5rem;
+  margin: 0.25rem 0.5rem 0.25rem 0;
+  padding: 0.3rem 0.6rem;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.phone-error {
+  margin: 0.25rem 0 0;
+  color: var(--soft-red);
+}
+
+.phone-why {
+  margin: 0.6rem 0 0;
+  font-size: 0.95rem;
+}
+
+.body-card .step:last-of-type {
+  margin-bottom: 0.75rem;
+}
+
+.report > div > .fold:first-child {
+  margin-top: 1.25rem;
+}
+
+.report > div:last-child .fold {
+  border-top: 0;
+}
+
+.body-card > small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.body-card > .consent {
+  margin: 0.75rem 0 0.25rem;
+  font-weight: 500;
+}
+
+.notices {
+  margin: 0.75rem 0;
+  padding: 0.6rem 0.9rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.notices strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.notices ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.notices li {
+  margin-bottom: 0.2rem;
+}
+
+.copy-field {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 0.2rem 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.copy-field strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.copy-field button {
+  grid-column: 2;
+  grid-row: 1;
+  padding: 0 0.8rem;
+  font-size: 0.85rem;
+}
+
+.copy-field textarea {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.eml-download {
+  margin: 0.75rem 0;
+}
+
+.eml-download p {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+/* Footer and legal page */
+
+/* The bar stays at the bottom of the window, also on short pages. */
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+  width: 100%;
+}
+
+.foot {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.5rem;
+  padding: 0.8rem var(--gutter);
+  background: var(--top-bg);
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+
+.version {
+  margin-left: auto;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+.legal section + section {
+  margin-top: 3rem;
+}
+
+.legal h2 {
+  margin: 1.5rem 0 0.5rem;
+}
+
+.legal section {
+  scroll-margin-top: 5rem;
+}
+
+.legal address {
+  font-style: normal;
+}
+
+.contact-field {
+  display: block;
+  margin-bottom: 0.9rem;
+}
+
+#contact {
+  scroll-margin-top: 5rem;
+}
+
+.contact-field input,
+.contact-field textarea {
+  display: block;
+  width: 100%;
+  min-height: 2.5rem;
+  margin-top: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+
+/* Hidden from people, but not with display: none, which simple bots skip. */
+.contact-trap {
+  position: absolute;
+  left: -9999px;
+}
+
+.contact-sent {
+  color: var(--badge-ok);
+}
+
+.contact-error {
+  color: var(--soft-red);
+}
+
+.brand a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sender-lookup {
+  margin: 0 0 1.5rem;
+  padding: 0.8rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.sender-lookup p:first-child {
+  margin-top: 0;
+  color: var(--muted);
+}
+
+.report-country {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.8rem 0 0.4rem;
+  font-weight: 600;
+}
+
+.report-country select,
+.report-country .picker {
+  min-height: 2.5rem;
+  padding: 0.3rem 0.6rem;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 400;
+}
+
+/* Advice for senders */
+
+.advice-links {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.advice-links li {
+  margin: 0.2rem 0;
+}
+
+/* Technical details */
+
+dl {
+  margin: 0;
+}
+
+dt {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+ol {
+  margin: 0.5rem 0 0;
+  padding-left: 1.4rem;
+}
+
+ol li {
+  margin-bottom: 0.5rem;
+  overflow-wrap: anywhere;
+}
+
+ol li > * {
+  display: block;
+  font-weight: 400;
+}
+
+ol li small {
+  color: var(--muted);
+}
+
+ul.checks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul.checks li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem 0.75rem;
+  padding: 0.25rem 0;
+}
+
+ul.checks strong {
+  min-width: 3.5rem;
+  font: 600 0.9rem/1.6 var(--mono);
+}
+
+ul.checks small {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  padding: 0 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font: 500 0.78rem/1.6 var(--mono);
+}
+
+.badge.ok {
+  color: var(--badge-ok);
+}
+
+.badge.warn {
+  color: var(--accent);
+}
+
+.badge.bad {
+  color: var(--soft-red);
+}
+
+.badge.neutral {
+  color: var(--muted);
+}
+
+ul.batch-list {
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul.batch-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.batch-mail {
+  flex: 1 1 14rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.batch-mail strong,
+.batch-mail small {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #dropzone,
+  button {
+    transition: none;
+  }
+}
+
+/* Header controls */
+
+.top {
+  gap: 0 1rem;
+}
+
+.brand {
+  margin-right: auto;
+}
+
+.slogan {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.controls {
+  display: inline-flex;
+  gap: 0.4rem;
+}
+
+.controls button,
+.controls select {
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.4rem;
+  font-size: 0.85rem;
+}
+
+.controls select {
+  color: var(--accent);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.controls select:hover {
+  border-color: var(--accent);
+}
+
+.controls .picker {
+  width: 9.5rem;
+  height: 2.25rem;
+  padding: 0 0.5rem;
+  color: var(--accent);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.controls .picker-language {
+  width: 8.5rem;
+}
+
+.controls .picker:hover,
+.controls .picker:focus {
+  border-color: var(--accent);
+}
+
+.picker::placeholder {
+  color: var(--muted, currentColor);
+  opacity: 0.7;
+}
+
+.controls {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.report-country .picker {
+  width: min(18rem, 100%);
+}
+
+/* On phones, a sticky header with two rows would cover too much of the page. */
+@media (max-width: 36rem) {
+  .top {
+    position: static;
+  }
+
+  .slogan {
+    order: 3;
+    width: 100%;
+  }
+}
+
+/* Headings only get the focus from the page, which needs no visible mark. */
+h1[tabindex]:focus-visible {
+  outline: none;
+}
+
+/* Risk scale */
+
+.scale {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.25rem;
+  max-width: 26rem;
+  margin: 0 auto 1.25rem;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+
+.scale li {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.scale li::before {
+  content: '';
+  display: block;
+  height: 0.45rem;
+  margin-bottom: 0.3rem;
+  background: var(--segment);
+  border-radius: 2px;
+  opacity: var(--segment-off);
+}
+
+.scale li.active {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.scale li.active::before {
+  opacity: 1;
+}
+
+.scale .high {
+  --segment: var(--scale-red);
+}
+
+.scale .medium {
+  --segment: var(--scale-orange);
+}
+
+.scale .low {
+  --segment: var(--scale-green);
+}
+
+.privacy {
+  margin: -0.5rem 0 1.25rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* A small status light in front of the promise. */
+.privacy::before {
+  content: '';
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.45rem;
+  background: var(--scale-green);
+  border-radius: 50%;
+}
+[hidden] {
+  display: none !important;
+}
+
+/* Effects. All of them are decoration, and motion ends where the system asks for less. */
+
+.sky {
+  background:
+    radial-gradient(70vw 60vh at 15% -10%, var(--glow), transparent 70%),
+    radial-gradient(60vw 50vh at 100% 0%, color-mix(in srgb, var(--accent-2) 12%, transparent), transparent 70%),
+    linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 32px 32px,
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 32px 32px,
+    var(--night);
+}
+
+.top {
+  backdrop-filter: blur(12px) saturate(140%);
+}
+
+.top::after {
+  background: linear-gradient(90deg, transparent, var(--accent) 25%, var(--accent-2) 75%, transparent);
+  opacity: 0.6;
+}
+
+/* Added by CSS, as all pages share the header. It sits at an angle like a stamp. */
+.brand::after {
+  content: 'Beta';
+  padding: 0.05rem 0.4rem;
+  color: var(--on-accent);
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  border-radius: 4px;
+  font: 700 0.62rem/1.4 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: translate(-0.2rem, -0.5rem) rotate(-10deg);
+}
+
+.shield {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  filter: drop-shadow(0 0 6px var(--glow));
+  animation: shield-glow 4s ease-in-out infinite;
+}
+
+@keyframes shield-glow {
+  50% {
+    filter: drop-shadow(0 0 10px var(--accent));
+  }
+}
+
+.start h1 {
+  background: linear-gradient(100deg, var(--text) 30%, var(--accent) 75%, var(--title-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+#dropzone {
+  overflow: hidden;
+  background: var(--panel);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  box-shadow: 0 10px 40px -18px var(--glow), inset 0 0 40px -28px var(--accent);
+  backdrop-filter: blur(6px);
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+/* A line that sweeps across, as if the field were scanning. */
+#dropzone::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 -30%;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, var(--glow), transparent);
+  animation: scan 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes scan {
+  to {
+    left: 100%;
+  }
+}
+
+#dropzone:hover,
+#dropzone:focus-within,
+#dropzone.active {
+  box-shadow: 0 14px 50px -14px var(--accent), inset 0 0 50px -24px var(--accent);
+  transform: translateY(-2px);
+}
+
+.btn {
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  border-color: transparent;
+  box-shadow: 0 6px 22px -8px var(--accent);
+  transition: box-shadow 0.2s, transform 0.2s, filter 0.2s;
+}
+
+.btn:hover {
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  box-shadow: 0 10px 28px -8px var(--accent);
+  transform: translateY(-1px);
+}
+
+.btn-ghost,
+.btn-ghost:hover {
+  background: transparent;
+  box-shadow: none;
+}
+
+.btn-ghost {
+  border-color: var(--line);
+}
+
+.assessment {
+  --level: var(--scale-green);
+  border-left-color: var(--level);
+  background: linear-gradient(100deg, color-mix(in srgb, var(--level) 10%, var(--panel)), var(--panel) 55%);
+  box-shadow: 0 16px 50px -26px var(--level);
+}
+
+.assessment.many-signs {
+  --level: var(--scale-red);
+}
+
+.assessment.some-signs {
+  --level: var(--scale-orange);
+}
+
+.scale li.active::before {
+  box-shadow: 0 0 12px var(--segment);
+}
+
+ul.issues li.warning::before {
+  box-shadow: 0 0 8px var(--scale-red);
+}
+
+.privacy::before {
+  box-shadow: 0 0 8px var(--scale-green);
+  animation: status-light 2.6s ease-in-out infinite;
+}
+
+@keyframes status-light {
+  50% {
+    box-shadow: 0 0 2px var(--scale-green);
+    opacity: 0.65;
+  }
+}
+
+.fold > summary {
+  transition: color 0.15s, padding-left 0.15s;
+}
+
+.fold > summary:hover {
+  padding-left: 0.3rem;
+}
+
+.view {
+  animation: rise 0.35s ease-out;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shield,
+  #dropzone::after,
+  .privacy::before,
+  .view {
+    animation: none;
+  }
+
+  #dropzone,
+  .btn,
+  .fold > summary {
+    transition: none;
+  }
+
+  #dropzone:hover,
+  #dropzone:focus-within,
+  #dropzone.active,
+  .btn:hover {
+    transform: none;
+  }
+
+  #dropzone::after {
+    display: none;
+  }
+}

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'" />
+    <meta name="robots" content="noindex" />
+    <title>Page not found · SMT Watcher</title>
+    <!-- Served for any missing address, so every link is absolute. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      :root {
+        --night: #0b1220;
+        --text: #e6ecf5;
+        --muted: #9dabc0;
+        --accent: #5cc8ff;
+        --accent-2: #3f6fff;
+        --on-accent: #06202f;
+        --line: #2a3850;
+        --glow: rgba(92, 200, 255, 0.28);
+        --grid: rgba(92, 200, 255, 0.05);
+        --sans: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+        --mono: ui-monospace, 'Cascadia Mono', Consolas, 'Liberation Mono', monospace;
+        --gutter: clamp(16px, 5vw, 56px);
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        display: grid;
+        place-items: center;
+        min-height: 100svh;
+        padding: 40px var(--gutter);
+        color: var(--text);
+        font-family: var(--sans);
+        text-align: center;
+        background:
+          radial-gradient(ellipse 50% 45% at 50% 38%, var(--glow), transparent 70%),
+          linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 40px 40px,
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 40px 40px,
+          var(--night);
+      }
+      main { max-width: 560px; }
+      svg.shield {
+        width: min(34vw, 150px);
+        filter: drop-shadow(0 0 32px var(--glow));
+      }
+      .code {
+        margin: 18px 0 4px;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(1.9rem, 6vw, 2.8rem);
+        line-height: 1.1;
+      }
+      p { color: var(--muted); line-height: 1.5; }
+      .de { margin-top: -6px; font-size: 0.92rem; }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 26px;
+      }
+      .actions a {
+        padding: 11px 22px;
+        border-radius: 999px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: box-shadow 0.3s ease;
+      }
+      .primary {
+        background: linear-gradient(100deg, var(--accent), var(--accent-2));
+        color: var(--on-accent);
+      }
+      .secondary {
+        border: 1px solid var(--line);
+        color: var(--text);
+      }
+      .actions a:hover, .actions a:focus-visible { box-shadow: 0 0 0 6px var(--glow); outline: none; }
+      @media (prefers-reduced-motion: reduce) { .actions a { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <svg class="shield" viewBox="0 0 64 64" aria-hidden="true">
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5ce1e6" /><stop offset="1" stop-color="#3f6fff" /></linearGradient></defs>
+        <path fill="url(#g)" d="M32 3 57 12v21c0 13-10 23-25 28C17 56 7 46 7 33V12z" />
+        <g fill="none" stroke="#06202f" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><path d="M25 25a7 7 0 1 1 9.5 6.5c-1.6.7-2.5 2-2.5 3.7V37" /><path d="M32 45v.5" /></g>
+      </svg>
+      <p class="code">Error 404</p>
+      <h1>This page does not exist</h1>
+      <p>The address may be mistyped, or the page has moved or been removed.</p>
+      <p class="de" lang="de">Diese Seite gibt es nicht. Vielleicht ist die Adresse vertippt, oder die Seite wurde verschoben oder entfernt.</p>
+      <div class="actions">
+        <a class="primary" href="/">Back to SMT Watcher</a>
+      </div>
+    </main>
+  </body>
+</html>

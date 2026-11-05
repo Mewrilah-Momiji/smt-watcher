@@ -1,0 +1,17 @@
+Return-Path: <bounce@sending.example.net>
+Received: from mx.recipient.example (mx.recipient.example [192.0.2.10])
+	by mailbox.recipient.example with ESMTP id abc123;
+	Sun, 01 Nov 2026 10:00:05 +0100
+Received: from sending.example.net (sending.example.net [198.51.100.7])
+	by mx.recipient.example with ESMTPS id def456;
+	Sun, 01 Nov 2026 10:00:02 +0100
+From: "Super Offer" <offer@shop.example.org>
+To: max.muster@recipient.example
+Reply-To: reply@other-domain.example.com
+Subject: =?UTF-8?B?R2zDvGNrd3Vuc2NoIQ==?=
+Date: Sun, 01 Nov 2026 09:59:58 +0100
+Message-ID: <12345@sending.example.net>
+Content-Type: text/plain; charset=utf-8
+
+Call now: 0900 1234567
+<script>alert('never execute')</script>

@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "SMT Watcher",
+  "version": "0.0.0",
+  "description": "Analyzes the open email locally and prepares a report for you to review and send.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "smt-watcher@example.org",
+      "strict_min_version": "128.0"
+    }
+  },
+  "permissions": ["messagesRead", "compose"],
+  "host_permissions": ["https://smtw.example.org/*"],
+  "background": {
+    "scripts": ["background.js"],
+    "type": "module"
+  },
+  "message_display_action": {
+    "default_title": "Check this email",
+    "default_label": "SMT Watcher",
+    "default_icon": "icon.svg"
+  },
+  "icons": {
+    "64": "icon.svg"
+  }
+}

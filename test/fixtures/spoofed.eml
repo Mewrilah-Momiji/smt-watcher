@@ -1,0 +1,17 @@
+Authentication-Results: mx.recipient.example;
+	spf=fail (sender IP is 198.51.100.7) smtp.mailfrom=sending.example.net;
+	dkim=none (message not signed) header.d=none;
+	dmarc=fail action=quarantine header.from=bank.example.org
+Received: from sending.example.net (sending.example.net [198.51.100.7])
+	by mx.recipient.example with ESMTPS id def456;
+	Sun, 01 Nov 2026 10:00:02 +0100
+Authentication-Results: forged.example; spf=pass; dkim=pass; dmarc=pass
+Return-Path: <bounce@sending.example.net>
+From: "=?UTF-8?B?c3VwcG9ydEBzYXZpbmdzLmV4YW1wbGU=?=" <info@bank.example.org>
+To: max.sample@recipient.example
+Reply-To: account@fraud.example.com
+Subject: Your account will be locked
+Date: Sun, 01 Nov 2026 09:59:58 +0100
+Content-Type: text/html; charset=utf-8
+
+<img src="https://tracker.example.com/pixel.gif" onerror="alert('never run this')">

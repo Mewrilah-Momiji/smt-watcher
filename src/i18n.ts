@@ -1,0 +1,888 @@
+import type { AssessmentLevel } from './core/assessment';
+import type { AuthSource } from './core/auth';
+import type { Finding, FindingCode } from './core/findings';
+import type { Verdict } from './core/contribution';
+import type { AdviceSource } from './core/senderAdvice';
+import type { MailErrorCode } from './core/readMail';
+import type { ReportCase, ReportLanguage } from './data/reportingBodies';
+import { cs } from './i18nCs';
+import { da } from './i18nDa';
+import { fr } from './i18nFr';
+import { it } from './i18nIt';
+import { nl } from './i18nNl';
+import { pl } from './i18nPl';
+import { sk } from './i18nSk';
+import { hu } from './i18nHu';
+import { sl } from './i18nSl';
+import { sv } from './i18nSv';
+import { fi } from './i18nFi';
+import { es } from './i18nEs';
+import { pt } from './i18nPt';
+import { nb } from './i18nNb';
+import { bg } from './i18nBg';
+import { ro } from './i18nRo';
+import { el } from './i18nEl';
+import { et } from './i18nEt';
+import { lv } from './i18nLv';
+import { lt } from './i18nLt';
+import { hr } from './i18nHr';
+
+export type Lang = 'en' | 'de' | 'fr' | 'it' | 'nl' | 'pl' | 'da' | 'cs' | 'sk' | 'hu' | 'sl' | 'sv' | 'fi' | 'es' | 'pt' | 'nb' | 'bg' | 'ro' | 'el' | 'et' | 'lv' | 'lt' | 'hr';
+
+export const LANGS: Lang[] = ['de', 'en', 'fr', 'it', 'nl', 'pl', 'da', 'cs', 'sk', 'hu', 'sl', 'sv', 'fi', 'es', 'pt', 'nb', 'bg', 'ro', 'el', 'et', 'lv', 'lt', 'hr'];
+
+type Params = Record<string, string>;
+type FindingText = { title: string; detail: (params: Params) => string };
+type HelpSection = { title: string; steps?: string[]; points?: string[]; paragraphs?: string[] };
+
+const en = {
+  static: {
+    brand: 'SMT Watcher',
+    slogan: "Spammers' beloved foe",
+    kicker: 'Simple Mail Transfer Watcher',
+    question: 'Is this email genuine?',
+    lead: 'Drop in a suspicious email. You get a clear assessment and, if you want, a report ready to send.',
+    drop: 'Drop one or more emails here',
+    dropHint: 'or click to choose .msg, .eml or .txt files',
+    privacy: 'Your email stays in your browser. Nothing is uploaded.',
+    privacyWithSenderDb: 'Your email stays in your browser. Only if you choose to, a few details about the sender are sent, never the email.',
+    imprintLink: 'Imprint',
+    privacyLink: 'Privacy policy',
+    helpLink: 'How it works',
+    translationLink: 'Report a translation error',
+    pasteTitle: 'No file? Paste the headers',
+    pasteLabel: 'Email headers or the full email source',
+    pasteButton: 'Check text',
+    pasteHint: 'With headers only, the text, links and attachments cannot be checked.',
+    guideTitle: 'How do I get the email or its headers?',
+    guideOutlookFileTitle: 'Outlook for Windows (classic), file',
+    guideOutlookFile: 'Double-click the email to open it, then choose File > Save As. Keep the suggested file type.',
+    guideNewOutlookFileTitle: 'New Outlook, file',
+    guideNewOutlookFile: 'At the top of the email, choose More actions > Save as.',
+    guideOutlookWebFileTitle: 'Outlook on the web, file',
+    guideOutlookWebFile: 'At the top of the email, choose More actions > Download. The email is saved as an .eml or .msg file.',
+    guideOutlookTitle: 'Outlook for Windows (classic), headers',
+    guideOutlook: 'Double-click the email to open it, then choose File > Properties. Copy the "Internet headers" box.',
+    guideNewOutlookTitle: 'New Outlook and Outlook on the web, headers',
+    guideNewOutlook: 'Choose More actions at the top of the email, then View > View message details.',
+    guideGmailTitle: 'Gmail, headers',
+    guideGmail: 'Next to Reply, choose More > Show original, then "Copy to clipboard".',
+    guideGmxTitle: 'GMX, file',
+    guideWebdeTitle: 'WEB.DE, file',
+    guideWebmail: 'In the open email, choose the three dots at the top right, then "Speichern (.eml)". For headers, choose "Mehr Informationen" there.',
+    guideGmailFileTitle: 'Gmail, file',
+    guideGmailFile: 'Open the email and choose More > Download message. Gmail saves it as an .eml file.',
+    guideThunderbirdFileTitle: 'Thunderbird, file',
+    guideThunderbirdFile: 'Above the open email, choose More > Save As and save it as an .eml file.',
+    guideThunderbirdTitle: 'Thunderbird, headers',
+    guideThunderbird: 'Above the open email, choose More > View Source and copy the whole text.',
+    guideMobileTitle: 'Smartphone, headers or source',
+    guideMobile: 'Mail apps on phones rarely save an email as a file. If your app or webmail shows the headers or the source of an email, copy all of it and paste it above under "No file? Paste the headers". You can also save the copied text as a .txt file and choose that file.',
+    source: 'Source',
+  },
+  controls: { language: 'Language', toLight: 'Switch to light mode', toDark: 'Switch to dark mode' },
+  errors: {
+    'wrong-type': 'Please choose a .msg, .eml or .txt file.',
+    'no-pasted-headers': 'No email headers found. Copy the full headers, starting at the first line.',
+    'msg-unreadable': 'The .msg file could not be read.',
+    'msg-no-headers': 'This .msg file contains no original headers.',
+    'eml-no-headers': 'This file contains no email headers.',
+  } satisfies Record<MailErrorCode, string>,
+  fileFailed: 'The file could not be analyzed.',
+  textFailed: 'The text could not be analyzed.',
+  emailFailed: 'The email could not be analyzed.',
+  noFileDropped: 'Your mail program did not hand over a file. Save the email as a file first, or paste its headers below.',
+  selectOne: 'Please open a single email and try again.',
+  scale: { label: 'Risk level', high: 'Risky', medium: 'Suspicious', low: 'Unremarkable' },
+  assessment: {
+    'many-signs': { title: 'Many signs of spam or fraud', detail: 'This is an indication based on technical signs, not a proof.' },
+    'some-signs': { title: 'Some signs of spam or fraud', detail: 'Legitimate emails can show these signs too. Decide based on whether you expected this email.' },
+    'no-signs': { title: 'No signs found', detail: 'This is not an all-clear. Many spam and fraud emails show no technical signs. Stay careful with links, attachments and requests for data.' },
+  } satisfies Record<AssessmentLevel, { title: string; detail: string }>,
+  fraudWarning: 'Some signs point to a fraud attempt. Do not click links, open attachments or enter any details. Instead, open the site you know in your browser yourself and check there whether the message is true.',
+  headersOnly: 'Only the headers could be read, so the text, links and attachments were not checked. Reports still need the original email.',
+  noHtml: 'No formatted version of this email was available, so links were only checked in its plain text.',
+  allFindings: (count: number) => `All ${count} findings`,
+  lookup: {
+    button: 'Check sender in the database',
+    consent: 'With a click, the base domain of the sender is sent to the operator of this page and compared with the database. It is not stored. Without a click, nothing is sent.',
+    searching: 'Checking…',
+    none: 'No hint on this sender. This is not an all-clear.',
+    failed: 'The check did not work. The assessment above stays valid.',
+    notUsable: 'This sender cannot be checked, as it uses a free mail service or no readable address.',
+  },
+  blocklistsTitle: 'Check the sending server on blocklists',
+  blocklistsNote: (ip: string) => `The sending server has the IP address ${ip}. To check it on a public blocklist, copy the address and enter it on one of these pages. This page sends nothing there by itself. A listing is one more sign, as servers can be shared or hacked, and no listing is no all-clear.`,
+  newsletterNote: 'This email carries the unsubscribe details of a newsletter. If you know the sender and no longer want it, unsubscribing may be enough. Spam can imitate this too, so if you do not know the sender, do not click its unsubscribe link.',
+  batch: {
+    reading: (done: number, total: number) => `Reading email ${done} of ${total}…`,
+    title: (count: number) => `${count} emails checked`,
+    note: 'Emails with the most signs come first. No signs does not make an email safe.',
+    open: 'View',
+    openLabel: (name: string) => `View ${name}`,
+    noSubject: '(no subject)',
+    skipped: (count: number, limit: number) => `${count} more files were not read, as one check holds at most ${limit}.`,
+    backToList: 'Back to the list',
+    saveCsv: 'Save list as CSV',
+    saveCsvNote: 'The file is created in your browser and holds senders and subjects from your emails. Nothing is sent.',
+    csvHeader: ['Level', 'Sender', 'Subject', 'Signs', 'File'],
+    csvNotRead: 'Not read',
+  },
+  contribute: {
+    title: 'Help improve the sender database',
+    intro: 'Voluntary. Your answer helps to tell senders apart, because many people often receive the same campaign. It is sent once, for this email only.',
+    question: 'What is this email in your opinion?',
+    verdicts: { spam: 'Spam or fraud', legit: 'Legitimate', unsure: 'I am not sure' } satisfies Record<Verdict, string>,
+    previewTitle: 'What would be sent?',
+    summary: {
+      sender: 'Sender: the domain {domain} and the result of the technical sender checks.',
+      result: 'Result: {level}, along with the findings as short codes, without any text from the email.',
+      links: 'Links: {domains} (domains only).',
+      noLinks: 'Links: none.',
+      answer: 'Your answer: {answer}.',
+      wrong: 'Also that you think the assessment is wrong.',
+      notSent: 'Not sent: the email itself, your address, the sender\'s name, the part of the address before the @, the subject and the text.',
+      ip: 'Your IP address is not stored, only a hash of it, to limit reports and avoid counting one twice.',
+    },
+    choose: 'Choose an answer first.',
+    consent: 'With the click, you agree that these details go to the operator of this page, are added to the counters of this campaign and are evaluated to judge senders. This is voluntary. You can withdraw your consent for the future by email, but a counted report cannot be removed individually.',
+    send: 'Send',
+    sending: 'Sending…',
+    sent: 'Thank you, your answer has arrived. It was added to the counters of this campaign and helps everyone judge senders better.',
+    failed: 'That did not work. Nothing was counted.',
+    notUsable: 'This email cannot be counted, as it comes from a free mail service, from your own domain or from no readable address.',
+    reportWrong: 'Improve the assessment',
+  },
+  legal: {
+    imprintTitle: 'Imprint',
+    imprintBasis: 'Information under section 5 of the German Digital Services Act (DDG):',
+    contact: {
+      title: 'Contact form',
+      name: 'Name (optional)',
+      email: 'Your email address',
+      message: 'Your message',
+      send: 'Send message',
+      note: 'Your details are sent to the operator by email, so that you can get an answer. The privacy policy has more on this. Please do not paste suspicious emails here.',
+      translationNote: (language: string) => `You are reporting a translation error in ${language}. Please quote the wrong text and, if you can, suggest a better one. The form also sends the language and the page you came from.`,
+      status: {
+        sent: 'Thank you, your message was sent.',
+        invalid: 'Please check your email address and message.',
+        busy: 'Too many messages were sent just now. Please try again later or write an email.',
+        failed: 'The message could not be sent. Please write an email instead.',
+      },
+    },
+    responsibleTitle: 'Responsible for the content',
+    responsible: (name: string) => `${name}, address as above (section 18(2) of the German Interstate Media Treaty, MStV).`,
+    privacyTitle: 'Privacy policy',
+    privacyIntro: 'This page explains which personal data is processed when you use SMT Watcher. The German version applies.',
+    controllerTitle: 'Controller',
+    privacySections: [
+      { title: 'The emails you check', paragraphs: ['The email is read and analyzed only in your browser. It is not uploaded, and the operator never receives it or its content.'] },
+      { title: 'Visiting this page', paragraphs: ['This page is hosted by ALL-INKL.COM - Neue Medien Münnich, Hauptstraße 68, 02742 Friedersdorf, Germany. When you open it, your browser sends your IP address to the server, which is needed to deliver the page.', 'Access is recorded in server logs: the shortened IP address (11.22.33.44 becomes 11.22.0.0), date and time, the requested file, the status code, the amount of data, the previously visited page, and the browser and operating system. The logs serve the secure and stable operation of the page, and the host also creates a summarized access statistic from them that only the operator can see. They are deleted after 7 days.', 'The legal basis is Art. 6(1)(f) GDPR. The legitimate interest is delivering the page securely, stably and without faults, and detecting and defending against attacks. An order processing agreement under Art. 28 GDPR with the host is in place.'] },
+      { title: 'Abuse contact lookup', paragraphs: ['Only if you click the lookup, your browser sends the IP address of the server that sent the email to rdap.org and a regional internet registry (ARIN, RIPE NCC, APNIC, LACNIC or AFRINIC). For some networks, that registry forwards the request to a national registry, such as TWNIC in Taiwan or NIC.br in Brazil. These bodies also see your own IP address and may be located outside the EU. In that case, a level of data protection comparable to the GDPR may not be guaranteed. The operator receives none of this. The legal basis is Art. 6(1)(a) GDPR: your click is your consent for this one lookup. The page says what it sends right before you click. Without a click, nothing is sent. The consent only covers this one lookup, so nothing continues afterwards. Withdrawing it does not affect a lookup that was already made.'] },
+      { title: 'Reports', paragraphs: ['This page prepares reports but never sends them. You decide what you send to a reporting body, and that body then processes it under its own responsibility.'] },
+      { title: 'Storage in your browser', paragraphs: ['The page sets no cookies, because it needs none: it has no advertising, no tracking services and no login. That is also why you see no cookie banner. It keeps your chosen language, country and theme in your browser\'s local storage (localStorage) so that they remain the next time. They stay on your device and are not sent to the server. This storage is needed for a function you asked for, which needs no consent under section 25(2) no. 2 of the German TDDDG. You can delete them in your browser at any time.'] },
+      { title: 'Links to other websites', paragraphs: ['Links to other websites only open when you click them. Those websites are responsible for their own data processing.'] },
+      { title: 'Contact by email or form', paragraphs: ['If you write to the operator, your message, your email address and your name, if you give it, are processed to answer you. The form sends these details by email to the operator\'s mailbox at the host. If you report a translation error, it also sends the page language and the page you came from. The page does not store them in a database. The legal basis is Art. 6(1)(f) GDPR. The legitimate interest is answering your enquiry. The details are deleted when they are no longer needed for it, unless legal retention duties apply.'] },
+      { title: 'Your rights', paragraphs: ['You have the right to access, rectification, erasure, restriction of processing, data portability and objection, and you can withdraw consent with effect for the future. You can also complain to a supervisory authority, for example the Bayerisches Landesamt für Datenschutzaufsicht, Promenade 18, 91522 Ansbach, Germany.'] },
+    ],
+    emailsWithSenderDb: { title: 'The emails you check', paragraphs: ['The email is read and analyzed only in your browser. It is not uploaded, and the operator receives neither the email nor its text. The only exception is the details named under "Sender database", which are derived from the email and sent only if you choose to.'] },
+    senderDbSection: {
+      title: 'Sender database',
+      paragraphs: [
+        'What is sent: Only if you click "Send" after choosing an answer, your browser sends these details to the operator: the base domain of the sender, the results of the sender checks, whether the sender\'s domain signed the email, the finding codes, the assessment level, the base domains of the links, your answer and whether you reported the assessment as wrong. The page describes these details to you before you click. How they are built is in the public source code of SMT Watcher on GitHub. The email itself, your address, the sender\'s name, the part of the address before the @, the subject and the text are not sent.',
+        'Checking a sender: Only if you click the check, your browser sends the base domain of the sender to the operator, to compare it with the database. The operator can thereby see that someone received an email from this domain. The domain is not stored for this. Only a hash of your IP address is kept for about 2 hours, to limit the number of checks. The legal basis is Art. 6(1)(a) GDPR: your click is your consent for this one check. Withdrawing it does not affect a check already made.',
+      'Purpose: Reports about the same campaign are grouped, in order to judge senders and the rules of this tool better.',
+        'What is stored: A report is not stored as a single record. It is added at once to the counters of its group. A sender\'s domain is first stored only as a hash with a secret key, which is a pseudonym and not anonymization, and readable only after at least 5 independent reports. This protects domains of private persons as far as possible, but does not rule out that a stored domain relates to a person. Reports about free mail services and your own domain are not accepted. In addition, the database holds starting data from spam and phishing emails that the operator received and from publicly available collections of such emails, the Untroubled Spam Archive by Bruce Guenter and the phishing corpus by José Nazario (CC BY 4.0): for each group only such a hash and a count. Senders whose domain validly signed the email are left out, as these are often hijacked accounts of reputable senders. Starting data never counts as a report and never makes a domain readable. The legal basis for this is Art. 6(1)(f) GDPR. The legitimate interest is to recognize spam and fraud campaigns.',
+        'Your IP address: It is needed for the connection. To limit reports and count each source only once per group, a hash of it is stored instead of the address itself. Its key is random and is discarded after one day, and the hash is deleted after 30 days at the latest. For limiting reports, it is deleted after about 2 hours. The server logs described above also apply.',
+        'Legal basis and withdrawal: The legal basis is your consent under Art. 6(1)(a) GDPR, which you give with the click on "Send". It is voluntary, and the page works the same without it. You can withdraw it at any time with effect for the future, without giving reasons, by writing to the address above. This does not affect the lawfulness of processing up to then. As your report was added to counters and the operator has no details that lead back to you, it can then no longer be found or removed individually. On request, the operator also deletes any source hash that can still be assigned.',
+        'Senders: Anyone affected by a stored domain can ask the operator at any time to remove it, or object to its processing.',
+        'Storage period: A group is deleted when it has received no new report for 3 years. As long as new reports arrive, it stays stored, as it is still needed to recognize that campaign.',
+      ],
+    },
+    updated: 'Last updated: November 2026.',
+  },
+  help: {
+    title: 'How SMT Watcher works',
+    intro: 'SMT Watcher checks a suspicious email in your browser, explains the signs it finds and prepares a report if you want one. Here is how to use it and what to keep in mind.',
+    sections: [
+      {
+        title: 'Checking an email',
+        steps: [
+          'Save the email as a .msg or .eml file in your mail program. "How do I get the email or its headers?" on the start page shows how for Outlook, Gmail, GMX and WEB.DE.',
+          'Drop the file onto the start page, or click there to choose it.',
+          'Read the assessment. The most important findings come first. All findings and the technical details follow below.',
+          'If you want to report the email, choose "Report this email".',
+        ],
+        points: [
+          'Without a file, you can paste the headers or the full source of the email instead. Headers alone leave the text, links and attachments unchecked.',
+          'Several emails: choose or drop up to 200 files at once. You get a list with the most signs first, can open each email and save the list as a CSV file.',
+        ],
+      },
+      {
+        title: 'Reading the assessment',
+        points: [
+          'Many signs of spam or fraud: several technical signs point to spam or fraud. This is an indication, not a proof.',
+          'Some signs: legitimate emails can show these too. What matters is whether you expected this email.',
+          'No signs found: this is not an all-clear. Many spam and fraud emails show no technical signs.',
+          'The fraud warning means: do not click links, open attachments or enter any details. In general, do not use links in emails at all. Open the site you know in your browser yourself and check there whether the message is true.',
+          '"For senders" is meant for companies checking their own emails. It says nothing about whether this email is genuine.',
+        ],
+        paragraphs: ['There is deliberately no percentage, as a number would suggest a precision these checks cannot offer.'],
+      },
+      {
+        title: 'Reporting an email',
+        steps: [
+          'Choose your country and the kind of email, such as advertising or phishing. The page then shows the bodies that fit and explains why.',
+          'Each body has its own section, which says how it takes reports and what to expect afterwards. If it uses a form, open it with "Open the complaint form" and fill in the prepared details with "Copy".',
+          'If a body takes emails, forward the suspicious email from your mail program, or write with the prepared text and attach the original file. In the Thunderbird extension, "Open draft" creates a ready email with the original email attached.',
+          'Read everything and send it yourself, as this page never sends a report by itself. Then mark each report as sent. The text for the provider of the sending server then names where you reported the email.',
+          'Optionally, you can also write to the provider of the sending server. "Find the abuse contact" looks up its address, and the page prepares an English text. Be careful with this: providers often forward complaints to their customer, who may be the spammer. The spammer then sees your sender address and knows that it is read, which can bring more spam. Use an address you can do without, and do not attach the original email. The page removes your address from the text, but check it before sending, as it can appear in ways the page does not detect. The server may also have been hacked and belong to someone uninvolved.',
+        ],
+        paragraphs: ['Checked bodies exist for a growing number of European countries, though not for every case. The country selection shows which ones. For other countries, you can still write to the abuse contact of the sending network.'],
+      },
+      {
+        title: 'Things to keep in mind',
+        points: [
+          'Do not click links or open attachments in a suspicious email, not even to test them. This page checks links without loading them.',
+          'Check the original email, not a forwarded one. Forwarding replaces the headers that show where the email came from.',
+          'The checks rely on what the mail servers recorded. Senders can forge early entries, so those from your own mail provider count most.',
+          'The rules are still being tuned. They can miss spam and flag legitimate emails.',
+          'In doubt, contact the sender in a way you know, such as their website or a known phone number, never through the email itself.',
+        ],
+      },
+    ] satisfies HelpSection[] as HelpSection[],
+    data: {
+      title: 'Your data',
+      intro: 'Your email stays in your browser and is never uploaded. You only pass on data when you actively click one of the following actions:',
+      points: [
+        '"Find the abuse contact": the IP address of the sending server goes to rdap.org and an internet registry.',
+        'Opening a link to another website: as with any visit, that website receives your IP address.',
+      ],
+      senderDbPoints: [
+        '"Check sender in the database": the base domain of the sender goes to us, the operator of this page.',
+        '"Send" under "Help improve the sender database": voluntarily, a few details about the sender and your assessment go to us. You see them before you click, and the email itself is never sent. The page works the same without this contribution.',
+      ],
+      cookies: 'No cookies: this page sets none, because it needs none. There is no advertising, no tracking service and no login, so you see no cookie banner either. Only your chosen language and theme are kept in your browser, and they never leave it.',
+      more: 'All details are in the privacy policy.',
+    },
+  },
+  senderAdvice: {
+    title: 'For senders: how to make emails easier to trust',
+    intro: 'General tips for companies. They say nothing about whether this email is genuine.',
+    tips: [
+      'Send from your own domain and set up SPF, DKIM and DMARC.',
+      'Keep the sender name, sender address and reply address consistent.',
+      'Link only to your own domain, without URL shorteners.',
+      'Never ask for login details through a link.',
+      'Send invoices as PDF, not as archives or programs.',
+      'Let people unsubscribe from newsletters with one click.',
+    ],
+    links: {
+      spamhaus: 'Spamhaus: reputation checker',
+      spamcop: 'SpamCop: blocking list',
+      barracuda: 'Barracuda: reputation lookup',
+    } satisfies Record<AdviceSource, string>,
+  },
+  technical: 'Technical details',
+  senderChecks: 'Sender checks',
+  senderChecksNote: 'Results recorded in the email by the receiving mail server. They are indications, not proof of who actually sent the email.',
+  otherHeaders: 'Other header entries',
+  otherHeadersNote: 'Shown unchanged and not used for the findings. They probably come from a mail provider, but senders could also write them.',
+  emailDetails: 'Email details',
+  route: (count: number) => `Delivery route (${count} ${count === 1 ? 'hop' : 'hops'})`,
+  routeNote: 'From first to last hop. Senders can forge early entries. The last ones, added by your own mail provider, are the most reliable.',
+  fields: { subject: 'Subject', from: 'Sender (From)', to: 'Recipient (To)', date: 'Date' },
+  notPresent: 'not present',
+  unknownServer: 'unknown server',
+  unknown: 'unknown',
+  hopFrom: 'from',
+  noTimestamp: 'no timestamp',
+  notRecorded: 'not recorded in this email',
+  auth: { noResult: 'no result', pass: 'passed', fail: 'failed', softfail: 'soft fail', none: 'none' },
+  authSource: {
+    'authentication-results': 'from Authentication-Results',
+    'received-spf': 'from Received-SPF',
+    'spam-filter': 'from the spam filter',
+  } satisfies Record<AuthSource, string>,
+  reportButton: 'Report this email',
+  anotherButton: 'Check another email',
+  backButton: 'Back to assessment',
+  reportTitle: 'Report this email',
+  reportCountry: 'Country',
+  reportIntro: (country: string, language: string) => `For ${country}. Nothing is sent from this page: you review and send everything yourself. Reports to bodies there are in ${language}, reports to providers in English.`,
+  reportIntroEnglish: (country: string) => `For ${country}. Nothing is sent from this page: you review and send everything yourself. All reports are in English.`,
+  reportLanguages: { de: 'German', en: 'English', fr: 'French', it: 'Italian', nl: 'Dutch', pl: 'Polish', da: 'Danish', cs: 'Czech', sk: 'Slovak', hu: 'Hungarian', sl: 'Slovenian', sv: 'Swedish', fi: 'Finnish', es: 'Spanish', pt: 'Portuguese', nb: 'Norwegian', bg: 'Bulgarian', ro: 'Romanian', el: 'Greek', et: 'Estonian', lv: 'Latvian', lt: 'Lithuanian', hr: 'Croatian', 'pt-BR': 'Brazilian Portuguese', ja: 'Japanese', ko: 'Korean' } satisfies Record<ReportLanguage, string>,
+  reportIntroOther: 'Nothing is sent from this page: you review and send everything yourself. The abuse contact of the sending network works from anywhere, and that report is in English.',
+  independent: 'SMT Watcher is an independent project. It does not act for any of the bodies named here, and they have not checked or endorsed it.',
+  notCheckedOther: 'No reporting body has been checked for other countries yet. You can still write to the abuse contact of the sending network.',
+  country: { DE: 'Germany', AT: 'Austria', CH: 'Switzerland', FR: 'France', GB: 'United Kingdom', IE: 'Ireland', IT: 'Italy', BE: 'Belgium', NL: 'Netherlands', PL: 'Poland', DK: 'Denmark', CZ: 'Czech Republic', LU: 'Luxembourg', SK: 'Slovakia', HU: 'Hungary', SI: 'Slovenia', SE: 'Sweden', FI: 'Finland', NO: 'Norway', ES: 'Spain', PT: 'Portugal', BG: 'Bulgaria', RO: 'Romania', GR: 'Greece', CY: 'Cyprus', EE: 'Estonia', LV: 'Latvia', LT: 'Lithuania', HR: 'Croatia', MT: 'Malta', US: 'United States', CA: 'Canada', MX: 'Mexico', BR: 'Brazil', AU: 'Australia', NZ: 'New Zealand', IS: 'Iceland', AR: 'Argentina', CO: 'Colombia', CL: 'Chile', UY: 'Uruguay', MD: 'Moldova', SG: 'Singapore', IN: 'India', JP: 'Japan', KR: 'South Korea', HK: 'Hong Kong', ZA: 'South Africa', PH: 'Philippines', PY: 'Paraguay', PA: 'Panama', KE: 'Kenya', GH: 'Ghana', MY: 'Malaysia', NG: 'Nigeria', MU: 'Mauritius', TZ: 'Tanzania', RW: 'Rwanda', MA: 'Morocco', XX: 'Another country' } as Record<string, string>,
+  cases: {
+    advertising: 'Unsolicited advertising',
+    'illegal-content': 'Illegal content or links to it',
+    phishing: 'Phishing or fraud attempt',
+  } satisfies Record<ReportCase, string>,
+  caseQuestion: 'What is this email?',
+  phoneQuestion: 'Does it advertise a phone number?',
+  phoneHint: 'Select only numbers the email advertises. Signatures and other long numbers can appear here too.',
+  phoneEntry: 'Add a number from the email',
+  phoneAdd: 'Add',
+  phoneEntryHint: 'Start with + or 0. Numbers starting with 0 are read as German.',
+  phoneInvalid: 'This is not a valid phone number. Start with + or 0 and use only digits and separators.',
+  phoneWhyMissing: (body: string) => `A report to ${body} requires a phone number advertised in the email. Select or add one, otherwise this report is not possible.`,
+  phoneWhyIncluded: (body: string) => `${body} is included because you chose a phone number, which it can act against.`,
+  onePerReport: (count: number) => `The form takes one phone number per report, so send ${count} reports, one after the other.`,
+  reportStep: (index: number, count: number, phone: string) => `Report ${index} of ${count}: ${phone}`,
+  consent: 'I did not consent to receiving this email.',
+  notChecked: (country: string) => `We know no checked reporting body for this case in ${country}. You can still report the email to the provider of the sending server, see below.`,
+  beforeSend: 'Before you send',
+  useDraft: 'Open the draft below, review it and send it yourself.',
+  phone: 'Phone number',
+  receivedAt: 'Received at',
+  notes: 'Additional notes',
+  openForm: 'Open the complaint form',
+  subject: 'Subject',
+  emailText: 'Email text',
+  writeTo: (address: string) => `Write to ${address}`,
+  sent: 'I have sent this report',
+  checked: (date: string) => `Checked ${date}.`,
+  copy: 'Copy',
+  copied: 'Copied',
+  pressCtrlC: 'Press Ctrl+C',
+  openDraft: 'Open draft',
+  draftAttached: 'Opens a draft for you to review and send yourself. The original email is attached.',
+  draftNotAttached: 'Opens a draft for you to review and send yourself. The original email is not attached.',
+  draftFailed: 'The draft could not be opened. Copy the text instead.',
+  saveEml: 'Save as .eml',
+  saveEmlNote: 'For the upload only, if forwarding does not work. The file is rebuilt from the .msg and is not the original email, so signatures can no longer be verified.',
+  convertFailed: 'This email could not be converted. Forward it from your mail program instead.',
+  saved: 'Saved as email.eml.',
+  skipped: (count: number) => `${count} attachment(s) could not be included.`,
+  tooLarge: 'The file is larger than the upload allows.',
+  abuseTitle: 'Provider of the sending server (optional)',
+  abuseIntro: (ip: string, name: string | null) => `Your mail provider recorded ${ip} as the sending server${name ? `, which called itself ${name}` : ''}. Its network operator can act against abuse.`,
+  abuseHowTo: 'Find the contact address, then write to it with the text below.',
+  abuseConsent: 'With a click, your browser sends the IP address of the sending server to rdap.org and a regional or national internet registry. They also see your own IP address and may be located outside the EU, where a level of data protection comparable to the GDPR may not be guaranteed. Without a click, nothing is sent.',
+  abuseFind: 'Find the abuse contact',
+  abuseSearching: 'Looking up the contact…',
+  abuseFound: (registry: string) => `Listed in the ${registry} record. Registry records can be out of date.`,
+  abuseAddress: 'Abuse contact',
+  abuseNetworkContactFound: (registry: string) => `The record names no abuse address, only this contact of the network at ${registry}. It may not handle abuse reports, and registry records can be out of date.`,
+  abuseNetworkContact: 'Network contact',
+  abuseNoAddress: 'The record names no abuse address. Look for a contact in the full record.',
+  abuseLookupFailed: 'The lookup did not work. Try the full record instead.',
+  abuseLookup: 'Open the full record',
+  abuseReported: 'The text states which bodies you reported to. The sender may read this if the provider forwards it.',
+  abuseNotReported: 'Send your reports above first and mark them as sent. The text then tells the provider where you reported this email.',
+  abuseNotices: [
+    'Only when you start the lookup, this IP address goes to rdap.org and the registry it forwards to. As with any website, they also see your own IP address. Nothing from the email leaves this page.',
+    'Providers often forward complaints to their customer, who may be the spammer. Your address is removed from the text below, so do not attach the original email.',
+    'Check the text before sending: your address can also appear in ways this page does not detect. The IP may belong to a hacked server whose owner did nothing wrong.',
+    'Once you send the email, your report is filed. Providers rarely reply.',
+  ],
+  findings: {
+    'dmarc-failed': { title: 'DMARC failed', detail: () => "The mail server's check does not confirm the visible sender. This strongly suggests a forged sender address." },
+    'spf-failed': { title: 'SPF failed', detail: () => 'The sending server was not authorized for the sending domain.' },
+    'spf-softfail': { title: 'SPF soft fail', detail: () => 'The sending server is not explicitly authorized for the sending domain.' },
+    'dkim-failed': { title: 'Invalid DKIM signature', detail: () => 'The signature does not match the email. Forwarding can also cause this.' },
+    'no-check-results': { title: 'No check results available', detail: () => 'The receiving mail server left no usable SPF, DKIM or DMARC results.' },
+    'not-authenticated': { title: 'Sender not authenticated', detail: () => 'This email has no SPF, DKIM or DMARC proof.' },
+    'sender-missing': { title: 'No valid sender', detail: () => 'The From field is missing or has no readable address.' },
+    'display-name-spoof': { title: 'Display name imitates another address', detail: (p) => `The name shows an address at ${p.shown}, but the email actually comes from ${p.domain}.` },
+    'display-name-domain': { title: 'Display name shows another domain', detail: (p) => `The name shows ${p.shown}, but the email comes from ${p.domain}. Legitimate senders using a mailing service do this too.` },
+    'reply-to-other-domain': { title: 'Replies go to another domain', detail: (p) => `The email claims to come from ${p.domain}, but replies go to ${p.other}. Legitimate senders do this too.` },
+    'db-reported-spam': { title: 'Sender already reported as spam', detail: (p) => `Many people have reported emails from ${p.domain} as spam, and this domain signed the email. This is a hint, not a proof.` },
+    'db-reported-unverified': { title: 'This sender address was reported as spam', detail: (p) => `Many people have reported emails with the address ${p.domain} as spam. This email is not signed by that domain, so the address may be forged and the owner uninvolved.` },
+    'db-reported-legit': { title: 'People consider this sender legitimate', detail: (p) => `Many people consider ${p.domain} legitimate. This says nothing about this one email, which can still be fraud.` },
+    'db-disputed': { title: 'Opinions on this sender differ', detail: (p) => `People report emails from ${p.domain} both as spam and as legitimate.` },
+    'db-seen-spam': { title: 'Sender appeared in known spam', detail: (p) => `${p.domain} appeared in spam emails known to the operator. This comes from one mailbox only, so it is a weak hint.` },
+    'reply-to-signed-sender': { title: 'Replies go to another domain', detail: (p) => `Replies go to ${p.other}, not ${p.domain}. ${p.domain} signed this email, and shops and payment services often work this way, so this does not count towards the level. Check the address before you reply.` },
+    'return-path-other-domain': { title: 'Sending domain differs from sender', detail: (p) => `The visible sender is ${p.domain}, while the sending address is at ${p.other}. Legitimate newsletters do this too.` },
+    'message-id-missing': { title: 'Message-ID missing', detail: () => 'Regular mail software always assigns a Message-ID.' },
+    'link-text-mismatch': { title: 'A link leads somewhere other than it shows', detail: (p) => `A link displays ${p.shown} but points to ${p.host}. Newsletter tracking does this too. Do not click it.` },
+    'link-text-signed-sender': { title: 'A link leads somewhere other than it shows', detail: (p) => `A link displays ${p.shown} but points to ${p.host}. The sender's domain signed this email, and newsletter tracking often works this way, so this does not count towards the level. Check the destination before you click.` },
+    'link-ip-host': { title: 'A link points to a bare IP address', detail: (p) => `A link leads to ${p.host} instead of a domain name. Regular senders rarely do this.` },
+    'link-punycode': { title: 'A link uses a disguised domain name', detail: (p) => `${p.host} contains special characters that can imitate other letters.` },
+    'link-shortener': { title: 'A link hides its destination', detail: (p) => `A link uses the URL shortener ${p.host}, so the real destination is not visible. This is always suspicious, as honest senders can use the full link.` },
+    'link-public-host': { title: 'A link leads to free public hosting', detail: (p) => `A link uses ${p.host}, where anyone can publish a page. Regular companies rarely send customers there.` },
+    'brand-impersonation': { title: 'Sender name uses a brand from another domain', detail: (p) => `The sender name mentions "${p.brand}", but the email comes from ${p.domain}.` },
+    'credential-request': { title: 'Asks about your account or login', detail: () => 'The text mentions account checks or login details and includes a link. Banks and shops do not ask for passwords by email.' },
+    'risky-attachment': { title: 'Risky attachment', detail: (p) => `The attachment "${p.name}" can run code or open a fake login page. Do not open it.` },
+    'hidden-characters': { title: 'Invisible characters inside words', detail: () => 'The text contains invisible characters within words. Scams use them to get past spam filters.' },
+    'styled-letters': { title: 'Disguised letters', detail: () => 'The text uses decorative mathematical letters that only look like normal ones. Scams use them to get past spam filters.' },
+    'unfilled-placeholder': { title: 'Unfilled placeholder', detail: () => 'The sender\'s name or the subject contains a template field such as [first_name] that was never filled in. Bulk senders leave these behind.' },
+    'garbled-sender-name': { title: 'Garbled sender name', detail: () => 'The sender\'s name contains broken special characters. Companies that send properly rarely have this.' },
+    'fake-reply': { title: 'Pretends to be a reply', detail: () => 'The subject looks like a reply or forward, but the email belongs to no conversation.' },
+    'address-in-subject': { title: 'Your address is in the subject', detail: () => 'Mass mailings add the address automatically to look personal.' },
+    'address-greeting': { title: 'You are greeted with your email address', detail: () => 'Mass mailings that do not know your name greet you with your address instead.' },
+    'recipient-org-in-name': { title: 'The sender poses as your own organisation', detail: (p) => `The sender's name contains “${p.name}”, the name of your own email domain, but the email comes from ${p.domain}. Scams pose as your IT or HR department this way.` },
+    'mixed-script-words': { title: 'Words mix letters from different alphabets', detail: () => 'Some words contain Cyrillic or Greek letters that look like Latin ones. Scams use such look-alikes to get past filters or to imitate a brand.' },
+    'risky-tld': { title: 'A domain uses a cheap ending common in spam', detail: (p) => `${p.domain} uses an ending that costs little and is often used for spam. Some genuine shops use it too, so this is only a weak sign.` },
+    'role-name-external': { title: 'The sender calls itself a department', detail: (p) => `The sender's name is a role such as “IT Helpdesk” or “Administrator”, but the email comes from ${p.domain}, not from your own organisation. Scams pose as your IT or HR department this way.` },
+    'provider-spam-verdict': { title: 'The receiving spam filter marked it as spam', detail: () => 'A spam filter on the way to you marked this email as spam, and no sender signed it. Filters also err, but together this is a clear sign.' },
+    'sender-domain-invalid': { title: 'The sender\'s domain cannot exist', detail: (p) => `The sender address ends in “${p.domain}”, which has no ending such as .com and so cannot be a real domain on the internet. The sender was made up.` },
+    'bulk-sender-address': { title: 'Automatically generated sender address', detail: () => 'The sender address looks generated by a mass mailing system, not like a contact you could write to.' },
+    'foreign-script': { title: 'Written in an unexpected script', detail: () => 'Most of the text uses a script such as Japanese or Cyrillic. If you do not normally get such emails, be careful.' },
+    'windfall-promise': { title: 'Promises a large sum of money', detail: () => 'Promised donations, prizes or inheritances from strangers are a common advance-fee scam. Do not reply.' },
+    'liquidation-offer': { title: 'Offers goods from an insolvency', detail: () => 'Fraudsters often pose as insolvency administrators and take payment for goods that do not exist. Check the company independently before paying.' },
+  } satisfies Record<FindingCode, FindingText> as Record<FindingCode, FindingText>,
+};
+
+const de: typeof en = {
+  static: {
+    brand: 'SMT Wächter',
+    slogan: 'Der Lieblingsfeind der Spammer',
+    kicker: 'Simple Mail Transfer Wächter',
+    question: 'Ist diese E-Mail echt?',
+    lead: 'Leg eine verdächtige E-Mail hier ab. Du bekommst eine klare Einschätzung und auf Wunsch eine fertige Meldung.',
+    drop: 'Eine oder mehrere E-Mails hier ablegen',
+    dropHint: 'oder klicken und .msg-, .eml- oder .txt-Dateien wählen',
+    privacy: 'Deine E-Mail bleibt in deinem Browser. Es wird nichts hochgeladen.',
+    privacyWithSenderDb: 'Deine E-Mail bleibt in deinem Browser. Nur wenn du es möchtest, werden wenige Angaben zum Absender gesendet, nie die E-Mail.',
+    imprintLink: 'Impressum',
+    privacyLink: 'Datenschutz',
+    helpLink: 'So funktioniert es',
+    translationLink: 'Übersetzungsfehler melden',
+    pasteTitle: 'Keine Datei? Header einfügen',
+    pasteLabel: 'E-Mail-Header oder der vollständige Quelltext',
+    pasteButton: 'Text prüfen',
+    pasteHint: 'Bei reinen Headern lassen sich Text, Links und Anhänge nicht prüfen.',
+    guideTitle: 'Wie komme ich an die E-Mail oder ihre Header?',
+    guideOutlookFileTitle: 'Outlook für Windows (klassisch), Datei',
+    guideOutlookFile: 'Öffne die E-Mail per Doppelklick und wähle Datei > Speichern unter. Übernimm den vorgeschlagenen Dateityp.',
+    guideNewOutlookFileTitle: 'Neues Outlook, Datei',
+    guideNewOutlookFile: 'Wähle oben in der E-Mail „Weitere Aktionen“ > „Speichern unter“.',
+    guideOutlookWebFileTitle: 'Outlook im Web, Datei',
+    guideOutlookWebFile: 'Wähle oben in der E-Mail „Weitere Aktionen“ > „Herunterladen“. Die E-Mail wird als .eml- oder .msg-Datei gespeichert.',
+    guideOutlookTitle: 'Outlook für Windows (klassisch), Header',
+    guideOutlook: 'Öffne die E-Mail per Doppelklick und wähle Datei > Eigenschaften. Kopiere das Feld „Internetkopfzeilen“.',
+    guideNewOutlookTitle: 'Neues Outlook und Outlook im Web, Header',
+    guideNewOutlook: 'Wähle oben in der E-Mail „Weitere Aktionen“ und dann Anzeigen > Nachrichtendetails anzeigen.',
+    guideGmailTitle: 'Gmail, Header',
+    guideGmail: 'Wähle neben „Antworten“ das Dreipunkt-Menü, dann „Original anzeigen“ und „In die Zwischenablage kopieren“.',
+    guideGmxTitle: 'GMX, Datei',
+    guideWebdeTitle: 'WEB.DE, Datei',
+    guideWebmail: 'Wähle in der geöffneten E-Mail oben rechts die drei Punkte und dann „Speichern (.eml)“. Für die Header wählst du dort „Mehr Informationen“.',
+    guideGmailFileTitle: 'Gmail, Datei',
+    guideGmailFile: 'Öffne die E-Mail und wähle das Dreipunkt-Menü, dann „Nachricht herunterladen“. Gmail speichert sie als .eml-Datei.',
+    guideThunderbirdFileTitle: 'Thunderbird, Datei',
+    guideThunderbirdFile: 'Wähle über der geöffneten E-Mail „Mehr“ > „Speichern unter“ und speichere sie als .eml-Datei.',
+    guideThunderbirdTitle: 'Thunderbird, Header',
+    guideThunderbird: 'Wähle über der geöffneten E-Mail „Mehr“ > „Quelltext anzeigen“ und kopiere den ganzen Text.',
+    guideMobileTitle: 'Smartphone, Header oder Quelltext',
+    guideMobile: 'Mail-Apps auf dem Handy speichern E-Mails selten als Datei. Zeigt deine App oder dein Webmailer die Header oder den Quelltext einer E-Mail, kopiere alles und füge es oben unter „Keine Datei? Header einfügen“ ein. Du kannst den kopierten Text auch als .txt-Datei speichern und diese wählen.',
+    source: 'Quelle',
+  },
+  controls: { ...en.controls, language: 'Sprache' },
+  errors: {
+    'wrong-type': 'Bitte wähle eine .msg-, .eml- oder .txt-Datei.',
+    'no-pasted-headers': 'Keine E-Mail-Header gefunden. Kopiere die vollständigen Header ab der ersten Zeile.',
+    'msg-unreadable': 'Die .msg-Datei konnte nicht gelesen werden.',
+    'msg-no-headers': 'Diese .msg-Datei enthält keine Original-Header.',
+    'eml-no-headers': 'Diese Datei enthält keine E-Mail-Header.',
+  },
+  fileFailed: 'Die Datei konnte nicht ausgewertet werden.',
+  textFailed: 'Der Text konnte nicht ausgewertet werden.',
+  emailFailed: 'Die E-Mail konnte nicht ausgewertet werden.',
+  noFileDropped: 'Dein Mailprogramm hat keine Datei übergeben. Speichere die E-Mail zuerst als Datei oder füge unten ihre Header ein.',
+  selectOne: 'Bitte öffne eine einzelne E-Mail und versuche es noch einmal.',
+  scale: { label: 'Risikostufe', high: 'Riskant', medium: 'Verdächtig', low: 'Unauffällig' },
+  assessment: {
+    'many-signs': { title: 'Viele Anzeichen für Spam oder Betrug', detail: 'Das ist eine Einschätzung anhand technischer Merkmale, kein Beweis.' },
+    'some-signs': { title: 'Einige Anzeichen für Spam oder Betrug', detail: 'Auch seriöse E-Mails können diese Merkmale zeigen. Entscheidend ist, ob du diese E-Mail erwartet hast.' },
+    'no-signs': { title: 'Keine Anzeichen gefunden', detail: 'Das ist keine Entwarnung. Viele Spam- und Betrugsmails zeigen keine technischen Merkmale. Bleib vorsichtig bei Links, Anhängen und Fragen nach Daten.' },
+  },
+  fraudWarning: 'Einige Merkmale deuten auf einen Betrugsversuch hin. Klicke keine Links an, öffne keine Anhänge und gib keine Daten ein. Ruf stattdessen die dir bekannte Seite selbst in deinem Browser auf und prüfe dort, ob die Nachricht stimmt.',
+  headersOnly: 'Es konnten nur die Header gelesen werden, Text, Links und Anhänge sind also ungeprüft. Für Meldungen brauchst du weiterhin die Original-E-Mail.',
+  noHtml: 'Von dieser E-Mail gibt es keine formatierte Fassung, die Links wurden daher nur im reinen Text geprüft.',
+  allFindings: (count) => `Alle ${count} Befunde`,
+  lookup: {
+    button: 'Absender in der Datenbank prüfen',
+    consent: 'Mit dem Klick wird die Stammdomain des Absenders an den Betreiber dieser Seite gesendet und mit der Datenbank verglichen. Sie wird nicht gespeichert. Ohne Klick wird nichts gesendet.',
+    searching: 'Wird geprüft …',
+    none: 'Kein Hinweis zu diesem Absender. Das ist keine Entwarnung.',
+    failed: 'Die Prüfung hat nicht geklappt. Die Einschätzung oben gilt weiter.',
+    notUsable: 'Dieser Absender lässt sich nicht prüfen, weil er einen Freemail-Dienst oder keine lesbare Adresse nutzt.',
+  },
+  blocklistsTitle: 'Sendenden Server auf Sperrlisten prüfen',
+  blocklistsNote: (ip) => `Der sendende Server hat die IP-Adresse ${ip}. Um sie auf einer öffentlichen Sperrliste zu prüfen, kopiere die Adresse und gib sie auf einer dieser Seiten ein. Diese Seite sendet dorthin von sich aus nichts. Ein Eintrag ist ein weiteres Anzeichen, denn Server können geteilt oder gehackt sein, und kein Eintrag ist keine Entwarnung.`,
+  newsletterNote: 'Diese E-Mail trägt die Abmeldeangaben eines Newsletters. Kennst du den Absender und möchtest sie nicht mehr bekommen, reicht vielleicht die Abmeldung. Auch Spam kann das nachahmen. Kennst du den Absender nicht, klicke den Abmeldelink nicht an.',
+  batch: {
+    reading: (done, total) => `E-Mail ${done} von ${total} wird gelesen…`,
+    title: (count) => `${count} E-Mails geprüft`,
+    note: 'E-Mails mit den meisten Anzeichen stehen oben. Keine Anzeichen heißt nicht, dass eine E-Mail sicher ist.',
+    open: 'Ansehen',
+    openLabel: (name) => `${name} ansehen`,
+    noSubject: '(kein Betreff)',
+    skipped: (count, limit) => `${count} weitere Dateien wurden nicht gelesen, da eine Prüfung höchstens ${limit} umfasst.`,
+    backToList: 'Zurück zur Liste',
+    saveCsv: 'Liste als CSV speichern',
+    saveCsvNote: 'Die Datei entsteht in deinem Browser und enthält Absender und Betreff deiner E-Mails. Es wird nichts gesendet.',
+    csvHeader: ['Stufe', 'Absender', 'Betreff', 'Anzeichen', 'Datei'],
+    csvNotRead: 'Nicht gelesen',
+  },
+  contribute: {
+    title: 'Die Absender-Datenbank verbessern',
+    intro: 'Freiwillig. Deine Antwort hilft, Absender einzuordnen, denn oft erhalten viele Menschen dieselbe Kampagne. Sie wird einmal gesendet, nur für diese E-Mail.',
+    question: 'Was ist diese E-Mail deiner Meinung nach?',
+    verdicts: { spam: 'Spam oder Betrug', legit: 'Legitim', unsure: 'Ich bin nicht sicher' },
+    previewTitle: 'Was wird gesendet?',
+    summary: {
+      sender: 'Absender: die Domain {domain} und das Ergebnis der technischen Absender-Prüfungen.',
+      result: 'Ergebnis: {level}, dazu die gefundenen Merkmale als Kurzcodes, ohne Text aus der E-Mail.',
+      links: 'Links: {domains} (nur die Domains).',
+      noLinks: 'Links: keine.',
+      answer: 'Deine Antwort: {answer}.',
+      wrong: 'Außerdem, dass du die Einschätzung für falsch hältst.',
+      notSent: 'Nicht gesendet werden die E-Mail selbst, deine Adresse, der Name des Absenders, der Adressteil vor dem @, der Betreff und der Text.',
+      ip: 'Deine IP-Adresse wird nicht gespeichert, nur ein daraus berechneter Hash, um Meldungen zu begrenzen und doppelte Zählungen zu vermeiden.',
+    },
+    choose: 'Wähle zuerst eine Antwort.',
+    consent: 'Mit dem Klick stimmst du zu, dass diese Angaben an den Betreiber dieser Seite gehen, zu den Zählern dieser Kampagne addiert und zur Beurteilung von Absendern ausgewertet werden. Das ist freiwillig. Du kannst deine Einwilligung per E-Mail für die Zukunft widerrufen, eine gezählte Meldung lässt sich aber nicht einzeln entfernen.',
+    send: 'Senden',
+    sending: 'Wird gesendet …',
+    sent: 'Danke, deine Antwort ist angekommen. Sie wurde zu den Zählern dieser Kampagne addiert und hilft allen, Absender besser einzuordnen.',
+    failed: 'Das hat nicht geklappt. Es wurde nichts gezählt.',
+    notUsable: 'Diese E-Mail lässt sich nicht zählen, weil sie von einem Freemail-Dienst, von deiner eigenen Domain oder ohne lesbare Adresse kommt.',
+    reportWrong: 'Einschätzung verbessern',
+  },
+  legal: {
+    imprintTitle: 'Impressum',
+    imprintBasis: 'Angaben gemäß § 5 Digitale-Dienste-Gesetz (DDG):',
+    contact: {
+      title: 'Kontaktformular',
+      name: 'Name (freiwillig)',
+      email: 'Deine E-Mail-Adresse',
+      message: 'Deine Nachricht',
+      send: 'Nachricht senden',
+      note: 'Deine Angaben gehen per E-Mail an den Betreiber, damit du eine Antwort bekommen kannst. Mehr dazu in der Datenschutzerklärung. Füge hier bitte keine verdächtigen E-Mails ein.',
+      translationNote: (language) => `Du meldest einen Übersetzungsfehler auf ${language}. Zitiere bitte den falschen Text und schlag, wenn du kannst, einen besseren vor. Das Formular sendet die Sprache und die Seite, von der du kommst, mit.`,
+      status: {
+        sent: 'Danke, deine Nachricht wurde gesendet.',
+        invalid: 'Bitte prüfe deine E-Mail-Adresse und deine Nachricht.',
+        busy: 'Gerade wurden zu viele Nachrichten gesendet. Versuche es bitte später noch einmal oder schreibe eine E-Mail.',
+        failed: 'Die Nachricht konnte nicht gesendet werden. Schreibe bitte stattdessen eine E-Mail.',
+      },
+    },
+    responsibleTitle: 'Verantwortlich für den Inhalt',
+    responsible: (name: string) => `${name}, Anschrift wie oben (§ 18 Abs. 2 Medienstaatsvertrag, MStV).`,
+    privacyTitle: 'Datenschutzerklärung',
+    privacyIntro: 'Hier steht, welche personenbezogenen Daten verarbeitet werden, wenn du den SMT Wächter nutzt.',
+    controllerTitle: 'Verantwortlicher',
+    privacySections: [
+      { title: 'Die E-Mails, die du prüfst', paragraphs: ['Die E-Mail wird nur in deinem Browser gelesen und ausgewertet. Sie wird nicht hochgeladen, und der Betreiber erhält weder sie noch ihren Inhalt.'] },
+      { title: 'Aufruf dieser Seite', paragraphs: ['Diese Seite liegt bei ALL-INKL.COM - Neue Medien Münnich, Hauptstraße 68, 02742 Friedersdorf. Beim Aufruf sendet dein Browser deine IP-Adresse an den Server, das ist nötig, um die Seite auszuliefern.', 'Der Zugriff wird in Server-Protokollen festgehalten: die gekürzte IP-Adresse (aus 11.22.33.44 wird 11.22.0.0), Datum und Uhrzeit, die abgerufene Datei, der Statuscode, die übertragene Datenmenge, die zuvor besuchte Seite sowie Browser und Betriebssystem. Die Protokolle dienen dem sicheren und stabilen Betrieb der Seite, und der Hoster erstellt daraus außerdem eine zusammengefasste Zugriffsstatistik, die nur der Betreiber einsehen kann. Sie werden nach 7 Tagen gelöscht.', 'Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Das berechtigte Interesse besteht darin, die Seite sicher, stabil und störungsfrei bereitzustellen sowie Angriffe zu erkennen und abzuwehren. Ein Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO mit dem Hoster besteht.'] },
+      { title: 'Abfrage des Abuse-Kontakts', paragraphs: ['Nur wenn du die Abfrage anklickst, sendet dein Browser die IP-Adresse des Servers, der die E-Mail verschickt hat, an rdap.org und eine regionale Internet-Registry (ARIN, RIPE NCC, APNIC, LACNIC oder AFRINIC). Bei manchen Netzen leitet diese die Anfrage an eine nationale Registry weiter, etwa TWNIC in Taiwan oder NIC.br in Brasilien. Diese Stellen sehen dabei auch deine eigene IP-Adresse und können ihren Sitz außerhalb der EU haben. Dort ist unter Umständen kein mit der DSGVO vergleichbares Datenschutzniveau garantiert. Der Betreiber erhält davon nichts. Rechtsgrundlage ist Art. 6 Abs. 1 lit. a DSGVO: Dein Klick ist deine Einwilligung in diese eine Abfrage. Die Seite nennt direkt vor dem Klick, was gesendet wird. Ohne Klick wird nichts gesendet. Die Einwilligung gilt nur für diese eine Abfrage, danach läuft nichts weiter. Ein Widerruf ändert nichts an einer bereits erfolgten Abfrage.'] },
+      { title: 'Meldungen', paragraphs: ['Diese Seite bereitet Meldungen vor, verschickt sie aber nie. Du entscheidest, was du an eine Meldestelle sendest. Diese verarbeitet es dann in eigener Verantwortung.'] },
+      { title: 'Speicherung in deinem Browser', paragraphs: ['Die Seite setzt keine Cookies, weil sie keine braucht: Es gibt keine Werbung, keine Tracking-Dienste und keine Anmeldung. Deshalb siehst du auch keinen Cookie-Banner. Sie speichert deine gewählte Sprache, das Land und das Design im lokalen Speicher deines Browsers (localStorage), damit sie beim nächsten Besuch erhalten bleiben. Sie bleiben auf deinem Gerät und werden nicht an den Server gesendet. Diese Speicherung ist für eine von dir gewünschte Funktion nötig und braucht nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung. Du kannst das jederzeit in deinem Browser löschen.'] },
+      { title: 'Links zu anderen Webseiten', paragraphs: ['Links zu anderen Webseiten öffnen sich erst, wenn du sie anklickst. Für die Datenverarbeitung dort sind diese Webseiten selbst verantwortlich.'] },
+      { title: 'Kontakt per E-Mail oder Formular', paragraphs: ['Wenn du dem Betreiber schreibst, werden deine Nachricht, deine E-Mail-Adresse und, falls angegeben, dein Name verarbeitet, um dir zu antworten. Das Formular sendet diese Angaben per E-Mail an das Postfach des Betreibers beim Hoster. Meldest du einen Übersetzungsfehler, sendet es außerdem die Sprache der Seite und die Seite, von der du kommst. Die Seite speichert sie nicht in einer Datenbank. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Das berechtigte Interesse besteht darin, deine Anfrage zu beantworten. Die Angaben werden gelöscht, wenn sie dafür nicht mehr nötig sind, sofern keine gesetzlichen Aufbewahrungspflichten bestehen.'] },
+      { title: 'Deine Rechte', paragraphs: ['Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch und kannst eine Einwilligung mit Wirkung für die Zukunft widerrufen. Außerdem kannst du dich bei einer Aufsichtsbehörde beschweren, zum Beispiel beim Bayerischen Landesamt für Datenschutzaufsicht, Promenade 18, 91522 Ansbach.'] },
+    ],
+    emailsWithSenderDb: { title: 'Die E-Mails, die du prüfst', paragraphs: ['Die E-Mail wird nur in deinem Browser gelesen und ausgewertet. Sie wird nicht hochgeladen, und der Betreiber erhält weder die E-Mail noch ihren Text. Die einzige Ausnahme sind die unter „Absender-Datenbank“ genannten Angaben, die aus der E-Mail abgeleitet sind und nur gesendet werden, wenn du das möchtest.'] },
+    senderDbSection: {
+      title: 'Absender-Datenbank',
+      paragraphs: [
+        'Was gesendet wird: Nur wenn du nach der Wahl einer Antwort auf „Senden“ klickst, sendet dein Browser diese Angaben an den Betreiber: die Stammdomain des Absenders, die Ergebnisse der Absender-Prüfungen, ob die Absenderdomain die E-Mail signiert hat, die Befund-Codes, die Stufe der Einschätzung, die Stammdomains der Links, deine Antwort und ob du die Einschätzung als falsch gemeldet hast. Die Seite beschreibt dir diese Angaben vor dem Klick. Wie sie gebildet werden, steht im öffentlichen Quellcode des SMT Wächters auf GitHub. Die E-Mail selbst, deine Adresse, der Name des Absenders, der Adressteil vor dem @, der Betreff und der Text werden nicht gesendet.',
+        'Absender prüfen: Nur wenn du die Prüfung anklickst, sendet dein Browser die Stammdomain des Absenders an den Betreiber, um sie mit der Datenbank zu vergleichen. Der Betreiber kann dabei erkennen, dass jemand eine E-Mail von dieser Domain erhalten hat. Die Domain wird dafür nicht gespeichert. Nur ein Hash deiner IP-Adresse bleibt etwa 2 Stunden erhalten, um die Zahl der Prüfungen zu begrenzen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. a DSGVO: Dein Klick ist deine Einwilligung in diese eine Prüfung. Ein Widerruf ändert nichts an einer bereits erfolgten Prüfung.',
+      'Zweck: Meldungen zur selben Kampagne werden gebündelt, um Absender und die Regeln dieses Tools besser zu beurteilen.',
+        'Was gespeichert wird: Eine Meldung wird nicht als einzelner Datensatz gespeichert, sondern sofort zu den Zählern ihrer Gruppe addiert. Die Domain eines Absenders wird zunächst nur als Hash mit geheimem Schlüssel gespeichert, was eine Pseudonymisierung und keine Anonymisierung ist, und erst ab mindestens 5 unabhängigen Meldungen lesbar. Das schützt Domains von Privatpersonen so weit wie möglich, schließt aber nicht aus, dass sich eine gespeicherte Domain auf eine Person bezieht. Meldungen zu Freemail-Diensten und zu deiner eigenen Domain werden nicht angenommen. Außerdem enthält die Datenbank Startdaten aus Spam- und Phishing-Mails, die der Betreiber selbst erhalten hat, und aus öffentlich zugänglichen Sammlungen solcher Mails, dem Untroubled Spam Archive von Bruce Guenter und dem Phishing-Korpus von José Nazario (CC BY 4.0): je Gruppe nur einen solchen Hash und eine Anzahl. Absender, deren Domain die E-Mail gültig signiert hat, werden dabei nicht übernommen, weil das oft gekaperte Konten seriöser Absender sind. Startdaten zählen nie als Meldung und machen keine Domain lesbar. Rechtsgrundlage dafür ist Art. 6 Abs. 1 lit. f DSGVO. Das berechtigte Interesse besteht darin, Spam- und Betrugskampagnen zu erkennen.',
+        'Deine IP-Adresse: Sie ist für die Verbindung nötig. Um Meldungen zu begrenzen und jede Quelle pro Gruppe nur einmal zu zählen, wird statt der Adresse selbst ein Hash davon gespeichert. Sein Schlüssel ist zufällig und wird nach einem Tag verworfen, der Hash wird spätestens nach 30 Tagen gelöscht. Für die Begrenzung der Meldungen wird er nach etwa 2 Stunden gelöscht. Außerdem gelten die oben beschriebenen Server-Protokolle.',
+        'Rechtsgrundlage und Widerruf: Rechtsgrundlage ist deine Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO, die du mit dem Klick auf „Senden“ erteilst. Sie ist freiwillig, und die Seite funktioniert ohne sie genauso. Du kannst sie jederzeit ohne Angabe von Gründen mit Wirkung für die Zukunft widerrufen, indem du an die oben genannte Adresse schreibst. Die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung bleibt davon unberührt. Da deine Meldung zu Zählern addiert wurde und dem Betreiber keine Angaben vorliegen, die zu dir zurückführen, lässt sie sich danach nicht mehr einzeln finden oder entfernen. Auf Anfrage löscht der Betreiber außerdem einen noch zuordenbaren Hash der Quelle.',
+        'Absender: Wer von einer gespeicherten Domain betroffen ist, kann beim Betreiber jederzeit ihre Entfernung verlangen oder der Verarbeitung widersprechen.',
+        'Speicherdauer: Eine Gruppe wird gelöscht, wenn 3 Jahre lang keine neue Meldung zu ihr eingeht. Solange neue Meldungen eingehen, bleibt sie gespeichert, weil sie zum Erkennen dieser Kampagne weiter nötig ist.',
+      ],
+    },
+    updated: 'Stand: November 2026.',
+  },
+  help: {
+    title: 'So funktioniert der SMT Wächter',
+    intro: 'Der SMT Wächter prüft eine verdächtige E-Mail in deinem Browser, erklärt die Anzeichen, die er findet, und bereitet auf Wunsch eine Meldung vor. Hier steht, wie du ihn bedienst und worauf du achten solltest.',
+    sections: [
+      {
+        title: 'Eine E-Mail prüfen',
+        steps: [
+          'Speichere die E-Mail in deinem Mailprogramm als .msg- oder .eml-Datei. Wie das in Outlook, Gmail, GMX und WEB.DE geht, steht auf der Startseite unter „Wie komme ich an die E-Mail oder ihre Header?“.',
+          'Leg die Datei auf der Startseite ab oder klicke dort, um sie auszuwählen.',
+          'Lies die Einschätzung. Die wichtigsten Befunde stehen oben, alle Befunde und die technischen Details folgen darunter.',
+          'Möchtest du die E-Mail melden, wähle „Diese E-Mail melden“.',
+        ],
+        points: [
+          'Ohne Datei kannst du stattdessen die Header oder den vollständigen Quelltext der E-Mail einfügen. Mit reinen Headern bleiben Text, Links und Anhänge ungeprüft.',
+          'Mehrere E-Mails: Wähle bis zu 200 Dateien auf einmal oder leg sie ab. Du bekommst eine Liste mit den meisten Anzeichen oben, kannst jede E-Mail öffnen und die Liste als CSV-Datei speichern.',
+        ],
+      },
+      {
+        title: 'Die Einschätzung lesen',
+        points: [
+          'Viele Anzeichen für Spam oder Betrug: Mehrere technische Merkmale deuten auf Spam oder Betrug hin. Das ist eine Einschätzung, kein Beweis.',
+          'Einige Anzeichen: Auch seriöse E-Mails können sie zeigen. Entscheidend ist, ob du diese E-Mail erwartet hast.',
+          'Keine Anzeichen gefunden: Das ist keine Entwarnung. Viele Spam- und Betrugsmails zeigen keine technischen Merkmale.',
+          'Die Betrugswarnung heißt: Klicke keine Links an, öffne keine Anhänge und gib keine Daten ein. Allgemein gilt: Nutze Links in E-Mails besser gar nicht. Ruf die dir bekannte Seite selbst in deinem Browser auf und prüfe dort, ob die Nachricht stimmt.',
+          '„Für Absender“ richtet sich an Unternehmen, die ihre eigenen E-Mails prüfen. Es sagt nichts darüber aus, ob diese E-Mail echt ist.',
+        ],
+        paragraphs: ['Eine Prozentzahl gibt es bewusst nicht, denn sie würde eine Genauigkeit vortäuschen, die diese Prüfungen nicht bieten.'],
+      },
+      {
+        title: 'Eine E-Mail melden',
+        steps: [
+          'Wähle dein Land und die Art der E-Mail, etwa Werbung oder Phishing. Die Seite zeigt dir dann die passenden Meldestellen und erklärt, warum sie infrage kommen.',
+          'Jede Stelle hat ihren eigenen Abschnitt. Dort steht, wie sie Meldungen annimmt und was dich danach erwartet. Nimmt sie Meldungen über ein Formular an, öffnest du es über „Beschwerdeformular öffnen“ und überträgst die vorbereiteten Angaben mit „Kopieren“.',
+          'Nimmt eine Stelle E-Mails an, leitest du die verdächtige E-Mail aus deinem Mailprogramm weiter oder schreibst mit dem vorbereiteten Text und hängst die Originaldatei an. In der Thunderbird-Erweiterung öffnet „Entwurf öffnen“ dafür eine fertige E-Mail mit der Original-E-Mail im Anhang.',
+          'Lies alles durch und sende es selbst ab, denn diese Seite verschickt nie selbst eine Meldung. Markiere danach jede Meldung als gesendet. Der Text an den Provider des sendenden Servers nennt dann, wo du die E-Mail gemeldet hast.',
+          'Wenn du möchtest, kannst du auch dem Provider des sendenden Servers schreiben. „Abuse-Kontakt finden“ sucht seine Adresse, und die Seite bereitet einen englischen Text vor. Sei dabei vorsichtig: Provider leiten Beschwerden oft an ihren Kunden weiter, und das kann der Spammer selbst sein. Er sieht dann deine Absenderadresse und weiß, dass sie gelesen wird, was dir mehr Spam bringen kann. Nutze am besten eine Adresse, auf die du verzichten kannst, und hänge nicht die Original-E-Mail an. Die Seite entfernt deine Adresse aus dem Text, prüfe ihn trotzdem vor dem Senden, denn sie kann auf Arten vorkommen, die die Seite nicht erkennt. Der Server kann außerdem gehackt sein und einem Unbeteiligten gehören.',
+        ],
+        paragraphs: ['Geprüfte Stellen gibt es für immer mehr europäische Länder, aber nicht für jeden Fall. Welche das sind, zeigt die Länderauswahl. Für andere Länder kannst du weiterhin dem Abuse-Kontakt des sendenden Netzes schreiben.'],
+      },
+      {
+        title: 'Worauf du achten solltest',
+        points: [
+          'Klicke in einer verdächtigen E-Mail keine Links an und öffne keine Anhänge, auch nicht zum Testen. Diese Seite prüft Links, ohne sie zu laden.',
+          'Prüfe die Original-E-Mail, keine weitergeleitete. Beim Weiterleiten werden die Header ersetzt, die zeigen, woher die E-Mail kam.',
+          'Die Prüfungen stützen sich auf das, was die Mailserver festgehalten haben. Frühe Einträge können Absender fälschen, daher zählen die deines eigenen Mailanbieters am meisten.',
+          'Die Regeln werden noch verfeinert. Sie können Spam übersehen und seriöse E-Mails beanstanden.',
+          'Im Zweifel nimm auf einem Weg Kontakt auf, den du kennst, etwa über die Webseite oder eine bekannte Telefonnummer, nie über die E-Mail selbst.',
+        ],
+      },
+    ],
+    data: {
+      title: 'Deine Daten',
+      intro: 'Deine E-Mail bleibt in deinem Browser und wird nirgendwohin hochgeladen. Daten gibst du nur weiter, wenn du bei einer der folgenden Aktionen aktiv klickst:',
+      points: [
+        '„Abuse-Kontakt finden“: Die IP-Adresse des sendenden Servers geht an rdap.org und eine Internet-Registry.',
+        'Einen Link zu einer anderen Webseite öffnen: Wie bei jedem Aufruf erhält diese Webseite deine IP-Adresse.',
+      ],
+      senderDbPoints: [
+        '„Absender in der Datenbank prüfen“: Die Stammdomain des Absenders geht an uns, den Betreiber dieser Seite.',
+        '„Senden“ unter „Die Absender-Datenbank verbessern“: Freiwillig gehen wenige Angaben zum Absender und deine Einschätzung an uns. Du siehst sie vor dem Klick, die E-Mail selbst wird nie gesendet. Die Seite funktioniert ohne diesen Beitrag genauso.',
+      ],
+      cookies: 'Keine Cookies: Diese Seite setzt keine, weil sie keine braucht. Es gibt keine Werbung, keine Tracking-Dienste und keine Anmeldung, deshalb siehst du auch keinen Cookie-Banner. Nur deine gewählte Sprache und das Design bleiben in deinem Browser gespeichert und verlassen ihn nie.',
+      more: 'Alle Einzelheiten stehen in der Datenschutzerklärung.',
+    },
+  },
+  senderAdvice: {
+    title: 'Für Absender: So wirken E-Mails vertrauenswürdiger',
+    intro: 'Allgemeine Tipps für Unternehmen. Sie sagen nichts darüber aus, ob diese E-Mail echt ist.',
+    tips: [
+      'Sende von deiner eigenen Domain und richte SPF, DKIM und DMARC ein.',
+      'Halte Absendername, Absenderadresse und Antwortadresse einheitlich.',
+      'Verlinke nur auf deine eigene Domain und nutze keine Kurzlinks.',
+      'Frage nie Zugangsdaten über einen Link ab.',
+      'Versende Rechnungen als PDF, nicht als Archiv oder Programm.',
+      'Mach Newsletter mit einem Klick abbestellbar.',
+    ],
+    links: {
+      spamhaus: 'Spamhaus: Reputationsprüfung (englisch)',
+      spamcop: 'SpamCop: Sperrliste (englisch)',
+      barracuda: 'Barracuda: Reputationsabfrage (englisch)',
+    },
+  },
+  technical: 'Technische Details',
+  senderChecks: 'Absender-Prüfungen',
+  senderChecksNote: 'Ergebnisse, die der empfangende Mailserver in der E-Mail hinterlegt hat. Sie sind Hinweise, kein Beweis dafür, wer die E-Mail wirklich verschickt hat.',
+  otherHeaders: 'Weitere Header-Einträge',
+  otherHeadersNote: 'Unverändert angezeigt und nicht für die Befunde genutzt. Sie stammen vermutlich von einem Mailanbieter, könnten aber auch vom Absender kommen.',
+  emailDetails: 'Angaben zur E-Mail',
+  route: (count) => `Zustellweg (${count} ${count === 1 ? 'Station' : 'Stationen'})`,
+  routeNote: 'Von der ersten zur letzten Station. Frühe Einträge können gefälscht sein. Am verlässlichsten sind die letzten, die dein eigener Mailanbieter hinzugefügt hat.',
+  fields: { subject: 'Betreff', from: 'Absender (From)', to: 'Empfänger (To)', date: 'Datum' },
+  notPresent: 'nicht vorhanden',
+  unknownServer: 'unbekannter Server',
+  unknown: 'unbekannt',
+  hopFrom: 'von',
+  noTimestamp: 'ohne Zeitangabe',
+  notRecorded: 'in dieser E-Mail nicht hinterlegt',
+  auth: { noResult: 'kein Ergebnis', pass: 'bestanden', fail: 'nicht bestanden', softfail: 'eingeschränkt', none: 'keine' },
+  authSource: {
+    'authentication-results': 'aus Authentication-Results',
+    'received-spf': 'aus Received-SPF',
+    'spam-filter': 'aus dem Spamfilter',
+  },
+  reportButton: 'Diese E-Mail melden',
+  anotherButton: 'Andere E-Mail prüfen',
+  backButton: 'Zurück zur Einschätzung',
+  reportTitle: 'Diese E-Mail melden',
+  reportCountry: 'Land',
+  reportIntro: (country, language) => `Für ${country}. Von dieser Seite wird nichts gesendet: Du prüfst und verschickst alles selbst. Meldungen an die Stellen dort sind auf ${language}, Meldungen an Provider auf Englisch.`,
+  reportIntroEnglish: (country) => `Für ${country}. Von dieser Seite wird nichts gesendet: Du prüfst und verschickst alles selbst. Alle Meldungen sind auf Englisch.`,
+  reportLanguages: { de: 'Deutsch', en: 'Englisch', fr: 'Französisch', it: 'Italienisch', nl: 'Niederländisch', pl: 'Polnisch', da: 'Dänisch', cs: 'Tschechisch', sk: 'Slowakisch', hu: 'Ungarisch', sl: 'Slowenisch', sv: 'Schwedisch', fi: 'Finnisch', es: 'Spanisch', pt: 'Portugiesisch', nb: 'Norwegisch', bg: 'Bulgarisch', ro: 'Rumänisch', el: 'Griechisch', et: 'Estnisch', lv: 'Lettisch', lt: 'Litauisch', hr: 'Kroatisch', 'pt-BR': 'brasilianischem Portugiesisch', ja: 'Japanisch', ko: 'Koreanisch' },
+  reportIntroOther: 'Von dieser Seite wird nichts gesendet: Du prüfst und verschickst alles selbst. Der Abuse-Kontakt des sendenden Netzes funktioniert von überall, diese Meldung ist auf Englisch.',
+  independent: 'SMT Wächter ist ein unabhängiges Projekt. Es handelt nicht im Auftrag der hier genannten Stellen, und diese haben es weder geprüft noch empfohlen.',
+  notCheckedOther: 'Für andere Länder ist noch keine Meldestelle geprüft. Du kannst dich aber an den Abuse-Kontakt des sendenden Netzes wenden.',
+  country: { DE: 'Deutschland', AT: 'Österreich', CH: 'Schweiz', FR: 'Frankreich', GB: 'Vereinigtes Königreich', IE: 'Irland', IT: 'Italien', BE: 'Belgien', NL: 'Niederlande', PL: 'Polen', DK: 'Dänemark', CZ: 'Tschechien', LU: 'Luxemburg', SK: 'Slowakei', HU: 'Ungarn', SI: 'Slowenien', SE: 'Schweden', FI: 'Finnland', NO: 'Norwegen', ES: 'Spanien', PT: 'Portugal', BG: 'Bulgarien', RO: 'Rumänien', GR: 'Griechenland', CY: 'Zypern', EE: 'Estland', LV: 'Lettland', LT: 'Litauen', HR: 'Kroatien', MT: 'Malta', US: 'Vereinigte Staaten', CA: 'Kanada', MX: 'Mexiko', BR: 'Brasilien', AU: 'Australien', NZ: 'Neuseeland', IS: 'Island', AR: 'Argentinien', CO: 'Kolumbien', CL: 'Chile', UY: 'Uruguay', MD: 'Moldau', SG: 'Singapur', IN: 'Indien', JP: 'Japan', KR: 'Südkorea', HK: 'Hongkong', ZA: 'Südafrika', PH: 'Philippinen', PY: 'Paraguay', PA: 'Panama', KE: 'Kenia', GH: 'Ghana', MY: 'Malaysia', NG: 'Nigeria', MU: 'Mauritius', TZ: 'Tansania', RW: 'Ruanda', MA: 'Marokko', XX: 'Anderes Land' },
+  cases: {
+    advertising: 'Unerwünschte Werbung',
+    'illegal-content': 'Rechtswidrige Inhalte oder Links dorthin',
+    phishing: 'Phishing oder Betrugsversuch',
+  },
+  caseQuestion: 'Worum handelt es sich?',
+  phoneQuestion: 'Wirbt sie mit einer Rufnummer?',
+  phoneHint: 'Wähle nur Nummern, für die die E-Mail wirbt. Auch Signaturen und andere lange Zahlen können hier auftauchen.',
+  phoneEntry: 'Nummer aus der E-Mail ergänzen',
+  phoneAdd: 'Hinzufügen',
+  phoneEntryHint: 'Beginne mit + oder 0. Nummern mit 0 am Anfang gelten als deutsch.',
+  phoneInvalid: 'Das ist keine gültige Rufnummer. Beginne mit + oder 0 und nutze nur Ziffern und Trennzeichen.',
+  phoneWhyMissing: (body: string) => `${body}: Für diese Meldung ist eine in der E-Mail beworbene Rufnummer Pflicht. Wähle oder ergänze eine, sonst ist die Meldung nicht möglich.`,
+  phoneWhyIncluded: (body: string) => `${body} ist dabei, weil du eine Rufnummer gewählt hast, gegen die sie vorgehen kann.`,
+  onePerReport: (count: number) => `Das Formular nimmt pro Meldung eine Rufnummer an. Sende also ${count} Meldungen nacheinander.`,
+  reportStep: (index: number, count: number, phone: string) => `Meldung ${index} von ${count}: ${phone}`,
+  consent: 'Ich habe dem Erhalt dieser E-Mail nicht zugestimmt.',
+  notChecked: (country) => `Für diesen Fall kennen wir in ${country} keine geprüfte Meldestelle. Du kannst die E-Mail aber dem Provider des sendenden Servers melden, siehe unten.`,
+  beforeSend: 'Bevor du sendest',
+  useDraft: 'Öffne unten den Entwurf, prüfe ihn und sende ihn selbst ab.',
+  phone: 'Rufnummer',
+  receivedAt: 'Erhalten am',
+  notes: 'Zusätzliche Angaben',
+  openForm: 'Beschwerdeformular öffnen',
+  subject: 'Betreff',
+  emailText: 'E-Mail-Text',
+  writeTo: (address) => `An ${address} schreiben`,
+  sent: 'Ich habe diese Meldung gesendet',
+  checked: (date) => `Geprüft am ${date}.`,
+  copy: 'Kopieren',
+  copied: 'Kopiert',
+  pressCtrlC: 'Strg+C drücken',
+  openDraft: 'Entwurf öffnen',
+  draftAttached: 'Öffnet einen Entwurf, den du prüfst und selbst sendest. Die Original-E-Mail ist angehängt.',
+  draftNotAttached: 'Öffnet einen Entwurf, den du prüfst und selbst sendest. Die Original-E-Mail ist nicht angehängt.',
+  draftFailed: 'Der Entwurf konnte nicht geöffnet werden. Kopiere stattdessen den Text.',
+  saveEml: 'Als .eml speichern',
+  saveEmlNote: 'Nur für den Upload, falls das Weiterleiten nicht klappt. Die Datei wird aus der .msg neu aufgebaut und ist nicht das Original, Signaturen lassen sich daher nicht mehr prüfen.',
+  convertFailed: 'Diese E-Mail ließ sich nicht umwandeln. Leite sie stattdessen aus deinem Mailprogramm weiter.',
+  saved: 'Als email.eml gespeichert.',
+  skipped: (count) => `${count} Anhang/Anhänge konnten nicht übernommen werden.`,
+  tooLarge: 'Die Datei ist größer, als der Upload erlaubt.',
+  abuseTitle: 'Provider des sendenden Servers (optional)',
+  abuseIntro: (ip, name) => `Dein Mailanbieter hat ${ip} als sendenden Server festgehalten${name ? `, der sich ${name} nannte` : ''}. Der Netzbetreiber kann gegen Missbrauch vorgehen.`,
+  abuseHowTo: 'Finde die Kontaktadresse und schreibe dann mit dem Text unten dorthin.',
+  abuseConsent: 'Mit dem Klick sendet dein Browser die IP-Adresse des sendenden Servers an rdap.org und eine regionale oder nationale Internet-Registry. Diese sehen auch deine eigene IP-Adresse und können ihren Sitz außerhalb der EU haben, wo unter Umständen kein mit der DSGVO vergleichbares Datenschutzniveau garantiert ist. Ohne Klick wird nichts gesendet.',
+  abuseFind: 'Abuse-Kontakt finden',
+  abuseSearching: 'Kontakt wird abgefragt…',
+  abuseFound: (registry) => `Laut Eintrag bei ${registry}. Solche Einträge können veraltet sein.`,
+  abuseAddress: 'Abuse-Kontakt',
+  abuseNetworkContactFound: (registry) => `Der Eintrag bei ${registry} nennt keine Abuse-Adresse, nur diesen Kontakt des Netzes. Er ist vielleicht nicht für Meldungen zuständig, und solche Einträge können veraltet sein.`,
+  abuseNetworkContact: 'Netz-Kontakt',
+  abuseNoAddress: 'Der Eintrag nennt keine Abuse-Adresse. Suche im vollständigen Eintrag nach einem Kontakt.',
+  abuseLookupFailed: 'Die Abfrage hat nicht geklappt. Versuche es mit dem vollständigen Eintrag.',
+  abuseLookup: 'Vollständigen Eintrag öffnen',
+  abuseReported: 'Der Text nennt die Stellen, an die du gemeldet hast. Das kann auch der Absender lesen, falls der Provider die Meldung weiterleitet.',
+  abuseNotReported: 'Sende zuerst deine Meldungen oben und hake sie als gesendet ab. Der Text nennt dem Provider dann, wo du die E-Mail gemeldet hast.',
+  abuseNotices: [
+    'Erst wenn du die Abfrage startest, geht diese IP-Adresse an rdap.org und die zuständige Registry. Wie bei jeder Website sehen sie auch deine eigene IP-Adresse. Nichts aus der E-Mail verlässt diese Seite.',
+    'Provider leiten Beschwerden oft an ihre Kunden weiter, und das kann der Spammer sein. Deine Adresse ist im Text entfernt, hänge also nicht die Original-E-Mail an.',
+    'Prüfe den Text vor dem Senden: Deine Adresse kann auch so vorkommen, dass die Seite sie nicht erkennt. Die IP kann zu einem gehackten Server gehören, dessen Betreiber nichts dafürkann.',
+    'Sobald du die E-Mail sendest, ist deine Meldung eingereicht. Provider antworten selten.',
+  ],
+  findings: {
+    'dmarc-failed': { title: 'DMARC nicht bestanden', detail: () => 'Die Prüfung des Mailservers bestätigt den sichtbaren Absender nicht. Das spricht stark für eine gefälschte Absenderadresse.' },
+    'spf-failed': { title: 'SPF nicht bestanden', detail: () => 'Der sendende Server war für die Versanddomain nicht zugelassen.' },
+    'spf-softfail': { title: 'SPF nur eingeschränkt bestanden', detail: () => 'Der sendende Server ist für die Versanddomain nicht ausdrücklich zugelassen.' },
+    'dkim-failed': { title: 'Ungültige DKIM-Signatur', detail: () => 'Die Signatur passt nicht zur E-Mail. Das kann auch durch Weiterleiten entstehen.' },
+    'no-check-results': { title: 'Keine Prüfergebnisse vorhanden', detail: () => 'Der empfangende Mailserver hat keine verwertbaren Ergebnisse zu SPF, DKIM oder DMARC hinterlegt.' },
+    'not-authenticated': { title: 'Absender nicht authentifiziert', detail: () => 'Für diese E-Mail liegt kein Nachweis über SPF, DKIM oder DMARC vor.' },
+    'sender-missing': { title: 'Kein gültiger Absender', detail: () => 'Das From-Feld fehlt oder enthält keine lesbare Adresse.' },
+    'display-name-spoof': { title: 'Anzeigename täuscht eine andere Adresse vor', detail: (p) => `Der Name zeigt eine Adresse bei ${p.shown}, tatsächlich kommt die E-Mail von ${p.domain}.` },
+    'display-name-domain': { title: 'Anzeigename nennt eine andere Domain', detail: (p) => `Der Name zeigt ${p.shown}, die E-Mail kommt aber von ${p.domain}. Das machen auch seriöse Absender mit Versanddiensten.` },
+    'reply-to-other-domain': { title: 'Antworten gehen an eine andere Domain', detail: (p) => `Die E-Mail kommt angeblich von ${p.domain}, Antworten gehen aber an ${p.other}. Das machen auch seriöse Absender.` },
+    'db-reported-spam': { title: 'Absender bereits als Spam gemeldet', detail: (p) => `Viele Menschen haben E-Mails von ${p.domain} als Spam gemeldet, und diese Domain hat die E-Mail signiert. Das ist ein Hinweis, kein Beweis.` },
+    'db-reported-unverified': { title: 'Diese Absenderadresse wurde als Spam gemeldet', detail: (p) => `Viele Menschen haben E-Mails mit der Adresse ${p.domain} als Spam gemeldet. Diese E-Mail ist von der Domain nicht signiert, die Adresse kann also gefälscht und der Inhaber unbeteiligt sein.` },
+    'db-reported-legit': { title: 'Menschen halten diesen Absender für legitim', detail: (p) => `Viele Menschen halten ${p.domain} für legitim. Das sagt nichts über diese eine E-Mail, sie kann trotzdem Betrug sein.` },
+    'db-disputed': { title: 'Die Meinungen zu diesem Absender gehen auseinander', detail: (p) => `E-Mails von ${p.domain} werden sowohl als Spam als auch als legitim gemeldet.` },
+    'db-seen-spam': { title: 'Absender kam in bekanntem Spam vor', detail: (p) => `${p.domain} kam in Spam-Mails vor, die dem Betreiber bekannt sind. Das stammt nur aus einem Postfach und ist deshalb ein schwacher Hinweis.` },
+    'reply-to-signed-sender': { title: 'Antworten gehen an eine andere Domain', detail: (p) => `Antworten gehen an ${p.other}, nicht an ${p.domain}. ${p.domain} hat diese E-Mail signiert, und Shops und Zahlungsdienste arbeiten oft so, deshalb zählt das nicht für die Stufe. Prüfe die Adresse, bevor du antwortest.` },
+    'return-path-other-domain': { title: 'Versanddomain weicht vom Absender ab', detail: (p) => `Sichtbarer Absender ist ${p.domain}, die Versandadresse liegt bei ${p.other}. Das kommt auch bei seriösen Newslettern vor.` },
+    'message-id-missing': { title: 'Message-ID fehlt', detail: () => 'Normale Mailprogramme vergeben immer eine Message-ID.' },
+    'link-text-mismatch': { title: 'Ein Link führt woanders hin, als er anzeigt', detail: (p) => `Ein Link zeigt ${p.shown}, führt aber zu ${p.host}. Das kommt auch bei Newsletter-Tracking vor. Klicke ihn nicht an.` },
+    'link-text-signed-sender': { title: 'Ein Link führt woanders hin, als er anzeigt', detail: (p) => `Ein Link zeigt ${p.shown}, führt aber zu ${p.host}. Die Absenderdomain hat diese E-Mail signiert, und Newsletter-Tracking arbeitet oft so, deshalb zählt das nicht für die Stufe. Prüfe das Ziel, bevor du klickst.` },
+    'link-ip-host': { title: 'Ein Link führt zu einer reinen IP-Adresse', detail: (p) => `Ein Link führt zu ${p.host} statt zu einem Domainnamen. Das machen normale Absender selten.` },
+    'link-punycode': { title: 'Ein Link nutzt einen verschleierten Domainnamen', detail: (p) => `${p.host} enthält Sonderzeichen, die andere Buchstaben nachahmen können.` },
+    'link-shortener': { title: 'Ein Link verbirgt sein Ziel', detail: (p) => `Ein Link nutzt den Kurzlink-Dienst ${p.host}, das eigentliche Ziel ist also nicht sichtbar. Das ist immer verdächtig, denn ehrliche Absender können den vollen Link nutzen.` },
+    'link-public-host': { title: 'Ein Link führt zu freiem öffentlichem Hosting', detail: (p) => `Ein Link nutzt ${p.host}, wo jeder eine Seite veröffentlichen kann. Normale Firmen schicken Kunden selten dorthin.` },
+    'brand-impersonation': { title: 'Absendername nutzt eine Marke von fremder Domain', detail: (p) => `Der Absendername nennt „${p.brand}“, die E-Mail kommt aber von ${p.domain}.` },
+    'credential-request': { title: 'Fragt nach deinem Konto oder Login', detail: () => 'Der Text spricht von Kontoprüfungen oder Zugangsdaten und enthält einen Link. Banken und Shops fragen nicht per E-Mail nach Passwörtern.' },
+    'risky-attachment': { title: 'Riskanter Anhang', detail: (p) => `Der Anhang „${p.name}“ kann Code ausführen oder eine gefälschte Anmeldeseite öffnen. Öffne ihn nicht.` },
+    'hidden-characters': { title: 'Unsichtbare Zeichen in Wörtern', detail: () => 'Der Text enthält unsichtbare Zeichen innerhalb von Wörtern. Betrüger umgehen damit Spamfilter.' },
+    'styled-letters': { title: 'Getarnte Buchstaben', detail: () => 'Der Text nutzt mathematische Zierbuchstaben, die nur wie normale aussehen. Betrüger umgehen damit Spamfilter.' },
+    'unfilled-placeholder': { title: 'Nicht ausgefüllter Platzhalter', detail: () => 'Der Name des Absenders oder der Betreff enthält ein Vorlagenfeld wie [first_name], das nie ausgefüllt wurde. Massenversender lassen so etwas stehen.' },
+    'garbled-sender-name': { title: 'Verstümmelter Absendername', detail: () => 'Der Name des Absenders enthält kaputte Sonderzeichen. Bei Firmen, die sauber versenden, kommt das selten vor.' },
+    'fake-reply': { title: 'Gibt sich als Antwort aus', detail: () => 'Der Betreff wirkt wie eine Antwort oder Weiterleitung, die E-Mail gehört aber zu keiner Unterhaltung.' },
+    'address-in-subject': { title: 'Deine Adresse steht im Betreff', detail: () => 'Massenmails fügen die Adresse automatisch ein, um persönlich zu wirken.' },
+    'address-greeting': { title: 'Du wirst mit deiner E-Mail-Adresse angesprochen', detail: () => 'Massenmails, die deinen Namen nicht kennen, sprechen dich stattdessen mit deiner Adresse an.' },
+    'recipient-org-in-name': { title: 'Der Absender gibt sich als deine eigene Organisation aus', detail: (p) => `Der Absendername enthält „${p.name}“, den Namen deiner eigenen E-Mail-Domain, die E-Mail kommt aber von ${p.domain}. So geben sich Betrüger als IT- oder Personalabteilung aus.` },
+    'mixed-script-words': { title: 'Wörter mischen Buchstaben verschiedener Alphabete', detail: () => 'Einige Wörter enthalten kyrillische oder griechische Buchstaben, die wie lateinische aussehen. Betrüger nutzen solche Doppelgänger, um Filter zu umgehen oder eine Marke nachzuahmen.' },
+    'risky-tld': { title: 'Eine Domain nutzt eine billige Endung, die oft für Spam dient', detail: (p) => `${p.domain} nutzt eine Endung, die wenig kostet und oft für Spam verwendet wird. Auch manche echte Shops nutzen sie, deshalb ist das nur ein schwaches Zeichen.` },
+    'role-name-external': { title: 'Der Absender nennt sich wie eine Abteilung', detail: (p) => `Der Absendername ist eine Rolle wie „IT Helpdesk“ oder „Administrator“, die E-Mail kommt aber von ${p.domain} und nicht aus deiner eigenen Organisation. So geben sich Betrüger als IT- oder Personalabteilung aus.` },
+    'provider-spam-verdict': { title: 'Der Spamfilter beim Empfang hat sie als Spam markiert', detail: () => 'Ein Spamfilter auf dem Weg zu dir hat diese E-Mail als Spam markiert, und kein Absender hat sie signiert. Filter irren sich auch, zusammen ist das aber ein deutliches Zeichen.' },
+    'sender-domain-invalid': { title: 'Die Absender-Domain kann es nicht geben', detail: (p) => `Die Absenderadresse endet auf „${p.domain}“, das keine Endung wie .de hat und deshalb keine echte Domain im Internet sein kann. Der Absender ist erfunden.` },
+    'bulk-sender-address': { title: 'Automatisch erzeugte Absenderadresse', detail: () => 'Die Absenderadresse wirkt wie von einem Massenversand erzeugt, nicht wie ein Kontakt, dem du schreiben könntest.' },
+    'foreign-script': { title: 'In einer unerwarteten Schrift verfasst', detail: () => 'Der Text ist überwiegend in einer Schrift wie Japanisch oder Kyrillisch. Falls du solche E-Mails sonst nicht bekommst, sei vorsichtig.' },
+    'windfall-promise': { title: 'Verspricht eine große Geldsumme', detail: () => 'Versprochene Spenden, Gewinne oder Erbschaften von Fremden sind eine verbreitete Vorschussbetrugs-Masche. Antworte nicht.' },
+    'liquidation-offer': { title: 'Bietet Ware aus einer Insolvenz an', detail: () => 'Betrüger geben sich oft als Insolvenzverwalter aus und kassieren für Ware, die es nicht gibt. Prüfe die Firma unabhängig, bevor du zahlst.' },
+  },
+};
+
+export type Messages = typeof en;
+
+const MESSAGES: Record<Lang, Messages> = { en, de, fr, it, nl, pl, da, cs, sk, hu, sl, sv, fi, es, pt, nb, bg, ro, el, et, lv, lt, hr };
+const LANG_KEY = 'smt-watcher-lang';
+
+function initialLang(): Lang {
+  try {
+    const stored = localStorage.getItem(LANG_KEY);
+    if (LANGS.includes(stored as Lang)) return stored as Lang;
+  } catch {
+    // Storage can be blocked. The browser language still applies.
+  }
+  const browser = globalThis.navigator?.language?.toLowerCase().split('-')[0];
+  // Browsers name Norwegian as no, nb or nn. The page has Bokmål.
+  const base = browser === 'no' || browser === 'nn' ? 'nb' : browser;
+  return LANGS.find((lang) => lang === base) ?? 'en';
+}
+
+let current: Lang = initialLang();
+
+export function getLang(): Lang {
+  return current;
+}
+
+export function setLang(lang: Lang): void {
+  current = lang;
+  try {
+    localStorage.setItem(LANG_KEY, lang);
+  } catch {
+    // The choice then only lasts until the page closes.
+  }
+}
+
+export function t(): Messages {
+  return MESSAGES[current];
+}
+
+export function findingText(finding: Finding): { title: string; detail: string } {
+  const text = t().findings[finding.code];
+  return { title: text.title, detail: text.detail(finding.params ?? {}) };
+}
+
+export function applyStaticText(): void {
+  document.documentElement.lang = current;
+  document.title = t().static.brand;
+  const texts: Record<string, string> = t().static;
+  if (import.meta.env.VITE_SENDER_DB === '1') texts.privacy = t().static.privacyWithSenderDb;
+  for (const node of document.querySelectorAll<HTMLElement>('[data-i18n]')) {
+    node.textContent = texts[node.dataset.i18n!] ?? node.textContent;
+  }
+  // The guide groups by program: its titles read "program, kind" in every language.
+  for (const node of document.querySelectorAll<HTMLElement>('[data-i18n-program]')) {
+    node.textContent = guideTitlePart(texts[node.dataset.i18nProgram!] ?? '', 'program');
+  }
+  for (const node of document.querySelectorAll<HTMLElement>('[data-i18n-kind]')) {
+    node.textContent = guideTitlePart(texts[node.dataset.i18nKind!] ?? '', 'kind');
+  }
+}
+
+/** Splits a guide title such as "Gmail, headers" into the program and the kind of export. */
+export function guideTitlePart(title: string, part: 'program' | 'kind'): string {
+  const comma = title.lastIndexOf(', ');
+  if (comma < 0) return title;
+  return part === 'program' ? title.slice(0, comma) : title.slice(comma + 2);
+}

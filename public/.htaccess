@@ -1,0 +1,13 @@
+# The content security policy is set in the page. frame-ancestors only works as a header.
+Options -Indexes
+# The host's placeholder index.htm must not win over the page.
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+# The former page with both texts.
+RedirectMatch 301 /legal\.html$ /imprint.html
+
+<IfModule mod_headers.c>
+  Header always set Content-Security-Policy "frame-ancestors 'none'"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "no-referrer"
+</IfModule>

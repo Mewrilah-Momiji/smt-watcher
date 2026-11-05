@@ -1,0 +1,229 @@
+import { addressParser, decodeWords } from 'postal-mime';
+import { EXCEPTION_DOMAINS, SUFFIXES_BY_TLD, WILDCARD_SUFFIXES } from '../data/publicSuffixes';
+import type { AuthSummary } from './auth';
+import { FREEMAIL_DOMAINS } from './sharedLists';
+
+export type FindingCode =
+  | 'dmarc-failed'
+  | 'spf-failed'
+  | 'spf-softfail'
+  | 'dkim-failed'
+  | 'no-check-results'
+  | 'not-authenticated'
+  | 'sender-missing'
+  | 'display-name-spoof'
+  | 'reply-to-other-domain'
+  | 'reply-to-signed-sender'
+  | 'db-reported-spam'
+  | 'db-reported-unverified'
+  | 'db-reported-legit'
+  | 'db-disputed'
+  | 'db-seen-spam'
+  | 'return-path-other-domain'
+  | 'message-id-missing'
+  | 'link-text-mismatch'
+  | 'link-text-signed-sender'
+  | 'link-ip-host'
+  | 'link-punycode'
+  | 'link-shortener'
+  | 'brand-impersonation'
+  | 'credential-request'
+  | 'risky-attachment'
+  | 'display-name-domain'
+  | 'hidden-characters'
+  | 'styled-letters'
+  | 'garbled-sender-name'
+  | 'unfilled-placeholder'
+  | 'fake-reply'
+  | 'address-in-subject'
+  | 'address-greeting'
+  | 'recipient-org-in-name'
+  | 'mixed-script-words'
+  | 'risky-tld'
+  | 'role-name-external'
+  | 'provider-spam-verdict'
+  | 'sender-domain-invalid'
+  | 'bulk-sender-address'
+  | 'link-public-host'
+  | 'foreign-script'
+  | 'windfall-promise'
+  | 'liquidation-offer';
+
+export interface Finding {
+  code: FindingCode;
+  severity: 'warning' | 'note';
+  /** Values for the text shown to the user. */
+  params?: Record<string, string>;
+}
+
+/** The script that readers of a page language write in themselves, so a text in it is not foreign to them. */
+const OWN_SCRIPT: Partial<Record<string, string>> = { bg: 'cyrillic' };
+
+/** Leaves out the foreign script finding for readers who use that script themselves. */
+export function forReader(findings: Finding[], lang: string): Finding[] {
+  const own = OWN_SCRIPT[lang];
+  return own ? findings.filter((finding) => !(finding.code === 'foreign-script' && finding.params?.script === own)) : findings;
+}
+
+export interface FindingInput {
+  from: string | null;
+  replyTo: string | null;
+  returnPath: string | null;
+  messageId: string | null;
+  authentication: AuthSummary;
+  /** The address from List-Post, which a mailing list also puts in Reply-To. */
+  listPost?: string | null;
+}
+
+// The ICANN part of the Public Suffix List. Its private part, such as vercel.app, stays out, so that
+// a free host keeps one base domain for all its pages and the hosting rules can name it.
+const SUFFIXES = new Set(Object.entries(SUFFIXES_BY_TLD).flatMap(([tld, heads]) => heads.split(' ').map((head) => `${head}.${tld}`)));
+const WILDCARDS = new Set(WILDCARD_SUFFIXES);
+const EXCEPTIONS = new Set(EXCEPTION_DOMAINS);
+
+/** How many labels at the end form the public suffix, such as 2 for ac.in. The longest matching rule wins. */
+function suffixLength(labels: string[]): number {
+  for (let i = 0; i < labels.length; i++) {
+    const rest = labels.slice(i).join('.');
+    if (EXCEPTIONS.has(rest)) return labels.length - i - 1;
+    if (SUFFIXES.has(rest)) return labels.length - i;
+    if (i + 1 < labels.length && WILDCARDS.has(labels.slice(i + 1).join('.'))) return labels.length - i;
+  }
+  return 1;
+}
+
+/** The registrable domain, such as example.co.uk for mail.example.co.uk. A bare suffix stays as it is. */
+export function baseDomain(domain: string): string {
+  const labels = domain.toLowerCase().replace(/\.$/, '').split('.');
+  return labels.slice(-Math.min(labels.length, suffixLength(labels) + 1)).join('.');
+}
+
+interface ParsedAddress {
+  name: string;
+  domain: string | null;
+  address: string | null;
+}
+
+export function parseAddress(value: string | null): ParsedAddress | null {
+  if (!value) return null;
+  const first = addressParser(value)[0];
+  if (!first) return null;
+  // A colon in an unquoted name reads as an address group, which hides the real address.
+  const inGroup = 'address' in first ? null : /^(.*)<([^<>\s]+@[^<>\s]+)>\s*$/.exec(value);
+  if (inGroup) return parseAddress(`"${inGroup[1].replace(/["\\]/g, '').trim()}" <${inGroup[2]}>`);
+  const address = 'address' in first ? first.address : undefined;
+  const domain = address?.includes('@') ? address.split('@').at(-1)!.toLowerCase() : null;
+  return { name: decodeWords(first.name ?? ''), domain, address: address ?? null };
+}
+
+/** The domain in From also passed DKIM. Spammers can do this for their own domains too. */
+export function isSignedBySender(fromDomain: string | null | undefined, dkim: AuthSummary['dkim']): boolean {
+  return Boolean(fromDomain) && dkim?.result === 'pass' && Boolean(dkim.domain) && baseDomain(dkim.domain!) === baseDomain(fromDomain!);
+}
+
+export function findIssues(input: FindingInput): Finding[] {
+  const findings: Finding[] = [];
+  const { spf, dkim, dmarc } = input.authentication;
+
+  if (dmarc?.result === 'fail') {
+    findings.push({
+      code: 'dmarc-failed',
+      severity: 'warning',
+    });
+  }
+  if (spf?.result === 'fail') {
+    findings.push({
+      code: 'spf-failed',
+      severity: 'warning',
+    });
+  }
+  if (spf?.result === 'softfail') {
+    findings.push({
+      code: 'spf-softfail',
+      severity: 'note',
+    });
+  }
+  if (dkim?.result === 'fail') {
+    findings.push({
+      code: 'dkim-failed',
+      severity: 'note',
+    });
+  }
+
+  if (!spf && !dkim && !dmarc) {
+    findings.push({
+      code: 'no-check-results',
+      severity: 'note',
+    });
+  } else if ([spf, dkim, dmarc].every((entry) => !entry || entry.result === 'none')) {
+    findings.push({
+      code: 'not-authenticated',
+      severity: 'note',
+    });
+  }
+
+  const from = parseAddress(input.from);
+  if (!from?.domain) {
+    findings.push({
+      code: 'sender-missing',
+      severity: 'warning',
+    });
+  } else {
+    const fromBase = baseDomain(from.domain);
+
+    // A sender domain without an ending, such as mercado-pago475330558, cannot exist on the internet.
+    // Measured on 2026-11-05: 187 of 999 Phishing Pot emails, none of the owner's 1872 legitimate emails.
+    if (!from.domain.includes('.') && !/^\[.*\]$/.test(from.domain)) {
+      findings.push({
+        code: 'sender-domain-invalid',
+        severity: 'warning',
+        params: { domain: from.domain },
+      });
+    }
+
+    const nameDomain = /[\w.+-]+@([\w-]+(?:\.[\w-]+)+)/.exec(from.name)?.[1];
+    if (nameDomain && baseDomain(nameDomain) !== fromBase) {
+      findings.push({
+        code: 'display-name-spoof',
+        severity: 'warning',
+        params: { shown: nameDomain, domain: from.domain },
+      });
+    }
+
+    const replyTo = parseAddress(input.replyTo);
+    // A mailing list sends replies to itself. Measured on 2026-11-05: Reply-To equal to List-Post in all 5149 emails
+    // of 16 Apache lists and in none of 4752 public spam and phishing emails. Free mail stays a sign.
+    const replyToList = Boolean(replyTo?.address && input.listPost && replyTo.address.toLowerCase() === input.listPost.toLowerCase())
+      && !FREEMAIL_DOMAINS.has(baseDomain(replyTo?.domain ?? ''));
+    if (replyTo?.domain && baseDomain(replyTo.domain) !== fromBase && !replyToList) {
+      // Shops and payment services often sign their own emails and let replies go to a partner. A list that sends
+      // replies elsewhere does not get this benefit: spammers sign their own domain and send through a group there.
+      // Measured on 2026-11-05: 1 of 238 private spam emails, none of 1872 private legitimate emails and of 5149
+      // emails from Apache lists, 1 of 4752 public spam and phishing emails.
+      const eased = isSignedBySender(from.domain, dkim) && !FREEMAIL_DOMAINS.has(baseDomain(replyTo.domain)) && !input.listPost;
+      findings.push({
+        code: eased ? 'reply-to-signed-sender' : 'reply-to-other-domain',
+        severity: 'note',
+        params: { domain: from.domain, other: replyTo.domain },
+      });
+    }
+
+    const returnPath = parseAddress(input.returnPath);
+    if (returnPath?.domain && baseDomain(returnPath.domain) !== fromBase) {
+      findings.push({
+        code: 'return-path-other-domain',
+        severity: 'note',
+        params: { domain: from.domain, other: returnPath.domain },
+      });
+    }
+  }
+
+  if (!input.messageId) {
+    findings.push({
+      code: 'message-id-missing',
+      severity: 'note',
+    });
+  }
+
+  return findings.sort((a, b) => Number(a.severity !== 'warning') - Number(b.severity !== 'warning'));
+}
