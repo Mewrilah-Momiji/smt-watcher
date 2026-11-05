@@ -106,7 +106,7 @@ The owner reports the manual checks as passed on 2026-11-02: dragging from Outlo
 - Contact form in the imprint, sent as a plain form to `contact.php`. Only that page may send a form, and the page that reads emails keeps `form-action 'none'`. A real message arrived in a test by the owner, and on 2026-11-03 a contact message and a translation error report arrived again after the address moved into `.env.local`. The provider's filter marked both with `X-Spamd-Bar: ++`, probably because of the test text and the base64 body. If real messages land in spam, switch the body to quoted-printable.
 - Ask eco whether its 2019 Beschwerdeordnung still applies. Sent on 2026-11-03 to `hotline@eco.de`, together with whether forwarding is enough and whether `.msg` attachments are accepted.
 
-- Licensed under AGPL-3.0, with a possible paid business license. Decided by the owner on 2026-11-05: contributions are accepted under the Harmony Agreement 1.0 only, without a separate sign-off (`cla/individual.md`, `cla/entity.md`, outbound option five, German law), accepted through CLA Assistant. Pull requests stay closed until CLA Assistant is set up on the public repository.
+- Licensed under AGPL-3.0, with a possible paid business license. Decided by the owner on 2026-11-05: contributions are accepted under the Harmony Agreement 1.0 only, without a separate sign-off (`cla/individual.md`, `cla/entity.md`, outbound option five, German law), accepted through CLA Assistant. The source code is public since 2026-11-05, and CLA Assistant is linked to the public repository the same day.
 
 ### 3. Check the assessment against other data
 

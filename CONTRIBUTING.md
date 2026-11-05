@@ -2,11 +2,9 @@
 
 Thank you for helping with SMT Watcher. This file says how to contribute and under which terms a contribution is accepted.
 
-> **Not open yet.** Pull requests are accepted once the contributor license agreement below is online and can be signed. Until then, issues are welcome.
-
 ## What to expect
 
-SMT Watcher is maintained by one person in their spare time. Issues are read, but there is no promise that an issue gets an answer, a fix or a feature, or when. Pull requests are not accepted until the note above is gone. Security problems do not belong in an issue, see [SECURITY.md](SECURITY.md).
+SMT Watcher is maintained by one person in their spare time. Issues and pull requests are read, but there is no promise that an issue gets an answer, a fix or a feature, or when, or that a pull request is merged. Security problems do not belong in an issue, see [SECURITY.md](SECURITY.md).
 
 ## Before you start
 
