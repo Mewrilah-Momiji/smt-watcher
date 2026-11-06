@@ -4,6 +4,11 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.33 - 2026-11-06
+
+- Austria: the report view says that the Fernmeldebüro's form must be signed.
+- Switzerland: the report view asks you to attach the original file in SECO's form.
+
 ## 0.5.32 - 2026-11-06
 
 - Austria: the report to the Fernmeldebüro now follows its answer. It asks for its signed form and the email as a separate attachment, and says that senders abroad cannot be prosecuted.
