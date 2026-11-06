@@ -18,6 +18,14 @@ function finding(code: FindingCode): Finding {
 }
 
 describe('extractLinks', () => {
+  it('reads href as a browser does', () => {
+    const hosts = (html: string) => extractLinks(html, null).map((link) => link.host);
+    expect(hosts('<a href=https://a.example/>x</a>')).toEqual(['a.example']);
+    expect(hosts('<a data-href="https://shown.example/" href="https://a.example/">x</a>')).toEqual(['a.example']);
+    expect(hosts('<a title="1 > 0" href="https://a.example/">x</a>')).toEqual(['a.example']);
+    expect(hosts('<a href="javascript:void(0)">x</a>')).toEqual([]);
+  });
+
   it('reads anchors and plain URLs', () => {
     expect(
       extractLinks('<a class="x" href="https://A.example/p?a=1&amp;b=2"><b>Text</b></a><a href="mailto:x@y.example">m</a>', 'See https://b.example/x.'),

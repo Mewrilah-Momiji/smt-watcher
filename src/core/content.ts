@@ -118,14 +118,23 @@ function stripTags(html: string): string {
   return html.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim();
 }
 
+/** The href of an a tag's attributes, quoted or not, as browsers read it: the first one wins. */
+function hrefOf(attributes: string): string | null {
+  for (const match of attributes.matchAll(/([^\s"'>\/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+)))?/g)) {
+    if (match[1].toLowerCase() === 'href') return match[2] ?? match[3] ?? match[4] ?? '';
+  }
+  return null;
+}
+
 export function extractLinks(html: string | null, text: string | null): MailLink[] {
   const links: MailLink[] = [];
   if (html) {
-    for (const match of html.matchAll(/<a\b[^>]*?\bhref\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>([\s\S]*?)<\/a\s*>/gi)) {
-      const href = (match[1] ?? match[2]).trim().replace(/&amp;/gi, '&');
-      if (!/^(https?:)?\/\//i.test(href)) continue;
+    // Quoted values may hold ">", and only an attribute named exactly href counts, not data-href in front of it.
+    for (const match of html.matchAll(/<a\b((?:[^>"']|"[^"]*"|'[^']*')*)>([\s\S]*?)<\/a\s*>/gi)) {
+      const href = hrefOf(match[1])?.trim().replace(/&amp;/gi, '&');
+      if (!href || !/^(https?:)?\/\//i.test(href)) continue;
       const host = hostOf(href);
-      if (host) links.push({ host, visibleText: stripTags(match[3]) });
+      if (host) links.push({ host, visibleText: stripTags(match[2]) });
     }
   }
   if (text) {

@@ -9,6 +9,7 @@ Each uploaded version raises the last number by one, whatever it changes. The Th
 - Sender names written in raw UTF-8, such as "Jürgen Müller" without encoding, are no longer garbled and no longer count as a garbled sender name.
 - A sender name with several addresses is checked for each of them, not only the first.
 - An Outlook file with an empty HTML part now falls back to its RTF body.
+- Links are read as a browser reads them: without quotes, with ">" in another attribute, and never from data-href instead of href.
 
 ## 0.5.30 - 2026-11-06
 
