@@ -4,7 +4,7 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
-## 0.5.31 - not uploaded yet
+## 0.5.31 - 2026-11-06
 
 - Sender names written in raw UTF-8, such as "Jürgen Müller" without encoding, are no longer garbled and no longer count as a garbled sender name.
 - A sender name with several addresses is checked for each of them, not only the first.
