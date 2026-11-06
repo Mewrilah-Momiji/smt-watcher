@@ -1,0 +1,70 @@
+# Labels for pull requests, by the files they change.
+# Used by .github/workflows/triage.yml through actions/labeler.
+
+area:web:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - 'src/style.css'
+              - '*.html'
+              - 'public/404.html'
+              - 'public/favicon.svg'
+              - 'vite.config.ts'
+      # A page file that is not a translation.
+      - changed-files:
+          - all-globs-to-any-file:
+              - 'src/*.ts'
+              - '!src/i18n*.ts'
+
+area:rules:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/core/**'
+          - 'src/data/brands.ts'
+          - 'src/data/publicSuffixes.ts'
+
+area:thunderbird:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'extensions/thunderbird/**'
+          - 'scripts/thunderbird-check.mjs'
+
+area:server:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'public/api/**'
+          - 'public/private/**'
+          - 'public/contact.php'
+          - 'scripts/deploy.mjs'
+          - 'scripts/seed/**'
+
+area:translation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/i18n*.ts'
+
+area:reporting:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/data/reportingBodies.ts'
+          - 'src/core/reporting.ts'
+          - 'docs/reporting-channels.md'
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/**'
+          - '*.md'
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'test/**'
+          - 'e2e/**'
+          - 'playwright.config.ts'
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'package.json'
+          - 'package-lock.json'

@@ -1,0 +1,86 @@
+# First labels for new issues and pull requests.
+# Every new item gets "triage". The maintainer removes it after reviewing the labels.
+# The issue rules only read the text as data. Nothing from an issue is run or interpolated.
+
+name: Triage
+
+on:
+  issues:
+    types: [opened]
+  # pull_request_target runs in the context of the base repository, so it can label
+  # pull requests from forks. It never checks out or runs the pull request's code.
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  label-pull-request:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0
+        with:
+          sync-labels: false
+      - name: Mark as untriaged
+        if: github.event.action == 'opened'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              labels: ['triage'],
+            });
+
+  label-issue:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const title = (issue.title || '').toLowerCase();
+            const text = `${title}\n${(issue.body || '').toLowerCase()}`;
+
+            // Whole words only. \b would not work next to umlauts, so letters are
+            // checked with Unicode classes.
+            const words = (alternatives) =>
+              new RegExp(`(?<![\\p{L}\\p{N}])(?:${alternatives})(?![\\p{L}\\p{N}])`, 'u');
+
+            // English and German keywords. A match only suggests a label;
+            // the maintainer checks it while "triage" is set.
+            const rules = {
+              'false-positive': words('false[ -]positives?|false alarms?|wrongly flagged|legitimate (?:e-?mail|mail|newsletter)s?|fehlalarm\\p{L}*|zu ?unrecht|legitime[rn]? (?:e-?mail|mail)s?'),
+              'false-negative': words('false[ -]negatives?|not (?:detected|flagged|recogni[sz]ed)|missed|no signs|nicht erkannt|keine anzeichen'),
+              'area:thunderbird': words('thunderbird|add-?ons?|xpi'),
+              'area:server': words('sender database|absender-?datenbank|lookup\\.php|report\\.php|server|api'),
+              'area:translation': words('translations?|translated|übersetzung\\p{L}*|übersetzt|i18n'),
+              'area:reporting': words('bundesnetzagentur|reporting bod(?:y|ies)|meldestelle\\p{L}*|beschwerdestelle\\p{L}*'),
+              'bug': words('bugs?|errors?|crash(?:es|ed)?|broken|does ?n[o\']t work|fehler\\p{L}*|absturz|stürzt ab|funktioniert nicht|geht nicht'),
+              'enhancement': words('feature request|features?|suggestions?|would be nice|please add|vorschlag|wunsch|bitte [^.]* hinzufügen'),
+              'security': words('security|vulnerab\\p{L}*|xss|injection|sicherheitslücke\\p{L}*|schwachstelle\\p{L}*'),
+            };
+
+            const labels = new Set(['triage']);
+            for (const [label, pattern] of Object.entries(rules)) {
+              if (pattern.test(text)) labels.add(label);
+            }
+            if (title.trim().endsWith('?') || words('how (?:do|can) i|wie kann ich').test(text)) {
+              labels.add('question');
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels: [...labels],
+            });
