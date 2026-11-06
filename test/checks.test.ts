@@ -182,7 +182,7 @@ describe('findIssues', () => {
 
   it('only eases a differing reply domain if the sender signed and it is no free mail service', () => {
     expect(codes({ replyTo: 'x@b.example' })).toEqual(['reply-to-signed-sender']);
-    expect(codes({ replyTo: 'x@gmail.com' })).toEqual(['reply-to-other-domain']);
+    expect(codes({ replyTo: 'x@gmail.com' })).toEqual(['reply-to-freemail']);
     const otherSigner = { ...pass, dkim: { ...pass.dkim, domain: 'b.example' } } as FindingInput['authentication'];
     expect(codes({ replyTo: 'x@b.example', authentication: otherSigner })).toEqual(['reply-to-other-domain']);
     const failed = { ...pass, dkim: { ...pass.dkim, result: 'fail' } } as FindingInput['authentication'];
@@ -193,12 +193,26 @@ describe('findIssues', () => {
     const failed = { ...pass, dkim: { ...pass.dkim, result: 'fail' } } as FindingInput['authentication'];
     expect(codes({ replyTo: 'dev@list.example', listPost: 'DEV@list.example', authentication: failed })).not.toContain('reply-to-other-domain');
     expect(codes({ replyTo: 'other@list.example', listPost: 'dev@list.example', authentication: failed })).toContain('reply-to-other-domain');
-    expect(codes({ replyTo: 'x@gmail.com', listPost: 'x@gmail.com', authentication: failed })).toContain('reply-to-other-domain');
+    expect(codes({ replyTo: 'x@gmail.com', listPost: 'x@gmail.com', authentication: failed })).toContain('reply-to-freemail');
   });
 
   it('does not ease a Reply-To elsewhere on a list, even if the sender signed', () => {
     expect(codes({ replyTo: 'x@b.example', listPost: 'group@a.example' })).toEqual(['reply-to-other-domain']);
     expect(codes({ replyTo: 'group@a.example', listPost: 'group@a.example' })).toEqual([]);
+  });
+
+  it('marks replies to a free mail provider only for senders outside free mail', () => {
+    expect(codes({ from: 'a@gmail.com', replyTo: 'b@outlook.com' })).toEqual(['reply-to-other-domain']);
+    expect(codes({ from: 'a@a.example', replyTo: 'b@outlook.com' })).toEqual(['reply-to-freemail']);
+  });
+
+  it('notes a To that names only the sender while the email went to someone else', () => {
+    const base = { envelopeRecipients: ['me@c.example'] };
+    expect(codes({ ...base, visibleRecipients: 'info@a.example' })).toEqual(['to-sender-only']);
+    expect(codes({ ...base, visibleRecipients: 'info@a.example, me@c.example' })).toEqual([]);
+    expect(codes({ ...base, visibleRecipients: 'team@c.example' })).toEqual([]);
+    expect(codes({ ...base, visibleRecipients: 'list@a.example', isList: true })).toEqual([]);
+    expect(codes({ visibleRecipients: 'info@a.example' })).toEqual([]);
   });
 
   it('ignores an empty Return-Path', () => {

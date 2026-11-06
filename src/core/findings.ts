@@ -23,6 +23,11 @@ export type FindingCode =
   | 'message-id-missing'
   | 'recipients-hidden'
   | 'subject-missing'
+  | 'crypto-recovery'
+  | 'advertorial'
+  | 'plain-password'
+  | 'reply-to-freemail'
+  | 'to-sender-only'
   | 'link-text-mismatch'
   | 'link-text-signed-sender'
   | 'link-ip-host'
@@ -78,6 +83,11 @@ export interface FindingInput {
   /** The To header, or null if there is none. Undefined leaves the recipient and subject checks out. */
   to?: string | null;
   subject?: string | null;
+  /** Addresses the receiving servers delivered to, from Delivered-To, X-Original-To, Envelope-To and Received. */
+  envelopeRecipients?: string[];
+  /** To and Cc together. */
+  visibleRecipients?: string | null;
+  isList?: boolean;
 }
 
 // The ICANN part of the Public Suffix List. Its private part, such as vercel.app, stays out, so that
@@ -205,11 +215,29 @@ export function findIssues(input: FindingInput): Finding[] {
       // replies elsewhere does not get this benefit: spammers sign their own domain and send through a group there.
       // Measured on 2026-11-05: 1 of 238 private spam emails, none of 1872 private legitimate emails and of 5149
       // emails from Apache lists, 1 of 4752 public spam and phishing emails.
-      const eased = isSignedBySender(from.domain, dkim) && !FREEMAIL_DOMAINS.has(baseDomain(replyTo.domain)) && !input.listPost;
+      const replyToFreemail = FREEMAIL_DOMAINS.has(baseDomain(replyTo.domain));
+      const eased = isSignedBySender(from.domain, dkim) && !replyToFreemail && !input.listPost;
+      // A company that writes from its own domain does not take replies at a free mail provider.
+      // Measured on 2026-11-06: 10 of 239 private spam emails, 1 of 1872 legitimate ones.
+      const toFreemail = replyToFreemail && !FREEMAIL_DOMAINS.has(fromBase);
       findings.push({
-        code: eased ? 'reply-to-signed-sender' : 'reply-to-other-domain',
+        code: eased ? 'reply-to-signed-sender' : toFreemail ? 'reply-to-freemail' : 'reply-to-other-domain',
         severity: 'note',
         params: { domain: from.domain, other: replyTo.domain },
+      });
+    }
+
+    // To names the sender's own domain and not the recipient: the email is forged, or the recipient is in Bcc.
+    // Measured on 2026-11-06: 1 of 239 private spam emails, 1 of 1872 legitimate ones.
+    const envelope = (input.envelopeRecipients ?? []).map((address) => address.toLowerCase());
+    const visible = (input.visibleRecipients ?? '').toLowerCase();
+    const toAddress = parseAddress(input.visibleRecipients ?? null);
+    if (envelope.length > 0 && toAddress?.domain && baseDomain(toAddress.domain) === fromBase && !input.isList
+      && !envelope.some((address) => visible.includes(address) || visible.includes(baseDomain(address.split('@')[1] ?? '')))) {
+      findings.push({
+        code: 'to-sender-only',
+        severity: 'note',
+        params: { domain: from.domain },
       });
     }
 

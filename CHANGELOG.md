@@ -4,6 +4,11 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.30 - not uploaded yet
+
+- An offer of goods from an insolvency now counts at full strength.
+- New signs: offers to recover lost crypto money, ads posing as a special report, a password sent in plain text, replies that go to a free mail address while the sender writes from its own domain, and a To field that names only the sender's domain while the email went to someone else.
+
 ## 0.5.29 - 2026-11-06
 
 - The Thunderbird extension is listed on addons.thunderbird.net, and the start page links to it in the Thunderbird guide.

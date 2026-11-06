@@ -73,6 +73,18 @@ export function parseReceived(value: string): ReceivedHop {
   };
 }
 
+/** Addresses the receiving servers name as the recipient, which the sender cannot choose. */
+function findEnvelopeRecipients(headers: Header[]): string[] {
+  const addresses = new Set<string>();
+  for (const { name, value } of headers) {
+    const lower = name.toLowerCase();
+    const relevant = ['delivered-to', 'x-original-to', 'envelope-to'].includes(lower) ? value
+      : lower === 'received' ? (/\bfor\s+<?([^\s<>;]+@[^\s<>;]+)>?/i.exec(value)?.[1] ?? '') : '';
+    for (const match of relevant.matchAll(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g)) addresses.add(match[0].toLowerCase());
+  }
+  return [...addresses];
+}
+
 export function buildReport(raw: string, content: Partial<MailContent> = {}): HeaderReport {
   const subject = content.subject ?? null;
   const bodyText = content.bodyText ?? null;
@@ -112,6 +124,9 @@ export function buildReport(raw: string, content: Partial<MailContent> = {}): He
         from, replyTo, returnPath, messageId, authentication, listPost: /<mailto:([^>?]+)/i.exec(first('list-post') ?? '')?.[1] ?? null,
         // Only a header block with a delivery route is complete enough to say that To or the subject is missing.
         ...(first('received') !== null ? { to: decoded('to'), subject: subject ?? decoded('subject') } : {}),
+        envelopeRecipients: findEnvelopeRecipients(headers),
+        visibleRecipients: [decoded('to'), decoded('cc')].filter(Boolean).join(', ') || null,
+        isList: headers.some((h) => /^list-(id|post)$/i.test(h.name)),
       }),
       // Providers also mark legitimate newsletters, so the verdict counts only for emails no sender signed.
       // Measured on 2026-11-05: 4 of the owner's 1872 legitimate emails, 52 of 237 spam emails.

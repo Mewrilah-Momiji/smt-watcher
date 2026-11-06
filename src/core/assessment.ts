@@ -34,7 +34,13 @@ const WEIGHTS: Record<FindingCode, number> = {
   'garbled-sender-name': 2,
   'unfilled-placeholder': 3,
   'windfall-promise': 3,
-  'liquidation-offer': 2,
+  // Raised from 2 on 2026-11-06: 14 of 239 private spam emails, none of 1872 legitimate ones, 10 more at many signs.
+  'liquidation-offer': 3,
+  'crypto-recovery': 2,
+  'advertorial': 1,
+  'plain-password': 1,
+  'reply-to-freemail': 2,
+  'to-sender-only': 1,
   'link-public-host': 2,
   'foreign-script': 2,
   'fake-reply': 2,
@@ -66,7 +72,7 @@ const WEIGHTS: Record<FindingCode, number> = {
   'message-id-missing': 0,
 };
 
-const PHISHING_CODES = new Set<FindingCode>(['brand-impersonation', 'display-name-spoof', 'credential-request', 'risky-attachment', 'link-ip-host', 'hidden-characters', 'mixed-script-words', 'styled-letters', 'windfall-promise', 'liquidation-offer']);
+const PHISHING_CODES = new Set<FindingCode>(['brand-impersonation', 'display-name-spoof', 'credential-request', 'risky-attachment', 'link-ip-host', 'hidden-characters', 'mixed-script-words', 'styled-letters', 'windfall-promise', 'liquidation-offer', 'crypto-recovery']);
 
 const MANY_SIGNS_SCORE = 3;
 

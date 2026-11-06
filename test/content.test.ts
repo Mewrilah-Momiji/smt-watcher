@@ -334,6 +334,22 @@ describe('patterns found in real spam', () => {
     expect(codes({ bodyText: 'Waren aus laufenden Insolvenzverfahren' })).toEqual(['liquidation-offer']);
     expect(codes({ bodyText: 'Die Insolvenz ist ein Thema der Zeitung.' })).toEqual([]);
   });
+
+  it('reports offers to recover lost crypto money', () => {
+    expect(codes({ bodyText: 'Wir helfen bei der Rückgewinnung verlorener Krypto-Investitionen.' })).toEqual(['crypto-recovery']);
+    expect(codes({ bodyText: 'We specialise in the recovery of stolen crypto assets.' })).toEqual(['crypto-recovery']);
+    expect(codes({ bodyText: 'Ihr Krypto-Depot ist eröffnet.' })).toEqual([]);
+  });
+
+  it('notes ads posing as a report and passwords in plain text', () => {
+    expect(codes({ subject: 'Sonderbericht: Das neue Ritual' })).toEqual(['advertorial']);
+    expect(codes({ bodyText: 'Ihr Passwort: Xy7!abcd' })).toEqual(['plain-password']);
+    expect(codes({ bodyText: 'Ihr Passwort: bitte nie weitergeben' })).toEqual([]);
+  });
+
+  it('counts an insolvency offer at full strength', () => {
+    expect(assess([finding('liquidation-offer')]).level).toBe('many-signs');
+  });
 });
 
 describe('assess', () => {
