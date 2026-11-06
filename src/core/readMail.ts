@@ -44,10 +44,23 @@ export async function readPastedText(text: string): Promise<{ report: HeaderRepo
   return { report: await readEml(data), data };
 }
 
+/**
+ * Headers are ASCII, but some senders write names in raw UTF-8 (RFC 6532). Read as Latin-1 they turn into
+ * "MÃ¼ller", which the garbled name check would count against the sender. Latin-1 stays the fallback.
+ */
+function headerText(bytes: Uint8Array, latin1: string): string {
+  if (!bytes.some((byte) => byte > 0x7f)) return latin1;
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+  } catch {
+    return latin1;
+  }
+}
+
 async function readEml(data: ArrayBuffer): Promise<HeaderReport> {
-  const text = new TextDecoder('latin1').decode(data);
-  const end = /\r?\n\r?\n/.exec(text)?.index ?? text.length;
-  const raw = text.slice(0, end);
+  const latin1 = new TextDecoder('latin1').decode(data);
+  const end = /\r?\n\r?\n/.exec(latin1)?.index ?? latin1.length;
+  const raw = headerText(new Uint8Array(data, 0, end), latin1.slice(0, end));
   if (!/^[\w-]+:/m.test(raw)) {
     throw new MissingHeadersError('eml-no-headers');
   }

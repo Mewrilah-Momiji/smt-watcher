@@ -101,3 +101,20 @@ describe('readMail', () => {
     await expect(readMail('empty.eml', empty)).rejects.toBeInstanceOf(MissingHeadersError);
   });
 });
+
+describe('raw UTF-8 in headers', () => {
+  const eml = (from: string) =>
+    `Received: from a by b; Fri, 6 Nov 2026 04:02:41 +0100\r\nFrom: ${from}\r\nTo: me@c.example\r\nSubject: Hi\r\nMessage-ID: <1@a.example>\r\n\r\nHi\r\n`;
+
+  it('reads a name in raw UTF-8 without garbling it', async () => {
+    const report = await readMail('x.eml', new TextEncoder().encode(eml('Jürgen Müller <j@a.example>')).buffer as ArrayBuffer);
+    expect(report.from).toBe('Jürgen Müller <j@a.example>');
+    expect(report.findings.map((finding) => finding.code)).not.toContain('garbled-sender-name');
+  });
+
+  it('falls back to Latin-1 for bytes that are no UTF-8', async () => {
+    const bytes = Uint8Array.from(eml('Jürgen <j@a.example>'), (char) => char.charCodeAt(0));
+    const report = await readMail('x.eml', bytes.buffer as ArrayBuffer);
+    expect(report.from).toBe('Jürgen <j@a.example>');
+  });
+});

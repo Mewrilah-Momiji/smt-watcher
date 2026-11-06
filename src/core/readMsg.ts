@@ -18,10 +18,12 @@ export function readMsg(data: ArrayBuffer): HeaderReport {
     const file = reader.getFileData();
     if (file.dataType !== 'msg') throw new Error('not a message object');
     headers = file.headers;
+    // An empty HTML part must not hide the compressed RTF, which then holds the real body.
     const bodyHtml =
-      file.bodyHtml ??
-      (file.html ? new TextDecoder().decode(file.html) : null) ??
-      (file.compressedRtf ? htmlFromCompressedRtf(file.compressedRtf) : null);
+      file.bodyHtml?.trim() ||
+      (file.html ? new TextDecoder().decode(file.html).trim() : '') ||
+      (file.compressedRtf ? htmlFromCompressedRtf(file.compressedRtf) : null) ||
+      null;
     content = {
       subject: file.subject ?? null,
       bodyText: file.body ?? (bodyHtml ? htmlToText(bodyHtml) : null),

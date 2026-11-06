@@ -196,8 +196,11 @@ export function findIssues(input: FindingInput): Finding[] {
       });
     }
 
-    const nameDomain = /[\w.+-]+@([\w-]+(?:\.[\w-]+)+)/.exec(from.name)?.[1];
-    if (nameDomain && baseDomain(nameDomain) !== fromBase) {
+    // Every address in the name counts, so that a matching one in front cannot hide a foreign one behind it.
+    const nameDomain = [...from.name.matchAll(/[\w.+-]+@([\w-]+(?:\.[\w-]+)+)/g)]
+      .map((match) => match[1])
+      .find((domain) => baseDomain(domain) !== fromBase);
+    if (nameDomain) {
       findings.push({
         code: 'display-name-spoof',
         severity: 'warning',

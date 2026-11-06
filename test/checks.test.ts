@@ -215,6 +215,11 @@ describe('findIssues', () => {
     expect(codes({ visibleRecipients: 'info@a.example' })).toEqual([]);
   });
 
+  it('checks every address in the display name', () => {
+    expect(codes({ from: '"support@a.example via help@b.example" <x@a.example>' })).toEqual(['display-name-spoof']);
+    expect(codes({ from: '"support@a.example" <x@a.example>' })).toEqual([]);
+  });
+
   it('ignores an empty Return-Path', () => {
     expect(codes({ returnPath: '<>' })).toEqual([]);
   });
