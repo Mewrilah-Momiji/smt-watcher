@@ -19,11 +19,11 @@ describe('countries', () => {
     expect(suggestBodies(austria, 'illegal-content', false)).toEqual({ bodies: [], unchecked: true });
   });
 
-  it('suggests only checked bodies for Switzerland, and says when there is none', () => {
+  it('suggests checked bodies for every case in Switzerland', () => {
     const switzerland = COUNTRIES.find((country) => country.code === 'CH')!;
     expect(suggestBodies(switzerland, 'phishing', false).bodies.map((body) => body.id)).toEqual(['ch-antiphishing', 'ch-bacs-form']);
     expect(suggestBodies(switzerland, 'illegal-content', false).bodies.map((body) => body.id)).toEqual(['ch-clickandstop']);
-    expect(suggestBodies(switzerland, 'advertising', true)).toEqual({ bodies: [], unchecked: true });
+    expect(suggestBodies(switzerland, 'advertising', true).bodies.map((body) => body.id)).toEqual(['ch-seco']);
   });
 
   it('offers no body for other countries and marks every case as not checked', () => {
