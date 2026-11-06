@@ -3,7 +3,7 @@
   "private": true,
   "license": "AGPL-3.0-only",
   "version": "0.5.31",
-  "thunderbirdVersion": "0.5.28",
+  "thunderbirdVersion": "0.5.31",
   "type": "module",
   "scripts": {
     "dev": "vite",
