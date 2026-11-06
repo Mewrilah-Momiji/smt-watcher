@@ -7,6 +7,8 @@ Each uploaded version raises the last number by one, whatever it changes. The Th
 ## 0.5.29 - not uploaded yet
 
 - The Thunderbird extension is listed on addons.thunderbird.net, and the start page links to it in the Thunderbird guide.
+- New signs for mass mailings: hidden recipients, where To is missing or only says "undisclosed-recipients", and a missing subject.
+- An "ATM card" with a large sum now counts as a windfall promise.
 
 ## 0.5.28 - 2026-11-05
 

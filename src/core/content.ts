@@ -82,7 +82,8 @@ const NAME_DOMAIN = /(?:^|[\s|(<])((?:[a-z0-9-]+\.)+(?:com|de|net|org|info|eu|at
 
 const FAKE_REPLY_PATTERN = /^\s*(re|aw|wg|fw|fwd)\s*:/i;
 const BULK_ADDRESS_PATTERN = /^(.*\d{8,}|null)@/i;
-const WINDFALL_PATTERN = /(beg[üu]nstigter|erbschaft|lotterie|lottery|spende in h[öo]he|inheritance)/i;
+// "ATM-Karte" added on 2026-11-06: 1 of 239 private spam emails, none of 1872 legitimate ones.
+const WINDFALL_PATTERN = /(beg[üu]nstigter|erbschaft|lotterie|lottery|spende in h[öo]he|inheritance|atm[- ]?(?:karte|card))/i;
 // Also "500.000 US-Dollar" and "$". Measured on 2026-11-03: one more spam email and no legitimate one.
 const LARGE_AMOUNT_PATTERN = /\d{1,3}(?:[.,]\d{3}){1,3}(?:,\d{2})?\s*(?:€|euro|usd|(?:us[- ]?)?dollar|\$)|million/i;
 /** Licensed lotteries in Germany print this. Measured on one recipient's emails, no spam does. */

@@ -363,7 +363,7 @@ describe('assess', () => {
 
 describe('buildReport', () => {
   it('merges content findings with warnings first', () => {
-    const report = buildReport('Received: from a by b; Sun, 01 Nov 2026 10:00:02 +0100\nFrom: Amazon <x@mailer.example>\nMessage-ID: <1@mailer.example>', {
+    const report = buildReport('Received: from a by b; Sun, 01 Nov 2026 10:00:02 +0100\nFrom: Amazon <x@mailer.example>\nTo: a@a.example\nSubject: Order\nMessage-ID: <1@mailer.example>', {
       bodyHtml: '<a href="https://evil.example/">www.shop.example</a>',
     });
     expect(report.hasHtml).toBe(true);

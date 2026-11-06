@@ -212,6 +212,30 @@ describe('findIssues', () => {
   it('reports a missing sender and Message-ID', () => {
     expect(codes({ from: null, messageId: null })).toEqual(['sender-missing', 'message-id-missing']);
   });
+
+  it('reports hidden recipients and a missing subject of a mass mailing', () => {
+    expect(codes({ to: null, subject: '' })).toEqual(['recipients-hidden', 'subject-missing']);
+    expect(codes({ to: 'undisclosed-recipients:;', subject: 'Hi' })).toEqual(['recipients-hidden']);
+    expect(codes({ to: '<undisclosed-recipients:>', subject: 'Hi' })).toEqual(['recipients-hidden']);
+    expect(codes({ to: 'Team: a@a.example, b@a.example;', subject: 'Hi' })).toEqual([]);
+    expect(codes({ to: 'b@b.example', subject: '  ' })).toEqual(['subject-missing']);
+  });
+
+  it('leaves recipient and subject alone when the header block was not given', () => {
+    expect(codes({})).toEqual([]);
+  });
+});
+
+describe('recipients and subject in buildReport', () => {
+  const head = 'From: a@a.example\r\nMessage-ID: <1@a.example>\r\n';
+
+  it('checks them only in a header block with a delivery route', () => {
+    const codesOf = (raw: string) => buildReport(raw).findings.map((finding) => finding.code);
+    expect(codesOf(`Received: from x by y; Fri, 6 Nov 2026 04:02:41 +0100\r\n${head}\r\n`)).toEqual(
+      expect.arrayContaining(['recipients-hidden', 'subject-missing']),
+    );
+    expect(codesOf(`${head}\r\n`)).not.toContain('recipients-hidden');
+  });
 });
 
 describe('buildReport', () => {

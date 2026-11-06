@@ -50,6 +50,8 @@ const WEIGHTS: Record<FindingCode, number> = {
   'reply-to-other-domain': 1,
   'link-text-mismatch': 1,
   'sender-missing': 1,
+  'recipients-hidden': 2,
+  'subject-missing': 1,
   'no-check-results': 0,
   'not-authenticated': 0,
   'return-path-other-domain': 0,

@@ -108,7 +108,11 @@ export function buildReport(raw: string, content: Partial<MailContent> = {}): He
     authentication,
     providerSignals: collectProviderSignals(headers),
     findings: [
-      ...findIssues({ from, replyTo, returnPath, messageId, authentication, listPost: /<mailto:([^>?]+)/i.exec(first('list-post') ?? '')?.[1] ?? null }),
+      ...findIssues({
+        from, replyTo, returnPath, messageId, authentication, listPost: /<mailto:([^>?]+)/i.exec(first('list-post') ?? '')?.[1] ?? null,
+        // Only a header block with a delivery route is complete enough to say that To or the subject is missing.
+        ...(first('received') !== null ? { to: decoded('to'), subject: subject ?? decoded('subject') } : {}),
+      }),
       // Providers also mark legitimate newsletters, so the verdict counts only for emails no sender signed.
       // Measured on 2026-11-05: 4 of the owner's 1872 legitimate emails, 52 of 237 spam emails.
       ...(providerSaysSpam(headers) && authentication.dkim?.result !== 'pass' ? [{ code: 'provider-spam-verdict' as const, severity: 'note' as const }] : []),
