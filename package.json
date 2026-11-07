@@ -2,8 +2,8 @@
   "name": "smt-watcher",
   "private": true,
   "license": "AGPL-3.0-only",
-  "version": "0.5.34",
-  "thunderbirdVersion": "0.5.34",
+  "version": "0.5.35",
+  "thunderbirdVersion": "0.5.35",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,7 +14,7 @@
     "test:browser": "npm run build && playwright test",
     "deploy": "npm run build && node scripts/deploy.mjs",
     "check:thunderbird": "npm run build:thunderbird && node scripts/thunderbird-check.mjs",
-    "package:thunderbird": "npm run build:thunderbird && tar --format zip -cf smt-watcher.xpi -C dist-thunderbird background.js icon.svg manifest.json page.html page.js assets",
+    "package:thunderbird": "npm run build:thunderbird && node scripts/thunderbird-package.mjs",
     "test:browser:db": "tsc --noEmit && vite build --mode senderdb && playwright test -g sender",
     "deploy:senderdb": "tsc --noEmit && vite build --mode senderdb && node scripts/deploy.mjs --sender-db"
   },

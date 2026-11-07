@@ -19,3 +19,4 @@ WS_FTP.LOG
 *.xpi
 seed-spam.json
 seed-public.json
+public/thunderbird/

@@ -79,6 +79,8 @@ export default defineConfig(({ mode }) => {
         const file = resolve('dist-thunderbird/manifest.json');
         const manifest = JSON.parse(readFileSync(file, 'utf8'));
         manifest.browser_specific_settings.gecko.id = addonId;
+        // The extension is offered on the page's own server, not in a catalog, and Thunderbird looks for updates there.
+        manifest.browser_specific_settings.gecko.update_url = `${site}thunderbird/updates.json`;
         manifest.host_permissions = [`${site}*`];
         writeFileSync(file, JSON.stringify({ ...manifest, version }, null, 2));
       },

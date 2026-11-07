@@ -2,6 +2,8 @@
 
 Texts and notes for the listing on addons.thunderbird.net (ATN). The review policy is at <https://thunderbird.github.io/atn-review-policy/>. Any version that requests `messagesRead` gets a manual review.
 
+**Not used since 2026-11-07.** The owner decided not to publish in the catalog. The extension is offered as an unsigned download on the page itself, and installed copies update through `updates.json` on the same server. The texts below are kept for reference.
+
 ## Name and summary
 
 - Name: SMT Watcher
