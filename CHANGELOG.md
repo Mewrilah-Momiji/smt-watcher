@@ -4,6 +4,10 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.37 - 2026-11-08
+
+- Switzerland: the report view says that SECO can only take legal action against people and companies in Switzerland.
+
 ## 0.5.36 - 2026-11-07
 
 - The start page points Thunderbird users to the add-on, right under the drop zone, with the download and how to install it.
