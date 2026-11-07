@@ -2,6 +2,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { Readable } from 'node:stream';
 import { Client } from 'basic-ftp';
+import { record } from './thunderbird-lib.mjs';
 
 const CONFIG_FILE = new URL('../.deploy.env', import.meta.url);
 const DATABASE_FILE = new URL('../.database.env', import.meta.url);
@@ -67,6 +68,10 @@ try {
     await client.uploadFrom(Readable.from([php]), 'private/config.php');
   }
   console.log(`Uploaded dist/ to ${config.FTP_DIR}${withSenderDb ? ' with the sender database on' : ''}`);
+  // scripts/thunderbird-release.mjs packaged the extension for this deploy only if it changed. Now that it is online, it counts as released.
+  if (existsSync(new URL('thunderbird/updates.json', DIST))) {
+    console.log(`Recorded Thunderbird ${record()} as released. Commit extensions/thunderbird/released.json with the release.`);
+  }
 } catch (error) {
   // Only the message: the access data must not end up in a log.
   console.error(`Upload failed: ${error.message}`);

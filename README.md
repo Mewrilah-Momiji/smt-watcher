@@ -49,7 +49,7 @@ Before the first build, copy `.env.example` to `.env.local` and enter the operat
 | `npm run deploy:senderdb` | The same with the sender database on, as the live page uses. Also needs `.database.env` |
 | `npm run build:thunderbird` | Build the extension into `dist-thunderbird/`. Load its `manifest.json` as a temporary add-on |
 | `npm run check:thunderbird` | Report whether the extension changed since its last release |
-| `npm run package:thunderbird` | Build the extension and write `public/thunderbird/` (XPI and `updates.json`), which the next deploy puts online |
+| `npm run package:thunderbird` | Build the extension and write `public/thunderbird/` (XPI and `updates.json`) to test it. The deploy packages and uploads the extension by itself when it changed |
 
 ## Structure
 

@@ -12,11 +12,11 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:browser": "npm run build && playwright test",
-    "deploy": "npm run build && node scripts/deploy.mjs",
+    "deploy": "tsc --noEmit && node scripts/thunderbird-release.mjs && vite build && node scripts/deploy.mjs",
     "check:thunderbird": "npm run build:thunderbird && node scripts/thunderbird-check.mjs",
     "package:thunderbird": "npm run build:thunderbird && node scripts/thunderbird-package.mjs",
     "test:browser:db": "tsc --noEmit && vite build --mode senderdb && playwright test -g sender",
-    "deploy:senderdb": "tsc --noEmit && vite build --mode senderdb && node scripts/deploy.mjs --sender-db"
+    "deploy:senderdb": "tsc --noEmit && node scripts/thunderbird-release.mjs && vite build --mode senderdb && node scripts/deploy.mjs --sender-db"
   },
   "dependencies": {
     "@kenjiuno/decompressrtf": "^0.1.4",
