@@ -400,5 +400,8 @@ export const nb: Messages = {
     'foreign-script': { title: 'Skrevet med et uventet skriftsystem', detail: () => 'Det meste av teksten bruker et skriftsystem som japansk eller kyrillisk. Hvis du vanligvis ikke får slike e-poster, vær forsiktig.' },
     'windfall-promise': { title: 'Lover en stor pengesum', detail: () => 'Lovede gaver, gevinster eller arv fra fremmede er en vanlig forskuddssvindel. Ikke svar.' },
     'liquidation-offer': { title: 'Tilbyr varer fra en konkurs', detail: () => 'Svindlere utgir seg ofte for å være bobestyrere og tar betalt for varer som ikke finnes. Sjekk bedriften selv før du betaler.' },
+    'gift-shipping-fee': { title: 'Lover en gave der bare frakten må betales', detail: () => 'E-posten sier at noen har bestilt en gave til deg, og ber om adressen din og fraktkostnadene. Det finnes ingen pakke: målet er gebyret og betalingsopplysningene dine.' },
+    'hidden-filler-text': { title: 'Skjuler tekst langt under meldingen', detail: () => 'E-posten skyver ekstra tekst langt ned, ute av syne. Spammere gjør dette for å få harmløse ord forbi spamfiltre.' },
+    'to-stranger': { title: 'Adressert til noen andre', detail: (p) => `Feltet To nevner en adresse hos ${p.other}, ikke deg. Du fikk bare en kopi i Bcc. Det er greit hvis du ventet den, men spammere sender ofte slik til mange.` },
   },
 };

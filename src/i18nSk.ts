@@ -400,5 +400,8 @@ export const sk: Messages = {
     'foreign-script': { title: 'Napísané neočakávaným písmom', detail: () => 'Väčšina textu používa písmo ako japončinu alebo cyriliku. Ak takéto e-maily bežne nedostávaš, buď opatrný.' },
     'windfall-promise': { title: 'Sľubuje veľkú sumu peňazí', detail: () => 'Sľúbené dary, výhry alebo dedičstvá od cudzích ľudí sú rozšírený podvod so zálohou. Neodpovedaj.' },
     'liquidation-offer': { title: 'Ponúka tovar z konkurzu', detail: () => 'Podvodníci sa často vydávajú za správcov konkurznej podstaty a inkasujú platby za tovar, ktorý neexistuje. Kým zaplatíš, over si firmu nezávisle.' },
+    'gift-shipping-fee': { title: 'Sľubuje darček, pri ktorom sa platí len doprava', detail: () => 'E-mail tvrdí, že ti niekto objednal darček, a žiada tvoju adresu a poštovné. Žiadny balík nie je: ide o poplatok a tvoje platobné údaje.' },
+    'hidden-filler-text': { title: 'Skrýva text hlboko pod správou', detail: () => 'E-mail odsúva ďalší text ďaleko nadol, kde nie je vidieť. Spammeri tak prepašujú neškodné slová cez spamové filtre.' },
+    'to-stranger': { title: 'Adresované niekomu inému', detail: (p) => `Pole To uvádza adresu u ${p.other}, nie teba. Dostal si len kópiu v Bcc. To je v poriadku, ak si ju čakal, spammeri však takto často rozosielajú mnohým.` },
   },
 };

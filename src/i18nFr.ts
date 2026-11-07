@@ -400,5 +400,8 @@ export const fr: Messages = {
     'foreign-script': { title: 'Écrit dans une écriture inattendue', detail: () => 'La majeure partie du texte utilise une écriture comme le japonais ou le cyrillique. Si tu ne reçois pas d’habitude de tels courriels, sois prudent.' },
     'windfall-promise': { title: 'Promet une grosse somme d’argent', detail: () => 'Les dons, gains ou héritages promis par des inconnus sont une arnaque à l’avance de frais courante. Ne réponds pas.' },
     'liquidation-offer': { title: 'Propose des marchandises issues d’une faillite', detail: () => 'Les fraudeurs se font souvent passer pour des administrateurs judiciaires et encaissent le paiement de marchandises qui n’existent pas. Vérifie l’entreprise de façon indépendante avant de payer.' },
+    'gift-shipping-fee': { title: 'Promet un cadeau dont seule la livraison est à payer', detail: () => 'Le courriel prétend que quelqu’un t’a commandé un cadeau et demande ton adresse et les frais de port. Il n’y a pas de colis : le but est les frais et tes données de paiement.' },
+    'hidden-filler-text': { title: 'Cache du texte loin sous le message', detail: () => 'Le courriel repousse du texte supplémentaire tout en bas, hors de vue. Les spammeurs font passer ainsi des mots anodins devant les filtres anti-spam.' },
+    'to-stranger': { title: 'Adressé à quelqu’un d’autre', detail: (p) => `Le champ To nomme une adresse chez ${p.other}, pas toi. Tu n’as reçu qu’une copie en Cci. C’est normal si tu l’attendais, mais les spammeurs envoient souvent ainsi à beaucoup de gens.` },
   },
 };

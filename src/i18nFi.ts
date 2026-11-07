@@ -400,5 +400,8 @@ export const fi: Messages = {
     'foreign-script': { title: 'Kirjoitettu odottamattomalla kirjoitusjärjestelmällä', detail: () => 'Suurin osa tekstistä käyttää kirjoitusjärjestelmää, kuten japania tai kyrilliikkaa. Jos et yleensä saa tällaisia sähköposteja, ole varovainen.' },
     'windfall-promise': { title: 'Lupaa suuren rahasumman', detail: () => 'Tuntemattomien lupaamat lahjoitukset, voitot tai perinnöt ovat yleinen ennakkomaksuhuijaus. Älä vastaa.' },
     'liquidation-offer': { title: 'Tarjoaa tavaraa konkurssipesästä', detail: () => 'Huijarit esiintyvät usein pesänhoitajina ja perivät maksun tavarasta, jota ei ole olemassa. Tarkista yritys itse ennen maksamista.' },
+    'gift-shipping-fee': { title: 'Lupaa lahjan, josta maksetaan vain toimitus', detail: () => 'Viesti väittää, että joku tilasi sinulle lahjan, ja pyytää osoitettasi ja toimituskuluja. Pakettia ei ole: tavoitteena on maksu ja maksutietosi.' },
+    'hidden-filler-text': { title: 'Piilottaa tekstiä kauas viestin alle', detail: () => 'Viesti siirtää lisätekstiä kauas alas näkyvistä. Roskapostittajat tekevät näin saadakseen harmittomia sanoja roskapostisuodattimien ohi.' },
+    'to-stranger': { title: 'Osoitettu jollekulle muulle', detail: (p) => `To-kenttä nimeää osoitteen verkkotunnuksessa ${p.other}, ei sinua. Sait vain kopion Bcc-kentässä. Se on kunnossa, jos odotit sitä, mutta roskapostittajat lähettävät usein näin monille.` },
   },
 };

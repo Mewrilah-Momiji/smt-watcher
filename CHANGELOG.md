@@ -4,6 +4,10 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.34 - 2026-11-07
+
+- New signs: a gift that someone supposedly ordered for you and that only needs the shipping paid, in German and English, text pushed far below the message to fool spam filters, and a To field that names a stranger while you only got the email in Bcc.
+
 ## 0.5.33 - 2026-11-06
 
 - Austria: the report view says that the Fernmeldebüro's form must be signed.

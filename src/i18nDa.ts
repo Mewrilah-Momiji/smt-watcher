@@ -400,5 +400,8 @@ export const da: Messages = {
     'foreign-script': { title: 'Skrevet med en uventet skrift', detail: () => 'Det meste af teksten bruger en skrift som japansk eller kyrillisk. Hvis du normalt ikke får sådanne e-mails, så vær forsigtig.' },
     'windfall-promise': { title: 'Lover et stort pengebeløb', detail: () => 'Lovede gaver, gevinster eller arv fra fremmede er en udbredt forskudssvindel. Svar ikke.' },
     'liquidation-offer': { title: 'Tilbyder varer fra en konkurs', detail: () => 'Svindlere udgiver sig ofte for kurator og tager betaling for varer, der ikke findes. Tjek virksomheden uafhængigt, før du betaler.' },
+    'gift-shipping-fee': { title: 'Lover en gave, hvor kun forsendelsen skal betales', detail: () => 'E-mailen siger, at nogen har bestilt en gave til dig, og beder om din adresse og fragten. Der er ingen pakke: målet er gebyret og dine betalingsoplysninger.' },
+    'hidden-filler-text': { title: 'Gemmer tekst langt under beskeden', detail: () => 'E-mailen skubber ekstra tekst langt ned, ude af syne. Spammere gør det for at få harmløse ord forbi spamfiltre.' },
+    'to-stranger': { title: 'Adresseret til en anden', detail: (p) => `Feltet To nævner en adresse hos ${p.other}, ikke dig. Du fik kun en kopi i Bcc. Det er fint, hvis du ventede den, men spammere sender ofte sådan til mange.` },
   },
 };

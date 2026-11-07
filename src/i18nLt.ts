@@ -400,5 +400,8 @@ export const lt: Messages = {
     'foreign-script': { title: 'Parašyta netikėtu raštu', detail: () => 'Didžioji teksto dalis naudoja raštą, pavyzdžiui, japonų ar kirilicą. Jei tokių laiškų paprastai negauni, būk atsargus.' },
     'windfall-promise': { title: 'Žada didelę pinigų sumą', detail: () => 'Nepažįstamųjų žadamos aukos, laimėjimai ar palikimai yra dažnas išankstinio mokėjimo sukčiavimas. Neatsakyk.' },
     'liquidation-offer': { title: 'Siūlo prekes iš bankroto', detail: () => 'Sukčiai dažnai apsimeta bankroto administratoriais ir ima pinigus už prekes, kurių nėra. Prieš mokėdamas nepriklausomai patikrink įmonę.' },
+    'gift-shipping-fee': { title: 'Žada dovaną, už kurią reikia sumokėti tik siuntimą', detail: () => 'Laiške teigiama, kad kažkas tau užsakė dovaną, ir prašoma tavo adreso bei siuntimo išlaidų. Siuntinio nėra: tikslas yra mokestis ir tavo mokėjimo duomenys.' },
+    'hidden-filler-text': { title: 'Slepia tekstą toli po žinute', detail: () => 'Laiškas nustumia papildomą tekstą toli žemyn, kur jo nesimato. Taip šiukšlių siuntėjai prakiša nekaltus žodžius pro šlamšto filtrus.' },
+    'to-stranger': { title: 'Adresuota kažkam kitam', detail: (p) => `Laukas To nurodo adresą ${p.other}, o ne tave. Gavai tik kopiją Bcc lauke. Tai gerai, jei jos laukei, bet šiukšlių siuntėjai dažnai taip siunčia daugeliui.` },
   },
 };

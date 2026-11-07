@@ -54,7 +54,10 @@ export type FindingCode =
   | 'link-public-host'
   | 'foreign-script'
   | 'windfall-promise'
-  | 'liquidation-offer';
+  | 'liquidation-offer'
+  | 'gift-shipping-fee'
+  | 'hidden-filler-text'
+  | 'to-stranger';
 
 export interface Finding {
   code: FindingCode;
@@ -235,12 +238,23 @@ export function findIssues(input: FindingInput): Finding[] {
     const envelope = (input.envelopeRecipients ?? []).map((address) => address.toLowerCase());
     const visible = (input.visibleRecipients ?? '').toLowerCase();
     const toAddress = parseAddress(input.visibleRecipients ?? null);
-    if (envelope.length > 0 && toAddress?.domain && baseDomain(toAddress.domain) === fromBase && !input.isList
-      && !envelope.some((address) => visible.includes(address) || visible.includes(baseDomain(address.split('@')[1] ?? '')))) {
+    const envelopeVisible = envelope.some((address) => visible.includes(address) || visible.includes(baseDomain(address.split('@')[1] ?? '')));
+    if (envelope.length > 0 && toAddress?.domain && baseDomain(toAddress.domain) === fromBase && !input.isList && !envelopeVisible) {
       findings.push({
         code: 'to-sender-only',
         severity: 'note',
         params: { domain: from.domain },
+      });
+    }
+
+    // To names someone at another domain, and the email reached you only through Bcc. Spammers send one email
+    // to a stranger and many others in Bcc. Measured on 2026-11-07: 5 of 242 private spam emails, 1 of 1872 legitimate ones,
+    // 19 of 4752 public spam and phishing emails and none of 5149 emails from Apache lists.
+    if (envelope.length > 0 && toAddress?.domain && baseDomain(toAddress.domain) !== fromBase && !input.isList && !envelopeVisible) {
+      findings.push({
+        code: 'to-stranger',
+        severity: 'note',
+        params: { other: toAddress.domain },
       });
     }
 

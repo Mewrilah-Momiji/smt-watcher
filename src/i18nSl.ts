@@ -400,5 +400,8 @@ export const sl: Messages = {
     'foreign-script': { title: 'Napisano v nepričakovani pisavi', detail: () => 'Večina besedila uporablja pisavo, kot sta japonščina ali cirilica. Če takšne e-pošte običajno ne prejemaš, bodi previden.' },
     'windfall-promise': { title: 'Obljublja veliko vsoto denarja', detail: () => 'Obljubljene donacije, nagrade ali dediščine od neznancev so razširjena goljufija s predplačilom. Ne odgovarjaj.' },
     'liquidation-offer': { title: 'Ponuja blago iz stečaja', detail: () => 'Goljufi se pogosto izdajajo za stečajne upravitelje in zaračunajo blago, ki ne obstaja. Preden plačaš, podjetje preveri neodvisno.' },
+    'gift-shipping-fee': { title: 'Obljublja darilo, za katero plačaš le dostavo', detail: () => 'E-pošta trdi, da ti je nekdo naročil darilo, in zahteva tvoj naslov in stroške dostave. Paketa ni: cilj sta pristojbina in tvoji plačilni podatki.' },
+    'hidden-filler-text': { title: 'Skriva besedilo daleč pod sporočilom', detail: () => 'E-pošta potisne dodatno besedilo daleč navzdol, kjer se ne vidi. Pošiljatelji neželene pošte tako pretihotapijo nedolžne besede mimo filtrov.' },
+    'to-stranger': { title: 'Naslovljeno na nekoga drugega', detail: (p) => `Polje To navaja naslov pri ${p.other}, ne tebe. Prejel si le kopijo v Bcc. To je v redu, če si jo pričakoval, vendar pošiljatelji neželene pošte pogosto tako pošiljajo mnogim.` },
   },
 };

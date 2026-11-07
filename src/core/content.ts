@@ -90,6 +90,14 @@ const LARGE_AMOUNT_PATTERN = /\d{1,3}(?:[.,]\d{3}){1,3}(?:,\d{2})?\s*(?:€|euro
 const GAMBLING_NOTICE = /gl[üu]cksspiel kann s[üu]chtig/i;
 /** Shipping notices through a shop or service name the carrier like this. */
 const SENT_THROUGH_PATTERN = /\s(?:via|über)\s/i;
+// "Someone has ordered you a gift, pay only the shipping": a fee for a parcel that does not exist.
+// Measured on 2026-11-07: 3 of 242 private spam emails, none of 1872 legitimate ones. The English wording found
+// nothing in 4752 public spam emails or 5149 emails from Apache lists.
+const GIFT_PATTERN = /(hat ihnen|f[üu]r sie)[^.]{0,80}(als geschenk|geschenkt)|als geschenk (bestellt|gekauft)|(?:has|have) (?:sent|ordered|bought) you an? (?:gift|present)|(?:ordered|bought|sent) (?:\w+ )?(?:for|to) you as an? (?:gift|present)/i;
+const SHIPPING_FEE_PATTERN = /versandkosten|versandgeb[üu]hr|(?:shipping|delivery|postage) (?:fees?|costs?|charges?)/i;
+// Text pushed far below the message, where no reader scrolls, to feed spam filters harmless words.
+// Measured on 2026-11-07: 2 of 242 private spam emails, none of 1872 legitimate ones.
+const FILLER_SPACER_PATTERN = /(?:padding|margin)-top\s*:\s*\d{4,}px/i;
 const LIQUIDATION_PATTERN = /insolvenz(?:verfahren|verwertung|verkauf|ware)|verwertungsverfahren/i;
 // Measured on 2026-11-06 on the private test set: 1 of 239 spam emails, none of 1872 legitimate ones.
 const CRYPTO_RECOVERY_PATTERN = /(r[üu]ckgewinnung|wiederherstellung|recover(?:y|ing)?)\b[^.]{0,80}(krypto|crypto|forex|investition|investment)|(krypto|crypto|forex)[^.]{0,80}(r[üu]ckgewinnung|recover)/i;
@@ -356,6 +364,18 @@ ${bodyWithoutLinks}`.match(MIXED_SCRIPT_WORD)?.length ?? 0;
   if (WINDFALL_PATTERN.test(words) && LARGE_AMOUNT_PATTERN.test(words) && !GAMBLING_NOTICE.test(words)) {
     findings.push({
       code: 'windfall-promise',
+      severity: 'warning',
+    });
+  }
+  if (GIFT_PATTERN.test(words) && SHIPPING_FEE_PATTERN.test(words)) {
+    findings.push({
+      code: 'gift-shipping-fee',
+      severity: 'warning',
+    });
+  }
+  if (FILLER_SPACER_PATTERN.test(content.bodyHtml ?? '')) {
+    findings.push({
+      code: 'hidden-filler-text',
       severity: 'warning',
     });
   }

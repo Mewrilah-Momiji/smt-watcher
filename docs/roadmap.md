@@ -4,7 +4,7 @@ Goal: a universal tool that analyzes a suspicious email locally in the browser, 
 
 Name: SMT Watcher (Simple Mail Transfer Watcher), slogan "Spammers' beloved foe". In German: SMT Wächter, "Der Lieblingsfeind der Spammer". The local folder is still called `Applikation`.
 
-Last updated: 2026-11-06. Live: version 0.5.33. In Thunderbird: version 0.5.28 listed, 0.5.31 submitted for review. The Austrian and Swiss reporting bodies of 0.5.32 and 0.5.33 follow in the next Thunderbird release, after the review of 0.5.31.
+Last updated: 2026-11-07. Live: version 0.5.34. In Thunderbird: version 0.5.28 listed, 0.5.31 submitted for review. Thunderbird 0.5.34 is built with the changes of 0.5.32 to 0.5.34 and goes to review once the review of 0.5.31 is done.
 
 Release steps: set `version` in `package.json` and date the changelog heading, run `npm run deploy:senderdb`, compare the live bundles with `dist/` and check that `private/` answers 403, then commit "Release 0.5.x", tag and push. Since 2026-11-05 the Thunderbird extension has its own `thunderbirdVersion`: run `npm run check:thunderbird`, and only if it reports a change raise that version, package it under a new file name (Thunderbird holds the old one), install it through the gear menu of the add-ons manager and run `node scripts/thunderbird-check.mjs --record`, which stores the fingerprint in `extensions/thunderbird/released.json`.
 

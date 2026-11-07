@@ -400,5 +400,8 @@ export const hr: Messages = {
     'foreign-script': { title: 'Napisano neočekivanim pismom', detail: () => 'Većina teksta koristi pismo poput japanskog ili ćirilice. Ako inače ne primaš takve e-poruke, budi oprezan.' },
     'windfall-promise': { title: 'Obećava veliku svotu novca', detail: () => 'Obećane donacije, dobici ili nasljedstva od nepoznatih ljudi raširena su prijevara s predujmom. Ne odgovaraj.' },
     'liquidation-offer': { title: 'Nudi robu iz stečaja', detail: () => 'Prevaranti se često predstavljaju kao stečajni upravitelji i naplaćuju robu koja ne postoji. Prije plaćanja neovisno provjeri tvrtku.' },
+    'gift-shipping-fee': { title: 'Obećava poklon za koji se plaća samo dostava', detail: () => 'E-pošta tvrdi da ti je netko naručio poklon i traži tvoju adresu i troškove dostave. Paketa nema: cilj su naknada i tvoji podaci za plaćanje.' },
+    'hidden-filler-text': { title: 'Skriva tekst daleko ispod poruke', detail: () => 'E-pošta gura dodatni tekst daleko dolje, izvan pogleda. Pošiljatelji neželjene pošte tako provlače bezazlene riječi pored filtara.' },
+    'to-stranger': { title: 'Naslovljeno na nekog drugog', detail: (p) => `Polje To navodi adresu na ${p.other}, ne tebe. Dobio si samo kopiju u Bcc-u. To je u redu ako si je očekivao, ali pošiljatelji neželjene pošte često tako šalju mnogima.` },
   },
 };

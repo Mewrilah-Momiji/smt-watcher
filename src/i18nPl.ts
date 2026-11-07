@@ -400,5 +400,8 @@ export const pl: Messages = {
     'foreign-script': { title: 'Napisane w nieoczekiwanym piśmie', detail: () => 'Większość tekstu jest w piśmie takim jak japońskie lub cyrylica. Jeśli zwykle nie dostajesz takich wiadomości, zachowaj ostrożność.' },
     'windfall-promise': { title: 'Obiecuje dużą sumę pieniędzy', detail: () => 'Obiecane darowizny, wygrane lub spadki od nieznajomych to częste oszustwo zaliczkowe. Nie odpowiadaj.' },
     'liquidation-offer': { title: 'Oferuje towar z upadłości', detail: () => 'Oszuści często podają się za syndyków i pobierają zapłatę za towar, który nie istnieje. Sprawdź firmę niezależnie, zanim zapłacisz.' },
+    'gift-shipping-fee': { title: 'Obiecuje prezent, za który płacisz tylko wysyłkę', detail: () => 'Wiadomość twierdzi, że ktoś zamówił dla ciebie prezent, i prosi o twój adres oraz koszty wysyłki. Paczki nie ma: chodzi o opłatę i twoje dane płatnicze.' },
+    'hidden-filler-text': { title: 'Ukrywa tekst daleko pod wiadomością', detail: () => 'Wiadomość spycha dodatkowy tekst daleko w dół, poza widok. Spamerzy robią tak, by przemycić niewinne słowa obok filtrów antyspamowych.' },
+    'to-stranger': { title: 'Zaadresowane do kogoś innego', detail: (p) => `Pole To wskazuje adres w ${p.other}, a nie ciebie. Dostałeś tylko kopię w UDW. To w porządku, jeśli jej oczekiwałeś, ale spamerzy często wysyłają tak do wielu osób.` },
   },
 };

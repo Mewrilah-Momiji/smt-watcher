@@ -400,5 +400,8 @@ export const nl: Messages = {
     'foreign-script': { title: 'Geschreven in een onverwacht schrift', detail: () => 'Het grootste deel van de tekst gebruikt een schrift zoals Japans of Cyrillisch. Krijg je zulke e-mails normaal niet, wees dan voorzichtig.' },
     'windfall-promise': { title: 'Belooft een groot geldbedrag', detail: () => 'Beloofde giften, prijzen of erfenissen van onbekenden zijn een veelvoorkomende voorschotfraude. Antwoord niet.' },
     'liquidation-offer': { title: 'Biedt goederen uit een faillissement aan', detail: () => 'Oplichters doen zich vaak voor als curator en laten betalen voor goederen die niet bestaan. Controleer het bedrijf zelf voordat je betaalt.' },
+    'gift-shipping-fee': { title: 'Belooft een cadeau waarvoor je alleen de verzending betaalt', detail: () => 'De e-mail zegt dat iemand een cadeau voor je heeft besteld en vraagt om je adres en de verzendkosten. Er is geen pakket: het gaat om de kosten en je betaalgegevens.' },
+    'hidden-filler-text': { title: 'Verbergt tekst ver onder het bericht', detail: () => 'De e-mail duwt extra tekst ver naar beneden, uit het zicht. Spammers doen dit om onschuldige woorden langs spamfilters te smokkelen.' },
+    'to-stranger': { title: 'Aan iemand anders gericht', detail: (p) => `Het veld To noemt een adres bij ${p.other}, niet jou. Je kreeg alleen een kopie in Bcc. Dat is prima als je hem verwachtte, maar spammers versturen vaak zo aan velen.` },
   },
 };

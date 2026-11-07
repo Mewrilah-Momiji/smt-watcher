@@ -206,6 +206,15 @@ describe('findIssues', () => {
     expect(codes({ from: 'a@a.example', replyTo: 'b@outlook.com' })).toEqual(['reply-to-freemail']);
   });
 
+  it('notes a To that names a stranger while the email reached you in Bcc', () => {
+    const base = { envelopeRecipients: ['me@c.example'] };
+    expect(codes({ ...base, visibleRecipients: 'someone@d.example' })).toEqual(['to-stranger']);
+    expect(codes({ ...base, visibleRecipients: 'someone@d.example, me@c.example' })).toEqual([]);
+    expect(codes({ ...base, visibleRecipients: 'colleague@c.example' })).toEqual([]);
+    expect(codes({ ...base, visibleRecipients: 'list@d.example', isList: true })).toEqual([]);
+    expect(codes({ visibleRecipients: 'someone@d.example' })).toEqual([]);
+  });
+
   it('notes a To that names only the sender while the email went to someone else', () => {
     const base = { envelopeRecipients: ['me@c.example'] };
     expect(codes({ ...base, visibleRecipients: 'info@a.example' })).toEqual(['to-sender-only']);

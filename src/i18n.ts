@@ -435,6 +435,9 @@ const en = {
     'foreign-script': { title: 'Written in an unexpected script', detail: () => 'Most of the text uses a script such as Japanese or Cyrillic. If you do not normally get such emails, be careful.' },
     'windfall-promise': { title: 'Promises a large sum of money', detail: () => 'Promised donations, prizes or inheritances from strangers are a common advance-fee scam. Do not reply.' },
     'liquidation-offer': { title: 'Offers goods from an insolvency', detail: () => 'Fraudsters often pose as insolvency administrators and take payment for goods that do not exist. Check the company independently before paying.' },
+    'gift-shipping-fee': { title: 'Claims a gift that only needs the shipping paid', detail: () => 'The email says someone ordered you a gift and asks for your address and the shipping costs. There is no parcel: the fee and your payment details are the goal.' },
+    'hidden-filler-text': { title: 'Hides text far below the message', detail: () => 'The email pushes extra text far down, out of sight. Spammers do this to slip harmless words past spam filters.' },
+    'to-stranger': { title: 'Addressed to someone else', detail: (p) => `The To field names an address at ${p.other}, not you. You only got a copy in Bcc. That is fine if you expected it, but spammers often send this way to many people.` },
   } satisfies Record<FindingCode, FindingText> as Record<FindingCode, FindingText>,
 };
 
@@ -838,6 +841,9 @@ const de: typeof en = {
     'foreign-script': { title: 'In einer unerwarteten Schrift verfasst', detail: () => 'Der Text ist überwiegend in einer Schrift wie Japanisch oder Kyrillisch. Falls du solche E-Mails sonst nicht bekommst, sei vorsichtig.' },
     'windfall-promise': { title: 'Verspricht eine große Geldsumme', detail: () => 'Versprochene Spenden, Gewinne oder Erbschaften von Fremden sind eine verbreitete Vorschussbetrugs-Masche. Antworte nicht.' },
     'liquidation-offer': { title: 'Bietet Ware aus einer Insolvenz an', detail: () => 'Betrüger geben sich oft als Insolvenzverwalter aus und kassieren für Ware, die es nicht gibt. Prüfe die Firma unabhängig, bevor du zahlst.' },
+    'gift-shipping-fee': { title: 'Verspricht ein Geschenk, für das nur der Versand zu zahlen ist', detail: () => 'Die E-Mail behauptet, jemand habe dir ein Geschenk bestellt, und verlangt deine Adresse und die Versandkosten. Ein Paket gibt es nicht: Es geht um die Gebühr und deine Zahlungsdaten.' },
+    'hidden-filler-text': { title: 'Versteckt Text weit unter der Nachricht', detail: () => 'Die E-Mail schiebt zusätzlichen Text weit nach unten, wo ihn niemand sieht. So schmuggeln Spammer harmlose Wörter an Spamfiltern vorbei.' },
+    'to-stranger': { title: 'An jemand anderen adressiert', detail: (p) => `Das To-Feld nennt eine Adresse bei ${p.other}, nicht dich. Du hast nur eine Kopie im Bcc bekommen. Das ist in Ordnung, wenn du sie erwartet hast, Spammer verschicken aber oft so an viele.` },
   },
 };
 

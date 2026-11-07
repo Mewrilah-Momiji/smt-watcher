@@ -400,5 +400,8 @@ export const lv: Messages = {
     'foreign-script': { title: 'Rakstīts negaidītā rakstībā', detail: () => 'Lielākā daļa teksta izmanto rakstību, piemēram, japāņu vai kirilicu. Ja parasti šādus e-pastus nesaņem, esi piesardzīgs.' },
     'windfall-promise': { title: 'Sola lielu naudas summu', detail: () => 'Svešinieku solīti ziedojumi, laimesti vai mantojumi ir izplatīta avansa krāpšana. Neatbildi.' },
     'liquidation-offer': { title: 'Piedāvā preces no maksātnespējas', detail: () => 'Krāpnieki bieži uzdodas par maksātnespējas administratoriem un iekasē naudu par precēm, kuru nav. Pirms maksāšanas neatkarīgi pārbaudi uzņēmumu.' },
+    'gift-shipping-fee': { title: 'Sola dāvanu, par kuru jāmaksā tikai piegāde', detail: () => 'E-pastā teikts, ka kāds tev pasūtījis dāvanu, un prasīta tava adrese un piegādes izmaksas. Sūtījuma nav: mērķis ir maksa un tavi maksājumu dati.' },
+    'hidden-filler-text': { title: 'Slēpj tekstu tālu zem ziņas', detail: () => 'E-pasts pabīda papildu tekstu tālu uz leju, kur to neredz. Tā surogātpasta sūtītāji paslīdina nekaitīgus vārdus garām filtriem.' },
+    'to-stranger': { title: 'Adresēts kādam citam', detail: (p) => `Lauks To nosauc adresi ${p.other}, nevis tevi. Tu saņēmi tikai kopiju Bcc laukā. Tas ir kārtībā, ja to gaidīji, bet surogātpasta sūtītāji bieži tā sūta daudziem.` },
   },
 };

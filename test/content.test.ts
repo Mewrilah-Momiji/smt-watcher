@@ -338,6 +338,22 @@ describe('patterns found in real spam', () => {
     expect(codes({ bodyText: 'Der Nachlass beträgt 10 %.' })).toEqual([]);
   });
 
+  it('reports a gift that only needs the shipping paid', () => {
+    expect(codes({ bodyText: 'Eine Person hat Ihnen ein Produkt als Geschenk bestellt. Bitte zahlen Sie die Versandkosten.' })).toEqual(['gift-shipping-fee']);
+    expect(codes({ bodyText: 'Ein Geschenk für Sie: versandkostenfrei ab 50 €.' })).toEqual([]);
+    expect(codes({ bodyText: 'Jemand hat Ihnen ein Produkt als Geschenk bestellt.' })).toEqual([]);
+    expect(codes({ bodyText: 'A friend has sent you a gift. Please pay the shipping fee to receive it.' })).toEqual(['gift-shipping-fee']);
+    expect(codes({ bodyText: 'Someone ordered this for you as a gift. Pay the delivery fee to release the parcel.' })).toEqual(['gift-shipping-fee']);
+    expect(codes({ bodyText: 'The perfect gift for you: shipping costs are free over 50 $.' })).toEqual([]);
+    expect(codes({ bodyText: 'Gift cards ship free. No shipping costs.' })).toEqual([]);
+    expect(assess([finding('gift-shipping-fee')])).toMatchObject({ level: 'many-signs', phishingSigns: true });
+  });
+
+  it('reports text pushed far below the message', () => {
+    expect(codes({ bodyHtml: '<p>Hallo</p><div style="padding-top:2000px;">Filler</div>' })).toEqual(['hidden-filler-text']);
+    expect(codes({ bodyHtml: '<div style="padding-top: 20px;">Hallo</div>' })).toEqual([]);
+  });
+
   it('reports insolvency offers', () => {
     expect(codes({ bodyText: 'Waren aus laufenden Insolvenzverfahren' })).toEqual(['liquidation-offer']);
     expect(codes({ bodyText: 'Die Insolvenz ist ein Thema der Zeitung.' })).toEqual([]);

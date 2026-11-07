@@ -400,5 +400,8 @@ export const it: Messages = {
     'foreign-script': { title: 'Scritta in un alfabeto inatteso', detail: () => 'Gran parte del testo usa un alfabeto come il giapponese o il cirillico. Se di solito non ricevi e-mail del genere, fai attenzione.' },
     'windfall-promise': { title: 'Promette una grossa somma di denaro', detail: () => 'Donazioni, vincite o eredità promesse da sconosciuti sono una diffusa truffa dell’anticipo. Non rispondere.' },
     'liquidation-offer': { title: 'Offre merce da un fallimento', detail: () => 'I truffatori si spacciano spesso per curatori fallimentari e incassano pagamenti per merce che non esiste. Verifica l’azienda in modo indipendente prima di pagare.' },
+    'gift-shipping-fee': { title: 'Promette un regalo di cui paghi solo la spedizione', detail: () => 'L’e-mail dice che qualcuno ti ha ordinato un regalo e chiede il tuo indirizzo e le spese di spedizione. Non c’è nessun pacco: lo scopo è la tariffa e i tuoi dati di pagamento.' },
+    'hidden-filler-text': { title: 'Nasconde testo molto sotto il messaggio', detail: () => 'L’e-mail spinge altro testo molto in basso, fuori vista. Gli spammer lo fanno per far passare parole innocue oltre i filtri antispam.' },
+    'to-stranger': { title: 'Indirizzata a qualcun altro', detail: (p) => `Il campo To nomina un indirizzo di ${p.other}, non te. Hai ricevuto solo una copia in Ccn. Va bene se te l’aspettavi, ma gli spammer spesso inviano così a molte persone.` },
   },
 };

@@ -400,5 +400,8 @@ export const hu: Messages = {
     'foreign-script': { title: 'Váratlan írásrendszerrel írva', detail: () => 'A szöveg nagy része olyan írásrendszert használ, mint a japán vagy a cirill. Ha általában nem kapsz ilyen e-maileket, légy óvatos.' },
     'windfall-promise': { title: 'Nagy pénzösszeget ígér', detail: () => 'Az idegenektől ígért adományok, nyeremények vagy örökségek elterjedt előlegcsalások. Ne válaszolj.' },
     'liquidation-offer': { title: 'Csődből származó árut kínál', detail: () => 'A csalók gyakran felszámolónak adják ki magukat, és nem létező áruért szednek pénzt. Fizetés előtt ellenőrizd a céget függetlenül.' },
+    'gift-shipping-fee': { title: 'Ajándékot ígér, amelyért csak a szállítást kell fizetni', detail: () => 'Az e-mail szerint valaki ajándékot rendelt neked, és elkéri a címedet és a szállítási díjat. Csomag nincs: a díj és a fizetési adataid a cél.' },
+    'hidden-filler-text': { title: 'Szöveget rejt messze az üzenet alatt', detail: () => 'Az e-mail további szöveget tol messze lefelé, ahol nem látszik. A spammerek így juttatnak ártalmatlan szavakat a spamszűrők mellett.' },
+    'to-stranger': { title: 'Valaki másnak címezték', detail: (p) => `A To mező egy ${p.other} címet nevez meg, nem téged. Csak egy másolatot kaptál Bcc-ben. Ez rendben van, ha vártad, de a spammerek gyakran így küldenek sokaknak.` },
   },
 };

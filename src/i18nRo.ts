@@ -400,5 +400,8 @@ export const ro: Messages = {
     'foreign-script': { title: 'Scris într-un alfabet neașteptat', detail: () => 'Cea mai mare parte a textului folosește un alfabet precum japoneza sau chirilica. Dacă de obicei nu primești astfel de e-mailuri, fii atent.' },
     'windfall-promise': { title: 'Promite o sumă mare de bani', detail: () => 'Donațiile, câștigurile sau moștenirile promise de străini sunt o fraudă cu plată în avans foarte răspândită. Nu răspunde.' },
     'liquidation-offer': { title: 'Oferă mărfuri dintr-o insolvență', detail: () => 'Escrocii se dau adesea drept administratori judiciari și încasează bani pentru mărfuri care nu există. Verifică firma independent înainte să plătești.' },
+    'gift-shipping-fee': { title: 'Promite un cadou pentru care plătești doar livrarea', detail: () => 'E-mailul spune că cineva ți-a comandat un cadou și îți cere adresa și costurile de livrare. Nu există niciun colet: scopul este taxa și datele tale de plată.' },
+    'hidden-filler-text': { title: 'Ascunde text mult sub mesaj', detail: () => 'E-mailul împinge text suplimentar mult în jos, unde nu se vede. Spammerii fac asta ca să strecoare cuvinte inofensive pe lângă filtrele de spam.' },
+    'to-stranger': { title: 'Adresat altcuiva', detail: (p) => `Câmpul To numește o adresă de la ${p.other}, nu pe tine. Ai primit doar o copie în Bcc. E în regulă dacă o așteptai, dar spammerii trimit adesea așa către mulți.` },
   },
 };

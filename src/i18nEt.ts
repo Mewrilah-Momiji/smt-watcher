@@ -400,5 +400,8 @@ export const et: Messages = {
     'foreign-script': { title: 'Kirjutatud ootamatus kirjas', detail: () => 'Suurem osa tekstist kasutab kirja, näiteks jaapani või kirillitsat. Kui sa selliseid e-kirju tavaliselt ei saa, ole ettevaatlik.' },
     'windfall-promise': { title: 'Lubab suurt rahasummat', detail: () => 'Võõraste lubatud annetused, võidud või pärandused on levinud ettemaksupettus. Ära vasta.' },
     'liquidation-offer': { title: 'Pakub pankrotipesast kaupa', detail: () => 'Petturid esinevad sageli pankrotihalduritena ja võtavad raha kauba eest, mida pole olemas. Kontrolli ettevõtet enne maksmist sõltumatult.' },
+    'gift-shipping-fee': { title: 'Lubab kingitust, mille eest tuleb maksta ainult saatmine', detail: () => 'Kiri väidab, et keegi tellis sulle kingituse, ja küsib sinu aadressi ja saatekulusid. Pakki pole: eesmärk on tasu ja sinu makseandmed.' },
+    'hidden-filler-text': { title: 'Peidab teksti kaugele sõnumi alla', detail: () => 'Kiri lükkab lisateksti kaugele alla, nähtavalt alalt välja. Nii poetavad spämmerid süütuid sõnu rämpspostifiltritest mööda.' },
+    'to-stranger': { title: 'Adresseeritud kellelegi teisele', detail: (p) => `Väli To nimetab aadressi domeenis ${p.other}, mitte sind. Said ainult koopia Bcc-väljal. See on korras, kui sa seda ootasid, kuid spämmerid saadavad nii sageli paljudele.` },
   },
 };
