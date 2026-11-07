@@ -10,6 +10,7 @@ export const sv: Messages = {
     drop: 'Släpp ett eller flera mejl här',
     dropHint: 'eller klicka för att välja .msg-, .eml- eller .txt-filer',
     privacy: 'Ditt mejl stannar i din webbläsare. Inget laddas upp.',
+    addonHint: 'Använder du Thunderbird? Tillägget SMT Watcher kontrollerar det öppna mejlet direkt där. Installera filen i tilläggshanteraren via kugghjulsmenyn.',
     privacyWithSenderDb: 'Ditt mejl stannar i din webbläsare. Bara om du vill skickas några få uppgifter om avsändaren, aldrig själva mejlet.',
     imprintLink: 'Om webbplatsen',
     privacyLink: 'Integritet',

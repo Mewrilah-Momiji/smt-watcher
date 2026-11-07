@@ -10,6 +10,7 @@ export const sk: Messages = {
     drop: 'Sem pretiahni jeden alebo viac e-mailov',
     dropHint: 'alebo klikni a vyber súbory .msg, .eml či .txt',
     privacy: 'Tvoj e-mail zostáva v prehliadači. Nič sa nenahráva.',
+    addonHint: 'Používaš Thunderbird? Doplnok SMT Watcher skontroluje otvorený e-mail priamo tam. Súbor nainštaluj v správcovi doplnkov cez ponuku s ozubeným kolieskom.',
     privacyWithSenderDb: 'Tvoj e-mail zostáva v prehliadači. Len ak chceš, odošle sa pár údajov o odosielateľovi, nikdy samotný e-mail.',
     imprintLink: 'Tiráž',
     privacyLink: 'Ochrana súkromia',

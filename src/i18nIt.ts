@@ -10,6 +10,7 @@ export const it: Messages = {
     drop: 'Trascina qui una o più e-mail',
     dropHint: 'oppure clicca per scegliere file .msg, .eml o .txt',
     privacy: 'La tua e-mail resta nel tuo browser. Non viene caricato nulla.',
+    addonHint: 'Usi Thunderbird? L’estensione SMT Watcher controlla l’e-mail aperta direttamente lì. Installa il file nella gestione dei componenti aggiuntivi, dal menu con l’ingranaggio.',
     privacyWithSenderDb: 'La tua e-mail resta nel tuo browser. Solo se lo desideri, vengono inviati alcuni dati sul mittente, mai l’e-mail.',
     imprintLink: 'Note legali',
     privacyLink: 'Privacy',

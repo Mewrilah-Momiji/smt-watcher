@@ -1114,6 +1114,13 @@ h1[tabindex]:focus-visible {
   font-size: 0.9rem;
 }
 
+/* The Thunderbird add-on, offered under the drop zone for those who read their mail there. */
+.addon-hint {
+  margin: -0.5rem 0 1.25rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 /* A small status light in front of the promise. */
 .privacy::before {
   content: '';

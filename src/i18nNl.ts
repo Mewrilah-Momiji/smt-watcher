@@ -10,6 +10,7 @@ export const nl: Messages = {
     drop: 'Sleep hier een of meer e-mails naartoe',
     dropHint: 'of klik om .msg-, .eml- of .txt-bestanden te kiezen',
     privacy: 'Je e-mail blijft in je browser. Er wordt niets geüpload.',
+    addonHint: 'Gebruik je Thunderbird? De add-on SMT Watcher controleert de geopende e-mail daar direct. Installeer het bestand in het add-onbeheer via het tandwielmenu.',
     privacyWithSenderDb: 'Je e-mail blijft in je browser. Alleen als je dat wilt, worden enkele gegevens over de afzender verstuurd, nooit de e-mail.',
     imprintLink: 'Colofon',
     privacyLink: 'Privacy',

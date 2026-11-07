@@ -10,6 +10,7 @@ export const sl: Messages = {
     drop: 'Sem povleci eno ali več e-poštnih sporočil',
     dropHint: 'ali klikni in izberi datoteke .msg, .eml ali .txt',
     privacy: 'Tvoja e-pošta ostane v brskalniku. Nič se ne naloži.',
+    addonHint: 'Uporabljaš Thunderbird? Dodatek SMT Watcher preveri odprto e-sporočilo kar tam. Datoteko namesti v upravitelju dodatkov prek menija z zobnikom.',
     privacyWithSenderDb: 'Tvoja e-pošta ostane v brskalniku. Samo če želiš, se pošlje nekaj podatkov o pošiljatelju, nikoli sama e-pošta.',
     imprintLink: 'Impresum',
     privacyLink: 'Zasebnost',

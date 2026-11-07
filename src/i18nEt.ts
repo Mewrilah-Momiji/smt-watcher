@@ -10,6 +10,7 @@ export const et: Messages = {
     drop: 'Lohista siia üks või mitu e-kirja',
     dropHint: 'või klõpsa ja vali .msg-, .eml- või .txt-failid',
     privacy: 'Sinu e-kiri jääb brauserisse. Midagi ei laadita üles.',
+    addonHint: 'Kasutad Thunderbirdi? SMT Watcheri lisa kontrollib avatud e-kirja otse seal. Paigalda fail lisade halduris hammasrattamenüüst.',
     privacyWithSenderDb: 'Sinu e-kiri jääb brauserisse. Ainult siis, kui soovid, saadetakse paar andmet saatja kohta, mitte kunagi e-kirja ennast.',
     imprintLink: 'Kontaktandmed',
     privacyLink: 'Privaatsus',

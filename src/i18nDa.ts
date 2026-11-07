@@ -10,6 +10,7 @@ export const da: Messages = {
     drop: 'Slip en eller flere e-mails her',
     dropHint: 'eller klik for at vælge .msg-, .eml- eller .txt-filer',
     privacy: 'Din e-mail bliver i din browser. Intet bliver uploadet.',
+    addonHint: 'Bruger du Thunderbird? Tilføjelsen SMT Watcher tjekker den åbne e-mail direkte der. Installer filen i tilføjelsesadministratoren via tandhjulsmenuen.',
     privacyWithSenderDb: 'Din e-mail bliver i din browser. Kun hvis du ønsker det, sendes nogle få oplysninger om afsenderen, aldrig selve e-mailen.',
     imprintLink: 'Kolofon',
     privacyLink: 'Privatliv',

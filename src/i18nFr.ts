@@ -10,6 +10,7 @@ export const fr: Messages = {
     drop: 'Dépose un ou plusieurs courriels ici',
     dropHint: 'ou clique pour choisir des fichiers .msg, .eml ou .txt',
     privacy: 'Ton courriel reste dans ton navigateur. Rien n’est téléversé.',
+    addonHint: 'Tu utilises Thunderbird ? L’extension SMT Watcher vérifie le courriel ouvert directement là. Installe le fichier dans le gestionnaire de modules complémentaires, via le menu en forme de roue dentée.',
     privacyWithSenderDb: 'Ton courriel reste dans ton navigateur. Seulement si tu le souhaites, quelques informations sur l’expéditeur sont envoyées, jamais le courriel.',
     imprintLink: 'Mentions légales',
     privacyLink: 'Confidentialité',

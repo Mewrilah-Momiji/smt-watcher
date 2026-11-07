@@ -10,6 +10,7 @@ export const nb: Messages = {
     drop: 'Slipp én eller flere e-poster her',
     dropHint: 'eller klikk for å velge .msg-, .eml- eller .txt-filer',
     privacy: 'E-posten din blir i nettleseren din. Ingenting lastes opp.',
+    addonHint: 'Bruker du Thunderbird? Utvidelsen SMT Watcher sjekker den åpne e-posten direkte der. Installer filen i tilleggsbehandleren via tannhjulmenyen.',
     privacyWithSenderDb: 'E-posten din blir i nettleseren din. Bare hvis du vil, sendes noen få opplysninger om avsenderen, aldri selve e-posten.',
     imprintLink: 'Om nettstedet',
     privacyLink: 'Personvern',

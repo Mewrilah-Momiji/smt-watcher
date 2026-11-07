@@ -10,6 +10,7 @@ export const pt: Messages = {
     drop: 'Larga aqui um ou mais e-mails',
     dropHint: 'ou clica para escolher ficheiros .msg, .eml ou .txt',
     privacy: 'O teu e-mail fica no teu navegador. Nada é carregado.',
+    addonHint: 'Usas o Thunderbird? O extra SMT Watcher verifica o e-mail aberto diretamente aí. Instala o ficheiro no gestor de extras, a partir do menu da roda dentada.',
     privacyWithSenderDb: 'O teu e-mail fica no teu navegador. Só se quiseres são enviados alguns dados sobre o remetente, nunca o e-mail.',
     imprintLink: 'Ficha técnica',
     privacyLink: 'Privacidade',

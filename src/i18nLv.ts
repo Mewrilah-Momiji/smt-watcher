@@ -10,6 +10,7 @@ export const lv: Messages = {
     drop: 'Ievelc šeit vienu vai vairākus e-pastus',
     dropHint: 'vai noklikšķini un izvēlies .msg, .eml vai .txt failus',
     privacy: 'Tavs e-pasts paliek pārlūkā. Nekas netiek augšupielādēts.',
+    addonHint: 'Izmanto Thunderbird? Papildinājums SMT Watcher pārbauda atvērto e-pastu turpat. Instalē failu papildinājumu pārvaldniekā ar zobrata izvēlni.',
     privacyWithSenderDb: 'Tavs e-pasts paliek pārlūkā. Tikai ja vēlies, tiek nosūtīti daži dati par sūtītāju, nekad pats e-pasts.',
     imprintLink: 'Par vietni',
     privacyLink: 'Privātums',

@@ -10,6 +10,7 @@ export const hr: Messages = {
     drop: 'Ovdje povuci jednu ili više e-poruka',
     dropHint: 'ili klikni i odaberi datoteke .msg, .eml ili .txt',
     privacy: 'Tvoja e-poruka ostaje u pregledniku. Ništa se ne učitava na poslužitelj.',
+    addonHint: 'Koristiš Thunderbird? Dodatak SMT Watcher provjerava otvorenu e-poruku izravno ondje. Instaliraj datoteku u upravitelju dodataka putem izbornika sa zupčanikom.',
     privacyWithSenderDb: 'Tvoja e-poruka ostaje u pregledniku. Samo ako želiš, šalje se nekoliko podataka o pošiljatelju, nikad sama e-poruka.',
     imprintLink: 'Impresum',
     privacyLink: 'Privatnost',

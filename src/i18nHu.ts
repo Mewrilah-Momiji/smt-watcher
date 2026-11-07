@@ -10,6 +10,7 @@ export const hu: Messages = {
     drop: 'Húzz ide egy vagy több e-mailt',
     dropHint: 'vagy kattints, és válassz .msg, .eml vagy .txt fájlokat',
     privacy: 'Az e-mailed a böngésződben marad. Semmi sem töltődik fel.',
+    addonHint: 'Thunderbirdöt használsz? Az SMT Watcher kiegészítő közvetlenül ott ellenőrzi a megnyitott e-mailt. A fájlt a kiegészítőkezelőben, a fogaskerék menüből telepítsd.',
     privacyWithSenderDb: 'Az e-mailed a böngésződben marad. Csak ha szeretnéd, néhány adat megy el a feladóról, maga az e-mail soha.',
     imprintLink: 'Impresszum',
     privacyLink: 'Adatvédelem',

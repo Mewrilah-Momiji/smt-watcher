@@ -10,6 +10,7 @@ export const lt: Messages = {
     drop: 'Nutempk čia vieną ar kelis el. laiškus',
     dropHint: 'arba spustelėk ir pasirink .msg, .eml ar .txt failus',
     privacy: 'Tavo el. laiškas lieka naršyklėje. Niekas neįkeliama.',
+    addonHint: 'Naudoji Thunderbird? Priedas SMT Watcher patikrina atidarytą laišką tiesiai ten. Įdiek failą priedų tvarkytuvėje per krumpliaračio meniu.',
     privacyWithSenderDb: 'Tavo el. laiškas lieka naršyklėje. Tik jei nori, siunčiami keli duomenys apie siuntėją, niekada ne pats laiškas.',
     imprintLink: 'Apie svetainę',
     privacyLink: 'Privatumas',

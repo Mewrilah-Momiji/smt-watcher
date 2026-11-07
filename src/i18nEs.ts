@@ -10,6 +10,7 @@ export const es: Messages = {
     drop: 'Suelta aquí uno o varios correos',
     dropHint: 'o haz clic para elegir archivos .msg, .eml o .txt',
     privacy: 'Tu correo se queda en tu navegador. No se sube nada.',
+    addonHint: '¿Usas Thunderbird? El complemento SMT Watcher comprueba el correo abierto allí mismo. Instala el archivo en el administrador de complementos, desde el menú del engranaje.',
     privacyWithSenderDb: 'Tu correo se queda en tu navegador. Solo si tú quieres se envían unos pocos datos sobre el remitente, nunca el correo.',
     imprintLink: 'Aviso legal',
     privacyLink: 'Privacidad',

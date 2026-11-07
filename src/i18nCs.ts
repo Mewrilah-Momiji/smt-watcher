@@ -10,6 +10,7 @@ export const cs: Messages = {
     drop: 'Sem přetáhni jeden nebo více e-mailů',
     dropHint: 'nebo klikni a vyber soubory .msg, .eml či .txt',
     privacy: 'Tvůj e-mail zůstává v prohlížeči. Nic se nenahrává.',
+    addonHint: 'Používáš Thunderbird? Doplněk SMT Watcher zkontroluje otevřený e-mail přímo tam. Soubor nainstaluj ve správci doplňků přes nabídku s ozubeným kolečkem.',
     privacyWithSenderDb: 'Tvůj e-mail zůstává v prohlížeči. Jen pokud chceš, odešle se pár údajů o odesílateli, nikdy samotný e-mail.',
     imprintLink: 'Tiráž',
     privacyLink: 'Ochrana soukromí',

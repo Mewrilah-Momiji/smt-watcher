@@ -10,6 +10,7 @@ export const pl: Messages = {
     drop: 'Upuść tutaj jedną lub więcej wiadomości',
     dropHint: 'albo kliknij, aby wybrać pliki .msg, .eml lub .txt',
     privacy: 'Twoja wiadomość pozostaje w przeglądarce. Nic nie jest przesyłane.',
+    addonHint: 'Używasz Thunderbirda? Dodatek SMT Watcher sprawdza otwartą wiadomość bezpośrednio tam. Zainstaluj plik w menedżerze dodatków przez menu z kołem zębatym.',
     privacyWithSenderDb: 'Twoja wiadomość pozostaje w przeglądarce. Tylko jeśli zechcesz, wysyłanych jest kilka informacji o nadawcy, nigdy sama wiadomość.',
     imprintLink: 'Informacje prawne',
     privacyLink: 'Prywatność',

@@ -10,6 +10,7 @@ export const ro: Messages = {
     drop: 'Trage aici unul sau mai multe e-mailuri',
     dropHint: 'sau dă clic pentru a alege fișiere .msg, .eml sau .txt',
     privacy: 'E-mailul tău rămâne în browser. Nu se încarcă nimic.',
+    addonHint: 'Folosești Thunderbird? Suplimentul SMT Watcher verifică e-mailul deschis direct acolo. Instalează fișierul în managerul de suplimente, din meniul cu rotiță.',
     privacyWithSenderDb: 'E-mailul tău rămâne în browser. Doar dacă vrei, se trimit câteva date despre expeditor, niciodată e-mailul.',
     imprintLink: 'Date de identificare',
     privacyLink: 'Confidențialitate',

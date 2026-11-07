@@ -10,6 +10,7 @@ export const el: Messages = {
     drop: 'Σύρε εδώ ένα ή περισσότερα email',
     dropHint: 'ή κάνε κλικ για να επιλέξεις αρχεία .msg, .eml ή .txt',
     privacy: 'Το email σου μένει στον browser. Δεν ανεβαίνει τίποτα.',
+    addonHint: 'Χρησιμοποιείς Thunderbird; Το πρόσθετο SMT Watcher ελέγχει το ανοιχτό email απευθείας εκεί. Εγκατάστησε το αρχείο στη διαχείριση προσθέτων από το μενού με το γρανάζι.',
     privacyWithSenderDb: 'Το email σου μένει στον browser. Μόνο αν το θέλεις, στέλνονται λίγα στοιχεία για τον αποστολέα, ποτέ το ίδιο το email.',
     imprintLink: 'Στοιχεία ιστότοπου',
     privacyLink: 'Απόρρητο',

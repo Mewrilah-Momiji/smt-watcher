@@ -10,6 +10,7 @@ export const fi: Messages = {
     drop: 'Pudota yksi tai useampi sähköposti tähän',
     dropHint: 'tai valitse .msg-, .eml- tai .txt-tiedostoja napsauttamalla',
     privacy: 'Sähköpostisi pysyy selaimessasi. Mitään ei ladata palvelimelle.',
+    addonHint: 'Käytätkö Thunderbirdiä? SMT Watcher -lisäosa tarkistaa avoimen sähköpostin suoraan siellä. Asenna tiedosto lisäosien hallinnassa rataskuvakkeen valikosta.',
     privacyWithSenderDb: 'Sähköpostisi pysyy selaimessasi. Vain jos haluat, lähettäjästä lähetetään muutama tieto, ei koskaan itse viestiä.',
     imprintLink: 'Tietoa sivustosta',
     privacyLink: 'Tietosuoja',
