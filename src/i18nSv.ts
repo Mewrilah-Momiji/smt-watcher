@@ -371,6 +371,7 @@ export const sv: Messages = {
     'recipients-hidden': { title: 'Dolda mottagare', detail: () => 'Fältet To saknas eller nämner ingen. Massutskick lägger så alla mottagare i Bcc.' },
     'subject-missing': { title: 'Inget ämne', detail: () => 'E-postmeddelandet har inget ämne. Masspam utelämnar det ofta.' },
     'crypto-recovery': { title: 'Erbjuder att återfå förlorade kryptopengar', detail: () => 'Bedragare lovar att återfå pengar som förlorats i krypto- eller forexbedrägerier och tar ut avgifter i förväg. Svara inte.' },
+    'extortion-threat': { title: 'Utpressning: hot och krav på bitcoin', detail: () => 'Ett känt utpressningsbedrägeri: avsändaren påstår sig ha videor på dig eller åtkomst till din enhet och kräver bitcoin. Som regel finns varken videor eller åtkomst. Betala inte och svara inte. Om mejlet nämner ett riktigt lösenord du använder, byt det.' },
     'advertorial': { title: 'Reklam förklädd till artikel', detail: () => 'E-postmeddelandet kallar sig en specialrapport eller advertorial. Så säljs ofta tvivelaktiga hälso- och pengaprodukter.' },
     'plain-password': { title: 'Innehåller ett lösenord i klartext', detail: () => 'Seriösa tjänster skickar inte lösenord via e-post. Har du inte registrerat dig, logga inte in där. Annars byt lösenordet.' },
     'reply-to-freemail': { title: 'Svar går till en gratis e-postadress', detail: (p) => `Meddelandet kommer från ${p.domain}, men svar går till ${p.other}, en gratis e-postleverantör. Företag tar emot svar på sin egen domän.` },

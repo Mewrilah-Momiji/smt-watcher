@@ -371,6 +371,7 @@ export const sl: Messages = {
     'recipients-hidden': { title: 'Skriti prejemniki', detail: () => 'Polje To manjka ali ne navaja nikogar. Množična pošta tako vse prejemnike postavi v Bcc.' },
     'subject-missing': { title: 'Ni zadeve', detail: () => 'E-pošta nima zadeve. Množična neželena pošta jo pogosto izpusti.' },
     'crypto-recovery': { title: 'Ponuja vračilo izgubljenega kripto denarja', detail: () => 'Goljufi obljubljajo vračilo denarja, izgubljenega pri kripto ali forex goljufijah, in vnaprej zahtevajo pristojbine. Ne odgovarjaj.' },
+    'extortion-threat': { title: 'Izsiljevanje: grožnje in zahteva po bitcoinih', detail: () => 'Znana prevara z izsiljevanjem: pošiljatelj trdi, da ima posnetke tebe ali dostop do tvoje naprave, in zahteva bitcoine. Praviloma ni ne posnetkov ne dostopa. Ne plačaj in ne odgovarjaj. Če e-sporočilo navaja tvoje pravo geslo, ga zamenjaj.' },
     'advertorial': { title: 'Oglas, preoblečen v članek', detail: () => 'E-pošta se imenuje posebno poročilo ali advertorial. Tako se pogosto prodajajo dvomljivi zdravstveni in finančni izdelki.' },
     'plain-password': { title: 'Vsebuje geslo v navadnem besedilu', detail: () => 'Resne storitve ne pošiljajo gesel po e-pošti. Če se nisi registriral, se tam ne prijavi. Sicer spremeni geslo.' },
     'reply-to-freemail': { title: 'Odgovori gredo na brezplačen naslov', detail: (p) => `E-pošta prihaja z ${p.domain}, odgovori pa gredo na ${p.other}, brezplačnega ponudnika e-pošte. Podjetja prejemajo odgovore na svoji domeni.` },

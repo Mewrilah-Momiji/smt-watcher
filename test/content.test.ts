@@ -126,6 +126,10 @@ describe('findContentIssues', () => {
     expect(codes({ bodyText: `Geben Sie Ihre Zugangsdaten niemals weiter. ${link}` })).toEqual([]);
     expect(codes({ bodyText: `Bitte Zugangsdaten bestätigen: ${link}` })).toEqual(['credential-request']);
     expect(codes({ bodyText: `Bitte überprüfen Sie Ihre Anmeldedaten: ${link}` })).toEqual(['credential-request']);
+    expect(codes({ bodyText: `Bitte bestätigen Sie Ihre Daten bis zum 8. November. ${link}` })).toEqual(['credential-request']);
+    expect(codes({ bodyText: `Daten jetzt bestätigen ${link}` })).toEqual(['credential-request']);
+    // A request to check data that were sent along, as legitimate emails make it, does not count.
+    expect(codes({ bodyText: `Wir bitten Sie, Ihre Daten zu überprüfen. ${link}` })).toEqual([]);
   });
 
   it('accepts a link to the same name on another ending, but not another name', () => {
@@ -363,6 +367,15 @@ describe('patterns found in real spam', () => {
     expect(codes({ bodyText: 'Wir helfen bei der Rückgewinnung verlorener Krypto-Investitionen.' })).toEqual(['crypto-recovery']);
     expect(codes({ bodyText: 'We specialise in the recovery of stolen crypto assets.' })).toEqual(['crypto-recovery']);
     expect(codes({ bodyText: 'Ihr Krypto-Depot ist eröffnet.' })).toEqual([]);
+  });
+
+  it('reports extortion with threats and a Bitcoin demand', () => {
+    const demand = 'Transfer $1250 to my Bitcoin wallet.';
+    expect(codes({ bodyText: `I recorded you through your webcam. ${demand} You have 48 hours.` })).toEqual(['extortion-threat']);
+    expect(codes({ bodyText: `Ich habe dich über deine Kamera aufgenommen und schicke es deine Familie. Zahle in Bitcoin an diese Adresse.` })).toEqual(['extortion-threat']);
+    // One threat is not enough, and Bitcoin alone is news, not extortion.
+    expect(codes({ bodyText: `Your webcam is on sale. ${demand}` })).toEqual([]);
+    expect(codes({ bodyText: 'Der Bitcoin-Kurs steigt, die Wallet-Adresse steht im Konto.' })).toEqual([]);
   });
 
   it('notes ads posing as a report and passwords in plain text', () => {

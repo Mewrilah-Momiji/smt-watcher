@@ -24,6 +24,7 @@ export type FindingCode =
   | 'recipients-hidden'
   | 'subject-missing'
   | 'crypto-recovery'
+  | 'extortion-threat'
   | 'advertorial'
   | 'plain-password'
   | 'reply-to-freemail'

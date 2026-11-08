@@ -371,6 +371,7 @@ export const sk: Messages = {
     'recipients-hidden': { title: 'Skrytí príjemcovia', detail: () => 'Pole To chýba alebo nikoho neuvádza. Hromadné e-maily takto dávajú všetkých príjemcov do Bcc.' },
     'subject-missing': { title: 'Bez predmetu', detail: () => 'E-mail nemá predmet. Hromadný spam ho často vynecháva.' },
     'crypto-recovery': { title: 'Ponúka vrátenie stratených kryptopeňazí', detail: () => 'Podvodníci sľubujú vrátiť peniaze stratené pri krypto alebo forex podvodoch a vopred chcú poplatky. Neodpovedaj.' },
+    'extortion-threat': { title: 'Vydieranie: vyhrážky a požiadavka na bitcoiny', detail: () => 'Známy vydierací podvod: odosielateľ tvrdí, že má videá s tebou alebo prístup k tvojmu zariadeniu, a žiada bitcoiny. Spravidla nie sú žiadne videá ani prístup. Neplať a neodpovedaj. Ak e-mail uvádza tvoje skutočné heslo, zmeň ho.' },
     'advertorial': { title: 'Reklama vydávaná za článok', detail: () => 'E-mail sa nazýva špeciálnou správou alebo advertorialom. Tak sa často predávajú pochybné zdravotné a finančné produkty.' },
     'plain-password': { title: 'Obsahuje heslo v otvorenom texte', detail: () => 'Seriózne služby neposielajú heslá e-mailom. Ak si sa neregistroval, neprihlasuj sa tam. Inak heslo zmeň.' },
     'reply-to-freemail': { title: 'Odpovede idú na bezplatnú adresu', detail: (p) => `E-mail prichádza z ${p.domain}, ale odpovede idú na ${p.other}, bezplatnú poštu. Firmy prijímajú odpovede na vlastnej doméne.` },

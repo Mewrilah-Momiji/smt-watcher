@@ -371,6 +371,7 @@ export const et: Messages = {
     'recipients-hidden': { title: 'Peidetud saajad', detail: () => 'Väli To puudub või ei nimeta kedagi. Masspostitused panevad nii kõik saajad Bcc-väljale.' },
     'subject-missing': { title: 'Teema puudub', detail: () => 'Kirjal pole teemat. Massrämpspost jätab selle sageli ära.' },
     'crypto-recovery': { title: 'Pakub kaotatud krüptoraha tagasi tuua', detail: () => 'Petturid lubavad tagasi tuua krüpto- või forex-pettustes kaotatud raha ja nõuavad tasu ette. Ära vasta.' },
+    'extortion-threat': { title: 'Väljapressimine: ähvardused ja bitcoini nõue', detail: () => 'Tuntud väljapressimispettus: saatja väidab, et tal on sinust videoid või ligipääs su seadmele, ja nõuab bitcoini. Reeglina pole ei videoid ega ligipääsu. Ära maksa ega vasta. Kui kirjas on mõni sinu päris parool, vaheta see.' },
     'advertorial': { title: 'Artikliks maskeeritud reklaam', detail: () => 'Kiri nimetab end eriraportiks või advertoriaaliks. Nii müüakse sageli kahtlaseid tervise- ja rahatooteid.' },
     'plain-password': { title: 'Sisaldab parooli lihttekstina', detail: () => 'Usaldusväärsed teenused ei saada paroole e-postiga. Kui sa ei registreerunud, ära sinna sisse logi. Muidu vaheta parool.' },
     'reply-to-freemail': { title: 'Vastused lähevad tasuta aadressile', detail: (p) => `Kiri tuleb domeenilt ${p.domain}, kuid vastused lähevad aadressile ${p.other}, tasuta e-posti teenusesse. Ettevõtted võtavad vastuseid oma domeenil.` },

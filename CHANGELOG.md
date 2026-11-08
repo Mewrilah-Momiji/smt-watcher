@@ -4,6 +4,11 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.38 - 2026-11-08
+
+- New sign: extortion emails that claim to have videos of you or access to your device and demand Bitcoin.
+- "Bestätigen Sie Ihre Daten" and "Daten jetzt bestätigen" now count as a request for your data, as in fake bank emails.
+
 ## 0.5.37 - 2026-11-08
 
 - Switzerland: the report view says that SECO can only take legal action against people and companies in Switzerland.

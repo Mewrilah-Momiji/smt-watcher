@@ -371,6 +371,7 @@ export const lt: Messages = {
     'recipients-hidden': { title: 'Paslėpti gavėjai', detail: () => 'Lauko To nėra arba jame nieko nenurodyta. Masiniai laiškai taip visus gavėjus įrašo į Bcc.' },
     'subject-missing': { title: 'Nėra temos', detail: () => 'Laiškas neturi temos. Masinis šlamštas jos dažnai neturi.' },
     'crypto-recovery': { title: 'Siūlo susigrąžinti prarastus kriptopinigus', detail: () => 'Sukčiai žada susigrąžinti per kripto ar forex sukčiavimą prarastus pinigus ir iš anksto prašo mokesčių. Neatsakyk.' },
+    'extortion-threat': { title: 'Prievartavimas: grasinimai ir bitkoinų reikalavimas', detail: () => 'Žinomas prievartavimo sukčiavimas: siuntėjas tvirtina turintis vaizdo įrašų su tavimi arba prieigą prie tavo įrenginio ir reikalauja bitkoinų. Paprastai nėra nei įrašų, nei prieigos. Nemokėk ir neatsakyk. Jei laiške nurodytas tikras tavo slaptažodis, pakeisk jį.' },
     'advertorial': { title: 'Reklama, apsimetanti straipsniu', detail: () => 'Laiškas vadina save specialiu pranešimu arba advertorialu. Taip dažnai parduodami abejotini sveikatos ir finansų produktai.' },
     'plain-password': { title: 'Yra slaptažodis atviru tekstu', detail: () => 'Patikimos paslaugos nesiunčia slaptažodžių el. paštu. Jei nesiregistravai, ten neprisijunk. Kitaip pakeisk slaptažodį.' },
     'reply-to-freemail': { title: 'Atsakymai siunčiami nemokamu adresu', detail: (p) => `Laiškas ateina iš ${p.domain}, bet atsakymai siunčiami į ${p.other}, nemokamą el. pašto paslaugą. Įmonės atsakymus gauna savo domene.` },

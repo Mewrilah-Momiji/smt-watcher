@@ -101,6 +101,22 @@ const FILLER_SPACER_PATTERN = /(?:padding|margin)-top\s*:\s*\d{4,}px/i;
 const LIQUIDATION_PATTERN = /insolvenz(?:verfahren|verwertung|verkauf|ware)|verwertungsverfahren/i;
 // Measured on 2026-11-06 on the private test set: 1 of 239 spam emails, none of 1872 legitimate ones.
 const CRYPTO_RECOVERY_PATTERN = /(r[üu]ckgewinnung|wiederherstellung|recover(?:y|ing)?)\b[^.]{0,80}(krypto|crypto|forex|investition|investment)|(krypto|crypto|forex)[^.]{0,80}(r[üu]ckgewinnung|recover)/i;
+// Sextortion: a Bitcoin wallet together with at least two kinds of threat. Measured on 2026-11-08: 1 of 244 private spam emails,
+// 1 in Nazario 2025, 2 in Untroubled 2026-09, none of 1872 legitimate emails or 5149 Apache list emails.
+const EXTORTION_PAYMENT_PATTERN = /\b(bitcoin|btc)\b/i;
+const EXTORTION_WALLET_PATTERN = /(wallet|adresse|address|brieftasche)/i;
+const EXTORTION_THREAT_PATTERNS = [
+  /\b(webcam|kamera|camera)\b/i,
+  /\b(trojan|trojaner|spyware|malware|virus|rat)\b/i,
+  /\b(24|48|72) ?(hours|stunden|h)\b/i,
+  /\b(recorded|aufgenommen|aufgezeichnet|videos? (of|von) (you|dir|ihnen))\b/i,
+  /\b(your|deine|ihre) (family|contacts|coworkers|colleagues|familie|kontakte|kollegen)\b/i,
+  /\b(publish|veröffentlich|send (it|them) to)/i,
+  /\b(police|polizei)\b/i,
+  /\b(hacker|gehackt|hacked|access to (your|all) (device|devices|computer))\b/i,
+];
+const EXTORTION_MIN_THREATS = 2;
+
 // Ads dressed up as an editorial report. Measured on 2026-11-06: 2 of 239 spam emails, none of 1872 legitimate ones.
 // Publishers use these words too, so it counts little.
 const ADVERTORIAL_PATTERN = /\b(sonderbericht|spezialreport|special report|advertorial)\b/i;
@@ -111,8 +127,9 @@ const PLAIN_PASSWORD_PATTERN = /(ihr|dein|your)\s+(passwort|password|kennwort)\s
 const HTML_EXTENSIONS = new Set(['html', 'htm', 'shtml']);
 const RISKY_EXTENSIONS = new Set(['exe', 'scr', 'com', 'bat', 'cmd', 'pif', 'js', 'jse', 'vbs', 'vbe', 'wsf', 'hta', 'lnk', 'msi', 'iso', 'img', 'ps1', 'jar', ...HTML_EXTENSIONS, 'docm', 'xlsm']);
 
+// "Bestätigen Sie Ihre Daten" and "Daten jetzt bestätigen" were added on 2026-11-08: 1 of 244 private spam emails, none of 1872 legitimate ones.
 /** A request, not a mention: legitimate emails often just name login details, for example to warn about phishing. */
-const CREDENTIAL_PATTERN = /passwort (best[aä]tigen|eingeben|erneuern)|konto (verifizieren|best[aä]tigen|gesperrt|wird gesperrt)|(zugangs|anmelde)daten (best[aä]tigen|eingeben|aktualisieren|[üu]berpr[üu]fen|verifizieren)|(best[aä]tigen|aktualisieren|[üu]berpr[üu]fen|verifizieren) sie ihre (zugangs|anmelde)daten|verify your (account|identity|login details)|confirm your (account|password|login details)|account (suspended|locked|will be)|update your (information|payment|billing|details)|(zahlungs|konto|bank)(daten|informationen|angaben) (aktualisieren|best[aä]tigen|[üu]berpr[üu]fen)|[üu]berpr[üu]fen sie ihre (zahlungs|konto|bank)daten|aktualisieren sie ihre (zahlungs|konto|bank)?(daten|informationen|angaben)|your (account|mailbox|email) (has been|will be) (suspended|locked|deactivated|disabled|closed)|password (will )?expires? (today|soon|in)|email quota|mailbox (is )?full|verify your email (address|account)|cuenta (ha sido |será |sera )?(suspendida|bloqueada|desactivada)|verifi(ca|que) (tu|su) cuenta|conta (foi |será )?(suspensa|bloqueada)|verifi(que|car) (sua|a sua) conta|compte (a été |sera )?(suspendu|bloqué|désactivé)|vérifie[rz]? (votre|ton) compte|abonnement a été suspendu/i;
+const CREDENTIAL_PATTERN = /passwort (best[aä]tigen|eingeben|erneuern)|konto (verifizieren|best[aä]tigen|gesperrt|wird gesperrt)|(zugangs|anmelde)daten (best[aä]tigen|eingeben|aktualisieren|[üu]berpr[üu]fen|verifizieren)|(best[aä]tigen|aktualisieren|[üu]berpr[üu]fen|verifizieren) sie ihre (zugangs|anmelde)daten|verify your (account|identity|login details)|confirm your (account|password|login details)|account (suspended|locked|will be)|update your (information|payment|billing|details)|(zahlungs|konto|bank)(daten|informationen|angaben) (aktualisieren|best[aä]tigen|[üu]berpr[üu]fen)|[üu]berpr[üu]fen sie ihre (zahlungs|konto|bank)daten|aktualisieren sie ihre (zahlungs|konto|bank)?(daten|informationen|angaben)|your (account|mailbox|email) (has been|will be) (suspended|locked|deactivated|disabled|closed)|password (will )?expires? (today|soon|in)|email quota|mailbox (is )?full|verify your email (address|account)|cuenta (ha sido |será |sera )?(suspendida|bloqueada|desactivada)|verifi(ca|que) (tu|su) cuenta|conta (foi |será )?(suspensa|bloqueada)|verifi(que|car) (sua|a sua) conta|compte (a été |sera )?(suspendu|bloqué|désactivé)|vérifie[rz]? (votre|ton) compte|abonnement a été suspendu|(best[aä]tigen|[üu]berpr[üu]fen|aktualisieren|verifizieren) sie ihre (pers[öo]nlichen )?daten|daten jetzt (best[aä]tigen|aktualisieren|verifizieren)/i;
 
 function hostOf(url: string): string | null {
   try {
@@ -382,6 +399,16 @@ ${bodyWithoutLinks}`.match(MIXED_SCRIPT_WORD)?.length ?? 0;
   if (LIQUIDATION_PATTERN.test(words)) {
     findings.push({
       code: 'liquidation-offer',
+      severity: 'warning',
+    });
+  }
+  if (
+    EXTORTION_PAYMENT_PATTERN.test(words) &&
+    EXTORTION_WALLET_PATTERN.test(words) &&
+    EXTORTION_THREAT_PATTERNS.filter((pattern) => pattern.test(words)).length >= EXTORTION_MIN_THREATS
+  ) {
+    findings.push({
+      code: 'extortion-threat',
       severity: 'warning',
     });
   }

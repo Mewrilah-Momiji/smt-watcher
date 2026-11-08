@@ -371,6 +371,7 @@ export const it: Messages = {
     'recipients-hidden': { title: 'Destinatari nascosti', detail: () => 'Il campo To manca o non nomina nessuno. Gli invii di massa mettono così tutti i destinatari in Ccn.' },
     'subject-missing': { title: 'Nessun oggetto', detail: () => 'L’e-mail non ha oggetto. Lo spam di massa spesso lo omette.' },
     'crypto-recovery': { title: 'Offre di recuperare cripto perse', detail: () => 'I truffatori promettono di recuperare il denaro perso in truffe con cripto o forex e chiedono commissioni in anticipo. Non rispondere.' },
+    'extortion-threat': { title: 'Estorsione: minacce e richiesta di bitcoin', detail: () => 'Una nota truffa di estorsione: il mittente afferma di avere video di te o accesso al tuo dispositivo e chiede bitcoin. Di norma non ci sono né video né accesso. Non pagare e non rispondere. Se l’e-mail cita una tua password reale, cambiala.' },
     'advertorial': { title: 'Pubblicità travestita da articolo', detail: () => 'L’e-mail si presenta come rapporto speciale o publiredazionale. Così si vendono spesso prodotti dubbi per la salute o il denaro.' },
     'plain-password': { title: 'Contiene una password in chiaro', detail: () => 'I servizi seri non inviano password per e-mail. Se non ti sei registrato, non accedere lì. Altrimenti cambia la password.' },
     'reply-to-freemail': { title: 'Le risposte vanno a un indirizzo gratuito', detail: (p) => `L’e-mail arriva da ${p.domain}, ma le risposte vanno a ${p.other}, un provider di posta gratuito. Le aziende ricevono le risposte sul proprio dominio.` },

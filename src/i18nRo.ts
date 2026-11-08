@@ -371,6 +371,7 @@ export const ro: Messages = {
     'recipients-hidden': { title: 'Destinatari ascunși', detail: () => 'Câmpul To lipsește sau nu numește pe nimeni. Trimiterile în masă pun astfel toți destinatarii în Bcc.' },
     'subject-missing': { title: 'Fără subiect', detail: () => 'E-mailul nu are subiect. Spamul în masă îl omite adesea.' },
     'crypto-recovery': { title: 'Oferă recuperarea banilor cripto pierduți', detail: () => 'Escrocii promit să recupereze banii pierduți în fraude cu cripto sau forex și cer taxe în avans. Nu răspunde.' },
+    'extortion-threat': { title: 'Șantaj: amenințări și cerere de bitcoin', detail: () => 'O fraudă de șantaj cunoscută: expeditorul susține că are videoclipuri cu tine sau acces la dispozitivul tău și cere bitcoin. De regulă nu există nici videoclipuri, nici acces. Nu plăti și nu răspunde. Dacă e-mailul menționează o parolă reală de-a ta, schimb-o.' },
     'advertorial': { title: 'Reclamă deghizată în articol', detail: () => 'E-mailul se numește raport special sau advertorial. Așa se vând adesea produse dubioase de sănătate și bani.' },
     'plain-password': { title: 'Conține o parolă în text clar', detail: () => 'Serviciile serioase nu trimit parole prin e-mail. Dacă nu te-ai înregistrat, nu te autentifica acolo. Altfel schimbă parola.' },
     'reply-to-freemail': { title: 'Răspunsurile merg la o adresă gratuită', detail: (p) => `E-mailul vine de la ${p.domain}, dar răspunsurile merg la ${p.other}, un furnizor de e-mail gratuit. Firmele primesc răspunsuri pe propriul domeniu.` },

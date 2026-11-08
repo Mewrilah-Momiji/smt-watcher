@@ -371,6 +371,7 @@ export const nb: Messages = {
     'recipients-hidden': { title: 'Skjulte mottakere', detail: () => 'Feltet To mangler eller nevner ingen. Masseutsendelser legger slik alle mottakere i Bcc.' },
     'subject-missing': { title: 'Intet emne', detail: () => 'E-posten har intet emne. Massespam utelater det ofte.' },
     'crypto-recovery': { title: 'Tilbyr å hente tilbake tapte kryptopenger', detail: () => 'Svindlere lover å hente tilbake penger tapt i krypto- eller forexsvindel og krever gebyrer på forhånd. Ikke svar.' },
+    'extortion-threat': { title: 'Utpressing: trusler og krav om bitcoin', detail: () => 'Et kjent utpressingsbedrageri: Avsenderen påstår å ha videoer av deg eller tilgang til enheten din og krever bitcoin. Som regel finnes det verken videoer eller tilgang. Ikke betal, og ikke svar. Nevner e-posten et ekte passord du bruker, så bytt det.' },
     'advertorial': { title: 'Reklame forkledd som artikkel', detail: () => 'E-posten kaller seg en spesialrapport eller advertorial. Slik selges ofte tvilsomme helse- og pengeprodukter.' },
     'plain-password': { title: 'Inneholder et passord i klartekst', detail: () => 'Seriøse tjenester sender ikke passord på e-post. Har du ikke registrert deg, så ikke logg inn der. Ellers bytt passordet.' },
     'reply-to-freemail': { title: 'Svar går til en gratis e-postadresse', detail: (p) => `E-posten kommer fra ${p.domain}, men svar går til ${p.other}, en gratis e-postleverandør. Firmaer tar imot svar på sitt eget domene.` },

@@ -40,6 +40,8 @@ const WEIGHTS: Record<FindingCode, number> = {
   'hidden-filler-text': 2,
   'to-stranger': 1,
   'crypto-recovery': 2,
+  // Measured on 2026-11-08: 1 of 244 private spam emails and 3 in the public spam and phishing collections, none of 1872 legitimate emails or 5149 Apache list emails.
+  'extortion-threat': 3,
   'advertorial': 1,
   'plain-password': 1,
   'reply-to-freemail': 2,
@@ -75,7 +77,7 @@ const WEIGHTS: Record<FindingCode, number> = {
   'message-id-missing': 0,
 };
 
-const PHISHING_CODES = new Set<FindingCode>(['brand-impersonation', 'display-name-spoof', 'credential-request', 'risky-attachment', 'link-ip-host', 'hidden-characters', 'mixed-script-words', 'styled-letters', 'windfall-promise', 'liquidation-offer', 'crypto-recovery', 'gift-shipping-fee']);
+const PHISHING_CODES = new Set<FindingCode>(['brand-impersonation', 'display-name-spoof', 'credential-request', 'risky-attachment', 'link-ip-host', 'hidden-characters', 'mixed-script-words', 'styled-letters', 'windfall-promise', 'liquidation-offer', 'crypto-recovery', 'gift-shipping-fee', 'extortion-threat']);
 
 const MANY_SIGNS_SCORE = 3;
 

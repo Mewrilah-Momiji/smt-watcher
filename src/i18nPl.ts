@@ -371,6 +371,7 @@ export const pl: Messages = {
     'recipients-hidden': { title: 'Ukryci odbiorcy', detail: () => 'Brak pola To lub nikogo w nim nie wskazano. Masowe wysyłki umieszczają tak wszystkich odbiorców w UDW.' },
     'subject-missing': { title: 'Brak tematu', detail: () => 'Wiadomość nie ma tematu. Masowy spam często go pomija.' },
     'crypto-recovery': { title: 'Oferuje odzyskanie utraconych kryptowalut', detail: () => 'Oszuści obiecują odzyskać pieniądze utracone w oszustwach kryptowalutowych lub forex i żądają opłat z góry. Nie odpowiadaj.' },
+    'extortion-threat': { title: 'Wymuszenie: groźby i żądanie bitcoinów', detail: () => 'Znane oszustwo z wymuszeniem: nadawca twierdzi, że ma nagrania z tobą lub dostęp do twojego urządzenia, i żąda bitcoinów. Zwykle nie ma ani nagrań, ani dostępu. Nie płać i nie odpowiadaj. Jeśli wiadomość podaje twoje prawdziwe hasło, zmień je.' },
     'advertorial': { title: 'Reklama udająca artykuł', detail: () => 'Wiadomość nazywa siebie raportem specjalnym lub artykułem sponsorowanym. Tak często sprzedaje się wątpliwe produkty zdrowotne i finansowe.' },
     'plain-password': { title: 'Zawiera hasło jawnym tekstem', detail: () => 'Poważne serwisy nie wysyłają haseł e-mailem. Jeśli się nie rejestrowałeś, nie loguj się tam. W przeciwnym razie zmień hasło.' },
     'reply-to-freemail': { title: 'Odpowiedzi trafiają na darmowy adres', detail: (p) => `Wiadomość pochodzi z ${p.domain}, ale odpowiedzi trafiają do ${p.other}, darmowej poczty. Firmy odbierają odpowiedzi we własnej domenie.` },

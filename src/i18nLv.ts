@@ -371,6 +371,7 @@ export const lv: Messages = {
     'recipients-hidden': { title: 'Slēpti saņēmēji', detail: () => 'Lauks To trūkst vai nenosauc nevienu. Masveida vēstules tā liek visus saņēmējus Bcc laukā.' },
     'subject-missing': { title: 'Nav temata', detail: () => 'E-pastam nav temata. Masveida surogātpasts to bieži izlaiž.' },
     'crypto-recovery': { title: 'Piedāvā atgūt zaudētu kriptonaudu', detail: () => 'Krāpnieki sola atgūt kripto vai forex krāpšanā zaudētu naudu un pieprasa maksu iepriekš. Neatbildi.' },
+    'extortion-threat': { title: 'Izspiešana: draudi un bitkoinu prasība', detail: () => 'Zināma izspiešanas krāpšana: sūtītājs apgalvo, ka viņam ir video ar tevi vai piekļuve tavai ierīcei, un pieprasa bitkoinus. Parasti nav ne video, ne piekļuves. Nemaksā un neatbildi. Ja e-pastā minēta kāda tava īsta parole, nomaini to.' },
     'advertorial': { title: 'Reklāma, maskēta kā raksts', detail: () => 'E-pasts sevi sauc par īpašu ziņojumu vai advertorial. Tā bieži pārdod apšaubāmus veselības un naudas produktus.' },
     'plain-password': { title: 'Satur paroli atklātā tekstā', detail: () => 'Uzticami pakalpojumi nesūta paroles pa e-pastu. Ja nereģistrējies, tur nepiesakies. Citādi nomaini paroli.' },
     'reply-to-freemail': { title: 'Atbildes nonāk bezmaksas adresē', detail: (p) => `E-pasts nāk no ${p.domain}, bet atbildes nonāk ${p.other}, bezmaksas e-pasta pakalpojumā. Uzņēmumi saņem atbildes savā domēnā.` },
