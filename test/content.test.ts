@@ -132,6 +132,16 @@ describe('findContentIssues', () => {
     expect(codes({ bodyText: `Wir bitten Sie, Ihre Daten zu überprüfen. ${link}` })).toEqual([]);
   });
 
+  it('counts a fake storage alert with a link', () => {
+    const link = 'https://a.example/';
+    expect(codes({ bodyText: `Cloud Services Disabled. Your storage limit has been reached. ${link}` })).toEqual(['credential-request']);
+    expect(codes({ bodyText: `Please upgrade your storage plan today. ${link}` })).toEqual(['credential-request']);
+    expect(codes({ bodyText: `Ihr Speicherplatz ist voll. ${link}` })).toEqual(['credential-request']);
+    expect(codes({ bodyText: `ストレージプランの更新失敗によるデータ消失のご注意 ${link}` })).toEqual(['foreign-script', 'credential-request']);
+    // Without a link it is only a statement.
+    expect(codes({ bodyText: 'Your storage limit has been reached.' })).toEqual([]);
+  });
+
   it('accepts a link to the same name on another ending, but not another name', () => {
     expect(codes({ bodyHtml: '<a href="https://www.dpd.com/x">dpd.de</a>' })).toEqual([]);
     expect(codes({ bodyHtml: '<a href="https://www.dpd-post.com/x">dpd.de</a>' })).toEqual(['link-text-mismatch']);

@@ -4,6 +4,10 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.39 - 2026-11-09
+
+- Fake storage alerts such as "storage limit reached" or "Cloud services disabled" with a link now count as a request for your account, in English, German and Japanese.
+
 ## 0.5.38 - 2026-11-08
 
 - New sign: extortion emails that claim to have videos of you or access to your device and demand Bitcoin.

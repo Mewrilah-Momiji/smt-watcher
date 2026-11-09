@@ -128,6 +128,9 @@ const HTML_EXTENSIONS = new Set(['html', 'htm', 'shtml']);
 const RISKY_EXTENSIONS = new Set(['exe', 'scr', 'com', 'bat', 'cmd', 'pif', 'js', 'jse', 'vbs', 'vbe', 'wsf', 'hta', 'lnk', 'msi', 'iso', 'img', 'ps1', 'jar', ...HTML_EXTENSIONS, 'docm', 'xlsm']);
 
 // "Bestätigen Sie Ihre Daten" and "Daten jetzt bestätigen" were added on 2026-11-08: 1 of 244 private spam emails, none of 1872 legitimate ones.
+// Fake storage alerts that lure to a login page. Measured on 2026-11-09 in emails with a link: 6 of 254 private spam emails
+// (3 of them Japanese), 4 in Nazario 2023-2025, 19 in Untroubled 2026-09/10, none of 1872 legitimate emails or 5149 Apache list emails.
+const STORAGE_ALERT_PATTERN = /storage (limit|space|quota|capacity)[^.!\n]{0,40}(reached|full|exceeded|used up)|storage plan[^.!\n]{0,60}(expired|expiring|failed|renew|upgrade|suspended)|(renew|upgrade|update) your storage plan|(cloud|storage|drive|backup) (services? |account )?(has been |have been |is |are )?(disabled|suspended|paused|deactivated|blocked)|speicher(platz|limit|kapazität|plan)[^.!\n]{0,40}(voll|erreicht|überschritten|aufgebraucht|abgelaufen|läuft ab)|(cloud|speicher|backup)[- ]?(dienste?|konto)?[^.!\n]{0,20}(deaktiviert|gesperrt|pausiert|ausgesetzt)|ストレージ[^。\n]{0,30}(更新|容量|上限|失敗|停止|消失)/i;
 /** A request, not a mention: legitimate emails often just name login details, for example to warn about phishing. */
 const CREDENTIAL_PATTERN = /passwort (best[aä]tigen|eingeben|erneuern)|konto (verifizieren|best[aä]tigen|gesperrt|wird gesperrt)|(zugangs|anmelde)daten (best[aä]tigen|eingeben|aktualisieren|[üu]berpr[üu]fen|verifizieren)|(best[aä]tigen|aktualisieren|[üu]berpr[üu]fen|verifizieren) sie ihre (zugangs|anmelde)daten|verify your (account|identity|login details)|confirm your (account|password|login details)|account (suspended|locked|will be)|update your (information|payment|billing|details)|(zahlungs|konto|bank)(daten|informationen|angaben) (aktualisieren|best[aä]tigen|[üu]berpr[üu]fen)|[üu]berpr[üu]fen sie ihre (zahlungs|konto|bank)daten|aktualisieren sie ihre (zahlungs|konto|bank)?(daten|informationen|angaben)|your (account|mailbox|email) (has been|will be) (suspended|locked|deactivated|disabled|closed)|password (will )?expires? (today|soon|in)|email quota|mailbox (is )?full|verify your email (address|account)|cuenta (ha sido |será |sera )?(suspendida|bloqueada|desactivada)|verifi(ca|que) (tu|su) cuenta|conta (foi |será )?(suspensa|bloqueada)|verifi(que|car) (sua|a sua) conta|compte (a été |sera )?(suspendu|bloqué|désactivé)|vérifie[rz]? (votre|ton) compte|abonnement a été suspendu|(best[aä]tigen|[üu]berpr[üu]fen|aktualisieren|verifizieren) sie ihre (pers[öo]nlichen )?daten|daten jetzt (best[aä]tigen|aktualisieren|verifizieren)/i;
 
@@ -487,7 +490,7 @@ ${bodyWithoutLinks}`.match(MIXED_SCRIPT_WORD)?.length ?? 0;
     }
   }
 
-  if (links.length > 0 && CREDENTIAL_PATTERN.test(words)) {
+  if (links.length > 0 && (CREDENTIAL_PATTERN.test(words) || STORAGE_ALERT_PATTERN.test(words))) {
     findings.push({
       code: 'credential-request',
       severity: 'note',
