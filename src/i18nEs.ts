@@ -405,5 +405,7 @@ export const es: Messages = {
     'gift-shipping-fee': { title: 'Promete un regalo del que solo pagas el envío', detail: () => 'El correo dice que alguien te ha pedido un regalo y solicita tu dirección y los gastos de envío. No hay paquete: buscan la tarifa y tus datos de pago.' },
     'hidden-filler-text': { title: 'Esconde texto muy por debajo del mensaje', detail: () => 'El correo empuja texto adicional muy abajo, donde no se ve. Los spammers lo hacen para colar palabras inofensivas ante los filtros de spam.' },
     'to-stranger': { title: 'Dirigido a otra persona', detail: (p) => `El campo To nombra una dirección de ${p.other}, no a ti. Solo recibiste una copia en Cco. Está bien si la esperabas, pero los spammers suelen enviar así a muchas personas.` },
+    'sender-cloud-vm': { title: 'Enviado desde un servidor en la nube alquilado', detail: (p) => `El correo llegó a tu proveedor directamente desde ${p.host}, un servidor virtual alquilado. Las empresas suelen enviar a través de un servicio de correo, mientras que los spammers alquilan a menudo estos servidores por unas horas.` },
+    'date-in-future': { title: 'Fecha en el futuro', detail: (p) => `El correo dice haberse escrito unas ${p.hours} horas después de que tu proveedor lo recibiera. Los spammers falsifican la fecha para que su correo quede arriba en la bandeja de entrada.` },
   },
 };

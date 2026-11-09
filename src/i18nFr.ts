@@ -405,5 +405,7 @@ export const fr: Messages = {
     'gift-shipping-fee': { title: 'Promet un cadeau dont seule la livraison est à payer', detail: () => 'Le courriel prétend que quelqu’un t’a commandé un cadeau et demande ton adresse et les frais de port. Il n’y a pas de colis : le but est les frais et tes données de paiement.' },
     'hidden-filler-text': { title: 'Cache du texte loin sous le message', detail: () => 'Le courriel repousse du texte supplémentaire tout en bas, hors de vue. Les spammeurs font passer ainsi des mots anodins devant les filtres anti-spam.' },
     'to-stranger': { title: 'Adressé à quelqu’un d’autre', detail: (p) => `Le champ To nomme une adresse chez ${p.other}, pas toi. Tu n’as reçu qu’une copie en Cci. C’est normal si tu l’attendais, mais les spammeurs envoient souvent ainsi à beaucoup de gens.` },
+    'sender-cloud-vm': { title: 'Envoyé depuis un serveur cloud loué', detail: (p) => `L’e-mail est arrivé chez ton fournisseur directement depuis ${p.host}, un serveur virtuel loué. Les entreprises passent en général par un service d’e-mail, alors que les spammeurs louent souvent ces serveurs pour quelques heures.` },
+    'date-in-future': { title: 'Daté dans le futur', detail: (p) => `L’e-mail prétend avoir été écrit environ ${p.hours} heures après sa réception par ton fournisseur. Les spammeurs falsifient la date pour que leur e-mail reste en haut de la boîte de réception.` },
   },
 };

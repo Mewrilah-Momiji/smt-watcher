@@ -405,5 +405,7 @@ export const it: Messages = {
     'gift-shipping-fee': { title: 'Promette un regalo di cui paghi solo la spedizione', detail: () => 'L’e-mail dice che qualcuno ti ha ordinato un regalo e chiede il tuo indirizzo e le spese di spedizione. Non c’è nessun pacco: lo scopo è la tariffa e i tuoi dati di pagamento.' },
     'hidden-filler-text': { title: 'Nasconde testo molto sotto il messaggio', detail: () => 'L’e-mail spinge altro testo molto in basso, fuori vista. Gli spammer lo fanno per far passare parole innocue oltre i filtri antispam.' },
     'to-stranger': { title: 'Indirizzata a qualcun altro', detail: (p) => `Il campo To nomina un indirizzo di ${p.other}, non te. Hai ricevuto solo una copia in Ccn. Va bene se te l’aspettavi, ma gli spammer spesso inviano così a molte persone.` },
+    'sender-cloud-vm': { title: 'Inviata da un server cloud a noleggio', detail: (p) => `L’e-mail è arrivata al tuo provider direttamente da ${p.host}, un server virtuale a noleggio. Le aziende di solito inviano tramite un servizio di posta, mentre gli spammer noleggiano spesso questi server per poche ore.` },
+    'date-in-future': { title: 'Data nel futuro', detail: (p) => `L’e-mail dice di essere stata scritta circa ${p.hours} ore dopo che il tuo provider l’ha ricevuta. Gli spammer falsificano la data perché la loro e-mail resti in cima alla casella.` },
   },
 };

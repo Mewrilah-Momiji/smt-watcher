@@ -405,5 +405,7 @@ export const sv: Messages = {
     'gift-shipping-fee': { title: 'Lovar en gåva där bara frakten ska betalas', detail: () => 'Mejlet säger att någon har beställt en gåva till dig och ber om din adress och fraktkostnaden. Det finns inget paket: målet är avgiften och dina betalningsuppgifter.' },
     'hidden-filler-text': { title: 'Döljer text långt under meddelandet', detail: () => 'Mejlet skjuter extra text långt ner, utom synhåll. Spammare gör så för att smyga förbi ofarliga ord genom spamfilter.' },
     'to-stranger': { title: 'Adresserat till någon annan', detail: (p) => `Fältet To nämner en adress hos ${p.other}, inte dig. Du fick bara en kopia i Bcc. Det är okej om du väntade den, men spammare skickar ofta så till många.` },
+    'sender-cloud-vm': { title: 'Skickat från en hyrd molnserver', detail: (p) => `Mejlet kom till din leverantör direkt från ${p.host}, en hyrd virtuell server. Företag skickar oftast via en e-posttjänst, medan spammare ofta hyr sådana servrar för några timmar.` },
+    'date-in-future': { title: 'Daterat i framtiden', detail: (p) => `Mejlet påstår att det skrevs ungefär ${p.hours} timmar efter att din leverantör tog emot det. Spammare förfalskar datumet så att mejlet ligger kvar högst upp i inkorgen.` },
   },
 };

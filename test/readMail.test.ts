@@ -25,6 +25,7 @@ describe('parseReceived', () => {
       from: 'a.example',
       by: 'b.example',
       ip: '198.51.100.7',
+      reverseName: 'a.example',
       date: 'Sun, 01 Nov 2026 10:00:02 +0100',
     });
   });

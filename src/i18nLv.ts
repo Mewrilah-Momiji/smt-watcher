@@ -405,5 +405,7 @@ export const lv: Messages = {
     'gift-shipping-fee': { title: 'Sola dāvanu, par kuru jāmaksā tikai piegāde', detail: () => 'E-pastā teikts, ka kāds tev pasūtījis dāvanu, un prasīta tava adrese un piegādes izmaksas. Sūtījuma nav: mērķis ir maksa un tavi maksājumu dati.' },
     'hidden-filler-text': { title: 'Slēpj tekstu tālu zem ziņas', detail: () => 'E-pasts pabīda papildu tekstu tālu uz leju, kur to neredz. Tā surogātpasta sūtītāji paslīdina nekaitīgus vārdus garām filtriem.' },
     'to-stranger': { title: 'Adresēts kādam citam', detail: (p) => `Lauks To nosauc adresi ${p.other}, nevis tevi. Tu saņēmi tikai kopiju Bcc laukā. Tas ir kārtībā, ja to gaidīji, bet surogātpasta sūtītāji bieži tā sūta daudziem.` },
+    'sender-cloud-vm': { title: 'Nosūtīts no īrēta mākoņservera', detail: (p) => `E-pasts nonāca pie tava pakalpojumu sniedzēja tieši no ${p.host} – īrēta virtuālā servera. Uzņēmumi parasti sūta caur pasta pakalpojumu, bet surogātpasta sūtītāji šādus serverus bieži īrē uz dažām stundām.` },
+    'date-in-future': { title: 'Datums ir nākotnē', detail: (p) => `E-pasts apgalvo, ka uzrakstīts aptuveni ${p.hours} stundas pēc tam, kad tavs pakalpojumu sniedzējs to saņēma. Surogātpasta sūtītāji vilto datumu, lai viņu vēstule paliktu iesūtnes augšā.` },
   },
 };

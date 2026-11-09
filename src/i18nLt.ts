@@ -405,5 +405,7 @@ export const lt: Messages = {
     'gift-shipping-fee': { title: 'Žada dovaną, už kurią reikia sumokėti tik siuntimą', detail: () => 'Laiške teigiama, kad kažkas tau užsakė dovaną, ir prašoma tavo adreso bei siuntimo išlaidų. Siuntinio nėra: tikslas yra mokestis ir tavo mokėjimo duomenys.' },
     'hidden-filler-text': { title: 'Slepia tekstą toli po žinute', detail: () => 'Laiškas nustumia papildomą tekstą toli žemyn, kur jo nesimato. Taip šiukšlių siuntėjai prakiša nekaltus žodžius pro šlamšto filtrus.' },
     'to-stranger': { title: 'Adresuota kažkam kitam', detail: (p) => `Laukas To nurodo adresą ${p.other}, o ne tave. Gavai tik kopiją Bcc lauke. Tai gerai, jei jos laukei, bet šiukšlių siuntėjai dažnai taip siunčia daugeliui.` },
+    'sender-cloud-vm': { title: 'Išsiųsta iš nuomojamo debesų serverio', detail: (p) => `Laiškas pasiekė tavo paslaugų teikėją tiesiai iš ${p.host} – nuomojamo virtualaus serverio. Įmonės paprastai siunčia per pašto paslaugą, o šiukšlių siuntėjai tokius serverius dažnai išsinuomoja kelioms valandoms.` },
+    'date-in-future': { title: 'Data ateityje', detail: (p) => `Laiške teigiama, kad jis parašytas maždaug ${p.hours} val. po to, kai tavo paslaugų teikėjas jį gavo. Šiukšlių siuntėjai klastoja datą, kad jų laiškas liktų pašto dėžutės viršuje.` },
   },
 };

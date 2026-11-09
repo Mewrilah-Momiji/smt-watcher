@@ -405,5 +405,7 @@ export const pl: Messages = {
     'gift-shipping-fee': { title: 'Obiecuje prezent, za który płacisz tylko wysyłkę', detail: () => 'Wiadomość twierdzi, że ktoś zamówił dla ciebie prezent, i prosi o twój adres oraz koszty wysyłki. Paczki nie ma: chodzi o opłatę i twoje dane płatnicze.' },
     'hidden-filler-text': { title: 'Ukrywa tekst daleko pod wiadomością', detail: () => 'Wiadomość spycha dodatkowy tekst daleko w dół, poza widok. Spamerzy robią tak, by przemycić niewinne słowa obok filtrów antyspamowych.' },
     'to-stranger': { title: 'Zaadresowane do kogoś innego', detail: (p) => `Pole To wskazuje adres w ${p.other}, a nie ciebie. Dostałeś tylko kopię w UDW. To w porządku, jeśli jej oczekiwałeś, ale spamerzy często wysyłają tak do wielu osób.` },
+    'sender-cloud-vm': { title: 'Wysłane z wynajętego serwera w chmurze', detail: (p) => `E-mail dotarł do twojego dostawcy bezpośrednio z ${p.host}, wynajętego serwera wirtualnego. Firmy zwykle wysyłają przez usługę pocztową, a spamerzy często wynajmują takie serwery na kilka godzin.` },
+    'date-in-future': { title: 'Data w przyszłości', detail: (p) => `E-mail twierdzi, że został napisany około ${p.hours} godz. po tym, jak odebrał go twój dostawca. Spamerzy fałszują datę, aby ich wiadomość pozostała na górze skrzynki.` },
   },
 };

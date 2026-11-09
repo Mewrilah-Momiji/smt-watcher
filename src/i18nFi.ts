@@ -405,5 +405,7 @@ export const fi: Messages = {
     'gift-shipping-fee': { title: 'Lupaa lahjan, josta maksetaan vain toimitus', detail: () => 'Viesti väittää, että joku tilasi sinulle lahjan, ja pyytää osoitettasi ja toimituskuluja. Pakettia ei ole: tavoitteena on maksu ja maksutietosi.' },
     'hidden-filler-text': { title: 'Piilottaa tekstiä kauas viestin alle', detail: () => 'Viesti siirtää lisätekstiä kauas alas näkyvistä. Roskapostittajat tekevät näin saadakseen harmittomia sanoja roskapostisuodattimien ohi.' },
     'to-stranger': { title: 'Osoitettu jollekulle muulle', detail: (p) => `To-kenttä nimeää osoitteen verkkotunnuksessa ${p.other}, ei sinua. Sait vain kopion Bcc-kentässä. Se on kunnossa, jos odotit sitä, mutta roskapostittajat lähettävät usein näin monille.` },
+    'sender-cloud-vm': { title: 'Lähetetty vuokratulta pilvipalvelimelta', detail: (p) => `Sähköposti saapui palveluntarjoajallesi suoraan palvelimelta ${p.host}, joka on vuokrattu virtuaalipalvelin. Yritykset lähettävät yleensä sähköpostipalvelun kautta, roskapostittajat vuokraavat tällaisia palvelimia usein muutamaksi tunniksi.` },
+    'date-in-future': { title: 'Päiväys on tulevaisuudessa', detail: (p) => `Sähköposti väittää, että se kirjoitettiin noin ${p.hours} tuntia sen jälkeen, kun palveluntarjoajasi vastaanotti sen. Roskapostittajat väärentävät päiväyksen, jotta viesti pysyisi saapuneiden kansion yläpäässä.` },
   },
 };

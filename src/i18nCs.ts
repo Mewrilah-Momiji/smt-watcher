@@ -405,5 +405,7 @@ export const cs: Messages = {
     'gift-shipping-fee': { title: 'Slibuje dárek, u kterého se platí jen doprava', detail: () => 'E-mail tvrdí, že ti někdo objednal dárek, a chce tvou adresu a poštovné. Žádný balík není: jde o poplatek a tvé platební údaje.' },
     'hidden-filler-text': { title: 'Skrývá text hluboko pod zprávou', detail: () => 'E-mail odsouvá další text daleko dolů, kde není vidět. Spammeři tak propašují neškodná slova přes spamové filtry.' },
     'to-stranger': { title: 'Adresováno někomu jinému', detail: (p) => `Pole To uvádí adresu u ${p.other}, ne tebe. Dostal jsi jen kopii v Bcc. To je v pořádku, pokud jsi ji čekal, spammeři ale takto často rozesílají mnoha lidem.` },
+    'sender-cloud-vm': { title: 'Odesláno z pronajatého cloudového serveru', detail: (p) => `E-mail dorazil k tvému poskytovateli přímo z ${p.host}, pronajatého virtuálního serveru. Firmy obvykle posílají přes poštovní službu, spammeři si takové servery často pronajímají na pár hodin.` },
+    'date-in-future': { title: 'Datum je v budoucnosti', detail: (p) => `E-mail tvrdí, že byl napsán asi ${p.hours} hodin poté, co ho tvůj poskytovatel přijal. Spammeři datum falšují, aby jejich e-mail zůstal nahoře ve schránce.` },
   },
 };

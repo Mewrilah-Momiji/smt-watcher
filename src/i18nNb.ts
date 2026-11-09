@@ -405,5 +405,7 @@ export const nb: Messages = {
     'gift-shipping-fee': { title: 'Lover en gave der bare frakten må betales', detail: () => 'E-posten sier at noen har bestilt en gave til deg, og ber om adressen din og fraktkostnadene. Det finnes ingen pakke: målet er gebyret og betalingsopplysningene dine.' },
     'hidden-filler-text': { title: 'Skjuler tekst langt under meldingen', detail: () => 'E-posten skyver ekstra tekst langt ned, ute av syne. Spammere gjør dette for å få harmløse ord forbi spamfiltre.' },
     'to-stranger': { title: 'Adressert til noen andre', detail: (p) => `Feltet To nevner en adresse hos ${p.other}, ikke deg. Du fikk bare en kopi i Bcc. Det er greit hvis du ventet den, men spammere sender ofte slik til mange.` },
+    'sender-cloud-vm': { title: 'Sendt fra en leid skyserver', detail: (p) => `E-posten kom til leverandøren din rett fra ${p.host}, en leid virtuell server. Bedrifter sender vanligvis via en e-posttjeneste, mens spammere ofte leier slike servere i noen timer.` },
+    'date-in-future': { title: 'Datert i fremtiden', detail: (p) => `E-posten hevder å være skrevet omtrent ${p.hours} timer etter at leverandøren din mottok den. Spammere forfalsker datoen slik at e-posten blir liggende øverst i innboksen.` },
   },
 };

@@ -405,5 +405,7 @@ export const nl: Messages = {
     'gift-shipping-fee': { title: 'Belooft een cadeau waarvoor je alleen de verzending betaalt', detail: () => 'De e-mail zegt dat iemand een cadeau voor je heeft besteld en vraagt om je adres en de verzendkosten. Er is geen pakket: het gaat om de kosten en je betaalgegevens.' },
     'hidden-filler-text': { title: 'Verbergt tekst ver onder het bericht', detail: () => 'De e-mail duwt extra tekst ver naar beneden, uit het zicht. Spammers doen dit om onschuldige woorden langs spamfilters te smokkelen.' },
     'to-stranger': { title: 'Aan iemand anders gericht', detail: (p) => `Het veld To noemt een adres bij ${p.other}, niet jou. Je kreeg alleen een kopie in Bcc. Dat is prima als je hem verwachtte, maar spammers versturen vaak zo aan velen.` },
+    'sender-cloud-vm': { title: 'Verstuurd vanaf een gehuurde cloudserver', detail: (p) => `De e-mail kwam rechtstreeks van ${p.host} bij je provider aan, een gehuurde virtuele server. Bedrijven versturen meestal via een maildienst, spammers huren zulke servers vaak voor een paar uur.` },
+    'date-in-future': { title: 'Gedateerd in de toekomst', detail: (p) => `De e-mail beweert ongeveer ${p.hours} uur na ontvangst door je provider geschreven te zijn. Spammers vervalsen de datum zodat hun e-mail bovenaan in de inbox blijft staan.` },
   },
 };

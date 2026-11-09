@@ -405,5 +405,7 @@ export const hr: Messages = {
     'gift-shipping-fee': { title: 'Obećava poklon za koji se plaća samo dostava', detail: () => 'E-pošta tvrdi da ti je netko naručio poklon i traži tvoju adresu i troškove dostave. Paketa nema: cilj su naknada i tvoji podaci za plaćanje.' },
     'hidden-filler-text': { title: 'Skriva tekst daleko ispod poruke', detail: () => 'E-pošta gura dodatni tekst daleko dolje, izvan pogleda. Pošiljatelji neželjene pošte tako provlače bezazlene riječi pored filtara.' },
     'to-stranger': { title: 'Naslovljeno na nekog drugog', detail: (p) => `Polje To navodi adresu na ${p.other}, ne tebe. Dobio si samo kopiju u Bcc-u. To je u redu ako si je očekivao, ali pošiljatelji neželjene pošte često tako šalju mnogima.` },
+    'sender-cloud-vm': { title: 'Poslano s unajmljenog poslužitelja u oblaku', detail: (p) => `E-pošta je stigla do tvog pružatelja izravno s ${p.host}, unajmljenog virtualnog poslužitelja. Tvrtke obično šalju preko usluge e-pošte, a pošiljatelji neželjene pošte često unajme takve poslužitelje na nekoliko sati.` },
+    'date-in-future': { title: 'Datum je u budućnosti', detail: (p) => `E-pošta tvrdi da je napisana oko ${p.hours} sati nakon što ju je tvoj pružatelj primio. Pošiljatelji neželjene pošte krivotvore datum kako bi njihova poruka ostala na vrhu pretinca.` },
   },
 };

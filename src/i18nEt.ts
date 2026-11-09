@@ -405,5 +405,7 @@ export const et: Messages = {
     'gift-shipping-fee': { title: 'Lubab kingitust, mille eest tuleb maksta ainult saatmine', detail: () => 'Kiri väidab, et keegi tellis sulle kingituse, ja küsib sinu aadressi ja saatekulusid. Pakki pole: eesmärk on tasu ja sinu makseandmed.' },
     'hidden-filler-text': { title: 'Peidab teksti kaugele sõnumi alla', detail: () => 'Kiri lükkab lisateksti kaugele alla, nähtavalt alalt välja. Nii poetavad spämmerid süütuid sõnu rämpspostifiltritest mööda.' },
     'to-stranger': { title: 'Adresseeritud kellelegi teisele', detail: (p) => `Väli To nimetab aadressi domeenis ${p.other}, mitte sind. Said ainult koopia Bcc-väljal. See on korras, kui sa seda ootasid, kuid spämmerid saadavad nii sageli paljudele.` },
+    'sender-cloud-vm': { title: 'Saadetud renditud pilveserverist', detail: (p) => `E-kiri jõudis sinu teenusepakkujani otse serverist ${p.host}, mis on renditud virtuaalserver. Ettevõtted saadavad tavaliselt meiliteenuse kaudu, rämpsposti saatjad rendivad selliseid servereid sageli mõneks tunniks.` },
+    'date-in-future': { title: 'Kuupäev on tulevikus', detail: (p) => `E-kiri väidab, et see kirjutati umbes ${p.hours} tundi pärast seda, kui sinu teenusepakkuja selle kätte sai. Rämpsposti saatjad võltsivad kuupäeva, et nende kiri püsiks postkastis ülal.` },
   },
 };

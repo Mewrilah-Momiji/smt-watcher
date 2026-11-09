@@ -405,5 +405,7 @@ export const hu: Messages = {
     'gift-shipping-fee': { title: 'Ajándékot ígér, amelyért csak a szállítást kell fizetni', detail: () => 'Az e-mail szerint valaki ajándékot rendelt neked, és elkéri a címedet és a szállítási díjat. Csomag nincs: a díj és a fizetési adataid a cél.' },
     'hidden-filler-text': { title: 'Szöveget rejt messze az üzenet alatt', detail: () => 'Az e-mail további szöveget tol messze lefelé, ahol nem látszik. A spammerek így juttatnak ártalmatlan szavakat a spamszűrők mellett.' },
     'to-stranger': { title: 'Valaki másnak címezték', detail: (p) => `A To mező egy ${p.other} címet nevez meg, nem téged. Csak egy másolatot kaptál Bcc-ben. Ez rendben van, ha vártad, de a spammerek gyakran így küldenek sokaknak.` },
+    'sender-cloud-vm': { title: 'Bérelt felhőszerverről küldték', detail: (p) => `Az e-mail közvetlenül a(z) ${p.host} bérelt virtuális szerverről érkezett a szolgáltatódhoz. A cégek általában levelezőszolgáltatáson keresztül küldenek, a spammerek viszont gyakran csak néhány órára bérelnek ilyen szervereket.` },
+    'date-in-future': { title: 'A dátum a jövőben van', detail: (p) => `Az e-mail szerint nagyjából ${p.hours} órával azután írták, hogy a szolgáltatód megkapta. A spammerek meghamisítják a dátumot, hogy levelük a postafiók tetején maradjon.` },
   },
 };

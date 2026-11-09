@@ -440,6 +440,8 @@ const en = {
     'gift-shipping-fee': { title: 'Claims a gift that only needs the shipping paid', detail: () => 'The email says someone ordered you a gift and asks for your address and the shipping costs. There is no parcel: the fee and your payment details are the goal.' },
     'hidden-filler-text': { title: 'Hides text far below the message', detail: () => 'The email pushes extra text far down, out of sight. Spammers do this to slip harmless words past spam filters.' },
     'to-stranger': { title: 'Addressed to someone else', detail: (p) => `The To field names an address at ${p.other}, not you. You only got a copy in Bcc. That is fine if you expected it, but spammers often send this way to many people.` },
+    'sender-cloud-vm': { title: 'Sent from a rented cloud server', detail: (p) => `The email reached your provider straight from ${p.host}, a rented virtual server. Companies usually send through a mail service, while spammers often rent such servers for a few hours.` },
+    'date-in-future': { title: 'Dated in the future', detail: (p) => `The email claims it was written about ${p.hours} hours after your provider received it. Spammers fake the date so that their email stays at the top of the inbox.` },
   } satisfies Record<FindingCode, FindingText> as Record<FindingCode, FindingText>,
 };
 
@@ -848,6 +850,8 @@ const de: typeof en = {
     'gift-shipping-fee': { title: 'Verspricht ein Geschenk, für das nur der Versand zu zahlen ist', detail: () => 'Die E-Mail behauptet, jemand habe dir ein Geschenk bestellt, und verlangt deine Adresse und die Versandkosten. Ein Paket gibt es nicht: Es geht um die Gebühr und deine Zahlungsdaten.' },
     'hidden-filler-text': { title: 'Versteckt Text weit unter der Nachricht', detail: () => 'Die E-Mail schiebt zusätzlichen Text weit nach unten, wo ihn niemand sieht. So schmuggeln Spammer harmlose Wörter an Spamfiltern vorbei.' },
     'to-stranger': { title: 'An jemand anderen adressiert', detail: (p) => `Das To-Feld nennt eine Adresse bei ${p.other}, nicht dich. Du hast nur eine Kopie im Bcc bekommen. Das ist in Ordnung, wenn du sie erwartet hast, Spammer verschicken aber oft so an viele.` },
+    'sender-cloud-vm': { title: 'Von einem gemieteten Cloud-Server verschickt', detail: (p) => `Die E-Mail kam direkt von ${p.host} bei deinem Anbieter an, einem gemieteten virtuellen Server. Firmen verschicken meist über einen Maildienst, Spammer mieten solche Server oft für wenige Stunden.` },
+    'date-in-future': { title: 'Datum liegt in der Zukunft', detail: (p) => `Die E-Mail gibt an, etwa ${p.hours} Stunden nach dem Eingang bei deinem Anbieter geschrieben worden zu sein. Spammer fälschen das Datum, damit ihre E-Mail oben im Posteingang bleibt.` },
   },
 };
 

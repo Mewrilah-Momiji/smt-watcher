@@ -58,7 +58,9 @@ export type FindingCode =
   | 'liquidation-offer'
   | 'gift-shipping-fee'
   | 'hidden-filler-text'
-  | 'to-stranger';
+  | 'to-stranger'
+  | 'sender-cloud-vm'
+  | 'date-in-future';
 
 export interface Finding {
   code: FindingCode;

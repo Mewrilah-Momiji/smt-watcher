@@ -2,7 +2,7 @@ import { decodeWords } from 'postal-mime';
 import { collectProviderSignals, providerSaysSpam, summarizeAuthentication, type AuthSummary, type ProviderSignal } from './auth';
 import { extractLinks, findContentIssues, type MailContent } from './content';
 import { baseDomain, findIssues, isSignedBySender, parseAddress, type Finding } from './findings';
-import { findRecipientAddresses } from './senderOrigin';
+import { findOriginIssues, findRecipientAddresses, findSenderOrigin } from './senderOrigin';
 
 export interface Header {
   name: string;
@@ -13,6 +13,8 @@ export interface ReceivedHop {
   from: string | null;
   by: string | null;
   ip: string | null;
+  /** The name the receiving server found for the IP address, written in parentheses before it. */
+  reverseName?: string | null;
   date: string | null;
 }
 
@@ -69,6 +71,7 @@ export function parseReceived(value: string): ReceivedHop {
       /\[(?:IPv6:)?([0-9a-f:.]+)\]/i.exec(fromPart)?.[1] ??
       /\(((?:\d{1,3}\.){3}\d{1,3}|[0-9a-f]*:[0-9a-f:.]+)\)/i.exec(fromPart)?.[1] ??
       null,
+    reverseName: /\(([^\s()[\]]+\.[^\s()[\]]+)\s+\[/.exec(fromPart)?.[1]?.toLowerCase().replace(/\.$/, '') ?? null,
     date: semicolon >= 0 ? value.slice(semicolon + 1).trim() || null : null,
   };
 }
@@ -103,6 +106,10 @@ export function buildReport(raw: string, content: Partial<MailContent> = {}): He
   const messageId = first('message-id');
   const authentication = summarizeAuthentication(headers);
   const sender = parseAddress(from);
+  const received = headers
+    .filter((h) => h.name.toLowerCase() === 'received')
+    .map((h) => parseReceived(h.value))
+    .reverse();
 
   return {
     from: from === null ? null : decodeWords(from),
@@ -131,6 +138,7 @@ export function buildReport(raw: string, content: Partial<MailContent> = {}): He
       // Providers also mark legitimate newsletters, so the verdict counts only for emails no sender signed.
       // Measured on 2026-11-05: 4 of the owner's 1872 legitimate emails, 52 of 237 spam emails.
       ...(providerSaysSpam(headers) && authentication.dkim?.result !== 'pass' ? [{ code: 'provider-spam-verdict' as const, severity: 'note' as const }] : []),
+      ...findOriginIssues(findSenderOrigin(received), first('date')),
       ...findContentIssues(
         { subject: subject ?? decoded('subject'), bodyText, bodyHtml: content.bodyHtml ?? null, attachmentNames: content.attachmentNames ?? [] },
         {
@@ -143,9 +151,6 @@ export function buildReport(raw: string, content: Partial<MailContent> = {}): He
         },
       ),
     ].sort((a, b) => Number(a.severity !== 'warning') - Number(b.severity !== 'warning')),
-    received: headers
-      .filter((h) => h.name.toLowerCase() === 'received')
-      .map((h) => parseReceived(h.value))
-      .reverse(),
+    received,
   };
 }
