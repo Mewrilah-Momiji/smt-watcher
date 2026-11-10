@@ -407,5 +407,6 @@ export const pt: Messages = {
     'to-stranger': { title: 'Dirigido a outra pessoa', detail: (p) => `O campo To indica um endereço em ${p.other}, não tu. Só recebeste uma cópia em Bcc. Está bem se a esperavas, mas os spammers enviam muitas vezes assim a muitas pessoas.` },
     'sender-cloud-vm': { title: 'Enviado a partir de um servidor na nuvem alugado', detail: (p) => `O email chegou ao teu fornecedor diretamente a partir de ${p.host}, um servidor virtual alugado. As empresas costumam enviar através de um serviço de email, enquanto os spammers alugam muitas vezes estes servidores por algumas horas.` },
     'date-in-future': { title: 'Data no futuro', detail: (p) => `O email afirma ter sido escrito cerca de ${p.hours} horas depois de o teu fornecedor o ter recebido. Os spammers falsificam a data para que o email fique no topo da caixa de entrada.` },
+    'reply-freemail-in-body': { title: 'Pede resposta para um endereço de email gratuito', detail: (p) => `O texto pede-te que escrevas para ${p.address}, um endereço de email gratuito que não pertence ao remetente. Os burlões levam a conversa para lá, longe da conta de onde escreveram.` },
   },
 };

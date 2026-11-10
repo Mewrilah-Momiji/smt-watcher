@@ -148,6 +148,7 @@ export function buildReport(raw: string, content: Partial<MailContent> = {}): He
           hasReplyHeaders: Boolean(first('in-reply-to') ?? first('references')),
           recipientAddresses: findRecipientAddresses(headers),
           signedBySender: isSignedBySender(sender?.domain, authentication.dkim),
+          isList: headers.some((h) => /^list-(id|post)$/i.test(h.name)),
         },
       ),
     ].sort((a, b) => Number(a.severity !== 'warning') - Number(b.severity !== 'warning')),

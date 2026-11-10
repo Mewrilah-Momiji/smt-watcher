@@ -407,5 +407,6 @@ export const ro: Messages = {
     'to-stranger': { title: 'Adresat altcuiva', detail: (p) => `Câmpul To numește o adresă de la ${p.other}, nu pe tine. Ai primit doar o copie în Bcc. E în regulă dacă o așteptai, dar spammerii trimit adesea așa către mulți.` },
     'sender-cloud-vm': { title: 'Trimis de pe un server cloud închiriat', detail: (p) => `E-mailul a ajuns la furnizorul tău direct de la ${p.host}, un server virtual închiriat. Firmele trimit de obicei printr-un serviciu de e-mail, iar spammerii închiriază adesea astfel de servere pentru câteva ore.` },
     'date-in-future': { title: 'Dată în viitor', detail: (p) => `E-mailul pretinde că a fost scris la aproximativ ${p.hours} ore după ce furnizorul tău l-a primit. Spammerii falsifică data ca e-mailul lor să rămână în partea de sus a căsuței.` },
+    'reply-freemail-in-body': { title: 'Cere răspuns la o adresă de e-mail gratuită', detail: (p) => `Textul îți cere să scrii la ${p.address}, o adresă de e-mail gratuită care nu aparține expeditorului. Escrocii mută conversația acolo, departe de contul de pe care au scris.` },
   },
 };

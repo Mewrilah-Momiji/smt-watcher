@@ -43,6 +43,8 @@ const WEIGHTS: Record<FindingCode, number> = {
   'sender-cloud-vm': 2,
   // Measured on 2026-11-09: 1 of 255 private spam emails and 21 in Nazario 2023-2025, none of 1872 legitimate or 5149 Apache list emails.
   'date-in-future': 1,
+  // Measured on 2026-11-10: 7 of 257 private spam emails and 13 in the public collections, none of 1872 legitimate emails or 5149 Apache list emails.
+  'reply-freemail-in-body': 2,
   'crypto-recovery': 2,
   // Measured on 2026-11-08: 1 of 244 private spam emails and 3 in the public spam and phishing collections, none of 1872 legitimate emails or 5149 Apache list emails.
   'extortion-threat': 3,

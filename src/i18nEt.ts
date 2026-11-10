@@ -407,5 +407,6 @@ export const et: Messages = {
     'to-stranger': { title: 'Adresseeritud kellelegi teisele', detail: (p) => `Väli To nimetab aadressi domeenis ${p.other}, mitte sind. Said ainult koopia Bcc-väljal. See on korras, kui sa seda ootasid, kuid spämmerid saadavad nii sageli paljudele.` },
     'sender-cloud-vm': { title: 'Saadetud renditud pilveserverist', detail: (p) => `E-kiri jõudis sinu teenusepakkujani otse serverist ${p.host}, mis on renditud virtuaalserver. Ettevõtted saadavad tavaliselt meiliteenuse kaudu, rämpsposti saatjad rendivad selliseid servereid sageli mõneks tunniks.` },
     'date-in-future': { title: 'Kuupäev on tulevikus', detail: (p) => `E-kiri väidab, et see kirjutati umbes ${p.hours} tundi pärast seda, kui sinu teenusepakkuja selle kätte sai. Rämpsposti saatjad võltsivad kuupäeva, et nende kiri püsiks postkastis ülal.` },
+    'reply-freemail-in-body': { title: 'Palub vastata tasuta e-posti aadressile', detail: (p) => `Tekst palub sul kirjutada aadressile ${p.address}, mis on tasuta e-posti aadress ega kuulu saatjale. Petturid viivad vestluse sinna, eemale kontost, millelt nad kirjutasid.` },
   },
 };

@@ -407,5 +407,6 @@ export const lv: Messages = {
     'to-stranger': { title: 'Adresēts kādam citam', detail: (p) => `Lauks To nosauc adresi ${p.other}, nevis tevi. Tu saņēmi tikai kopiju Bcc laukā. Tas ir kārtībā, ja to gaidīji, bet surogātpasta sūtītāji bieži tā sūta daudziem.` },
     'sender-cloud-vm': { title: 'Nosūtīts no īrēta mākoņservera', detail: (p) => `E-pasts nonāca pie tava pakalpojumu sniedzēja tieši no ${p.host} – īrēta virtuālā servera. Uzņēmumi parasti sūta caur pasta pakalpojumu, bet surogātpasta sūtītāji šādus serverus bieži īrē uz dažām stundām.` },
     'date-in-future': { title: 'Datums ir nākotnē', detail: (p) => `E-pasts apgalvo, ka uzrakstīts aptuveni ${p.hours} stundas pēc tam, kad tavs pakalpojumu sniedzējs to saņēma. Surogātpasta sūtītāji vilto datumu, lai viņu vēstule paliktu iesūtnes augšā.` },
+    'reply-freemail-in-body': { title: 'Lūdz atbildēt uz bezmaksas e-pasta adresi', detail: (p) => `Teksts lūdz rakstīt uz ${p.address} – bezmaksas e-pasta adresi, kas nepieder sūtītājam. Krāpnieki pārceļ sarunu turp, prom no konta, no kura viņi rakstīja.` },
   },
 };

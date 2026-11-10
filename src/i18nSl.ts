@@ -407,5 +407,6 @@ export const sl: Messages = {
     'to-stranger': { title: 'Naslovljeno na nekoga drugega', detail: (p) => `Polje To navaja naslov pri ${p.other}, ne tebe. Prejel si le kopijo v Bcc. To je v redu, če si jo pričakoval, vendar pošiljatelji neželene pošte pogosto tako pošiljajo mnogim.` },
     'sender-cloud-vm': { title: 'Poslano z najetega strežnika v oblaku', detail: (p) => `E-pošta je do tvojega ponudnika prišla neposredno s ${p.host}, najetega navideznega strežnika. Podjetja običajno pošiljajo prek poštne storitve, pošiljatelji neželene pošte pa take strežnike pogosto najamejo za nekaj ur.` },
     'date-in-future': { title: 'Datum je v prihodnosti', detail: (p) => `E-pošta trdi, da je bila napisana približno ${p.hours} ur po tem, ko jo je tvoj ponudnik prejel. Pošiljatelji neželene pošte ponaredijo datum, da njihovo sporočilo ostane na vrhu nabiralnika.` },
+    'reply-freemail-in-body': { title: 'Prosi za odgovor na brezplačni e-poštni naslov', detail: (p) => `Besedilo te prosi, da pišeš na ${p.address}, brezplačni e-poštni naslov, ki ne pripada pošiljatelju. Goljufi tja preselijo pogovor, stran od računa, s katerega so pisali.` },
   },
 };

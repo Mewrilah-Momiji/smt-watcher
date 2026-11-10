@@ -407,5 +407,6 @@ export const da: Messages = {
     'to-stranger': { title: 'Adresseret til en anden', detail: (p) => `Feltet To nævner en adresse hos ${p.other}, ikke dig. Du fik kun en kopi i Bcc. Det er fint, hvis du ventede den, men spammere sender ofte sådan til mange.` },
     'sender-cloud-vm': { title: 'Sendt fra en lejet cloudserver', detail: (p) => `E-mailen nåede din udbyder direkte fra ${p.host}, en lejet virtuel server. Firmaer sender normalt via en mailtjeneste, mens spammere ofte lejer sådanne servere i få timer.` },
     'date-in-future': { title: 'Dateret i fremtiden', detail: (p) => `E-mailen påstår at være skrevet cirka ${p.hours} timer efter, at din udbyder modtog den. Spammere forfalsker datoen, så deres e-mail bliver øverst i indbakken.` },
+    'reply-freemail-in-body': { title: 'Beder om svar til en gratis mailadresse', detail: (p) => `Teksten beder dig skrive til ${p.address}, en gratis mailadresse, der ikke tilhører afsenderen. Svindlere flytter samtalen derhen, væk fra den konto, de skrev fra.` },
   },
 };

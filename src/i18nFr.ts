@@ -407,5 +407,6 @@ export const fr: Messages = {
     'to-stranger': { title: 'Adressé à quelqu’un d’autre', detail: (p) => `Le champ To nomme une adresse chez ${p.other}, pas toi. Tu n’as reçu qu’une copie en Cci. C’est normal si tu l’attendais, mais les spammeurs envoient souvent ainsi à beaucoup de gens.` },
     'sender-cloud-vm': { title: 'Envoyé depuis un serveur cloud loué', detail: (p) => `L’e-mail est arrivé chez ton fournisseur directement depuis ${p.host}, un serveur virtuel loué. Les entreprises passent en général par un service d’e-mail, alors que les spammeurs louent souvent ces serveurs pour quelques heures.` },
     'date-in-future': { title: 'Daté dans le futur', detail: (p) => `L’e-mail prétend avoir été écrit environ ${p.hours} heures après sa réception par ton fournisseur. Les spammeurs falsifient la date pour que leur e-mail reste en haut de la boîte de réception.` },
+    'reply-freemail-in-body': { title: 'Demande une réponse à une adresse de messagerie gratuite', detail: (p) => `Le texte te demande d’écrire à ${p.address}, une adresse de messagerie gratuite qui n’appartient pas à l’expéditeur. Les escrocs y déplacent la conversation, loin du compte depuis lequel ils ont écrit.` },
   },
 };

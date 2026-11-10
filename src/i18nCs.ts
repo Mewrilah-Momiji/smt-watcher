@@ -407,5 +407,6 @@ export const cs: Messages = {
     'to-stranger': { title: 'Adresováno někomu jinému', detail: (p) => `Pole To uvádí adresu u ${p.other}, ne tebe. Dostal jsi jen kopii v Bcc. To je v pořádku, pokud jsi ji čekal, spammeři ale takto často rozesílají mnoha lidem.` },
     'sender-cloud-vm': { title: 'Odesláno z pronajatého cloudového serveru', detail: (p) => `E-mail dorazil k tvému poskytovateli přímo z ${p.host}, pronajatého virtuálního serveru. Firmy obvykle posílají přes poštovní službu, spammeři si takové servery často pronajímají na pár hodin.` },
     'date-in-future': { title: 'Datum je v budoucnosti', detail: (p) => `E-mail tvrdí, že byl napsán asi ${p.hours} hodin poté, co ho tvůj poskytovatel přijal. Spammeři datum falšují, aby jejich e-mail zůstal nahoře ve schránce.` },
+    'reply-freemail-in-body': { title: 'Žádá o odpověď na adresu bezplatné pošty', detail: (p) => `Text tě žádá, abys psal na ${p.address}, adresu bezplatné pošty, která nepatří odesílateli. Podvodníci tam přesouvají konverzaci, pryč od účtu, ze kterého psali.` },
   },
 };

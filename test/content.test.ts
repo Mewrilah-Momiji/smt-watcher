@@ -433,3 +433,24 @@ describe('buildReport', () => {
     expect(report.findings.map((entry) => entry.code)).toEqual(['brand-impersonation', 'no-check-results', 'link-text-mismatch']);
   });
 });
+
+describe('compensation payouts and replies to free mail', () => {
+  it('counts a compensation payout with a large amount as a windfall', () => {
+    expect(codes({ bodyText: 'Sie haben die für Sie vorgesehene Entschädigungssumme in Höhe von 20 Millionen Euro nicht erhalten.' })).toEqual(['windfall-promise']);
+    expect(codes({ bodyText: 'Your compensation payment of 1,500,000 USD is ready.' })).toEqual(['windfall-promise']);
+    expect(codes({ bodyText: 'Ihre Entschädigungszahlung für den verspäteten Flug.' })).toEqual([]);
+  });
+
+  it('flags a request to answer at a free mail address of someone else', () => {
+    const body = 'Bitte übermitteln Sie die folgenden Angaben ausschließlich an diese E-Mail-Adresse: (agent.example@gmail.com)';
+    expect(codes({ bodyText: body }, '', 'hijacked.example')).toEqual(['reply-freemail-in-body']);
+    expect(codes({ bodyText: 'Please reply to me at agent.example@outlook.com only.' }, '', 'hijacked.example')).toEqual(['reply-freemail-in-body']);
+  });
+
+  it('leaves free mail addresses alone without a request, from the same provider or on a list', () => {
+    expect(codes({ bodyText: 'Gesendet von max.example@gmail.com am Montag.' }, '', 'shop.example')).toEqual([]);
+    expect(codes({ bodyText: 'Please reply to me at me.example@gmail.com.' }, '', 'gmail.com')).toEqual([]);
+    expect(codes({ bodyText: 'Antworten Sie an info@shop.example.' }, '', 'other.example')).toEqual([]);
+    expect(codes({ bodyText: 'Contact me at dev.example@gmail.com for the patch.' }, '', 'apache.example', { isList: true })).toEqual([]);
+  });
+});

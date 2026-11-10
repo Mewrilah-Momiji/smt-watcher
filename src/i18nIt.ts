@@ -407,5 +407,6 @@ export const it: Messages = {
     'to-stranger': { title: 'Indirizzata a qualcun altro', detail: (p) => `Il campo To nomina un indirizzo di ${p.other}, non te. Hai ricevuto solo una copia in Ccn. Va bene se te l’aspettavi, ma gli spammer spesso inviano così a molte persone.` },
     'sender-cloud-vm': { title: 'Inviata da un server cloud a noleggio', detail: (p) => `L’e-mail è arrivata al tuo provider direttamente da ${p.host}, un server virtuale a noleggio. Le aziende di solito inviano tramite un servizio di posta, mentre gli spammer noleggiano spesso questi server per poche ore.` },
     'date-in-future': { title: 'Data nel futuro', detail: (p) => `L’e-mail dice di essere stata scritta circa ${p.hours} ore dopo che il tuo provider l’ha ricevuta. Gli spammer falsificano la data perché la loro e-mail resti in cima alla casella.` },
+    'reply-freemail-in-body': { title: 'Chiede di rispondere a un indirizzo di posta gratuita', detail: (p) => `Il testo ti chiede di scrivere a ${p.address}, un indirizzo di posta gratuita che non appartiene al mittente. I truffatori spostano lì la conversazione, lontano dall’account da cui hanno scritto.` },
   },
 };

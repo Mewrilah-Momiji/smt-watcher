@@ -60,7 +60,8 @@ export type FindingCode =
   | 'hidden-filler-text'
   | 'to-stranger'
   | 'sender-cloud-vm'
-  | 'date-in-future';
+  | 'date-in-future'
+  | 'reply-freemail-in-body';
 
 export interface Finding {
   code: FindingCode;

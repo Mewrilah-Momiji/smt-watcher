@@ -1,5 +1,6 @@
 import { BRANDS, SENDING_PLATFORMS, type Brand } from '../data/brands';
 import { baseDomain, type Finding } from './findings';
+import { FREEMAIL_DOMAINS } from './sharedLists';
 
 export interface MailContent {
   subject: string | null;
@@ -17,6 +18,8 @@ export interface MailContext {
   recipientAddresses: string[];
   /** The domain in From passed DKIM. */
   signedBySender?: boolean;
+  /** The email came through a mailing list, where people share their own addresses. */
+  isList?: boolean;
 }
 
 export interface MailLink {
@@ -83,7 +86,8 @@ const NAME_DOMAIN = /(?:^|[\s|(<])((?:[a-z0-9-]+\.)+(?:com|de|net|org|info|eu|at
 const FAKE_REPLY_PATTERN = /^\s*(re|aw|wg|fw|fwd)\s*:/i;
 const BULK_ADDRESS_PATTERN = /^(.*\d{8,}|null)@/i;
 // "ATM-Karte" added on 2026-11-06: 1 of 239 private spam emails, none of 1872 legitimate ones.
-const WINDFALL_PATTERN = /(beg[üu]nstigter|erbschaft|lotterie|lottery|spende in h[öo]he|inheritance|atm[- ]?(?:karte|card))/i;
+// Compensation payouts added on 2026-11-10: 2 of 257 private spam emails and 1 in Untroubled 2026-10, none of 1872 legitimate emails or 5149 Apache list emails.
+const WINDFALL_PATTERN = /(beg[üu]nstigter|erbschaft|lotterie|lottery|spende in h[öo]he|inheritance|atm[- ]?(?:karte|card)|entsch[äa]digungs(?:summe|zahlung|betrag|fonds)|compensation (?:fund|payment|sum|amount))/i;
 // Also "500.000 US-Dollar" and "$". Measured on 2026-11-03: one more spam email and no legitimate one.
 const LARGE_AMOUNT_PATTERN = /\d{1,3}(?:[.,]\d{3}){1,3}(?:,\d{2})?\s*(?:€|euro|usd|(?:us[- ]?)?dollar|\$)|million/i;
 /** Licensed lotteries in Germany print this. Measured on one recipient's emails, no spam does. */
@@ -123,6 +127,23 @@ const ADVERTORIAL_PATTERN = /\b(sonderbericht|spezialreport|special report|adver
 // A password sent in plain text. Measured on 2026-11-06: 1 of 239 spam emails and 1 of 1872 legitimate ones,
 // so it is a hint about the risk rather than about spam.
 const PLAIN_PASSWORD_PATTERN = /(ihr|dein|your)\s+(passwort|password|kennwort)\s*:\s*\S{6,}/i;
+
+// The text asks you to answer at a free mail address that is not the sender's, which keeps the conversation away
+// from the hijacked or signed account it came from. Measured on 2026-11-10: 7 of 257 private spam emails, 13 in the
+// public spam collections, none of 1872 legitimate emails. Mailing lists are left out, as 4 Apache list emails matched.
+const EMAIL_ADDRESS_PATTERN = /[\w.+-]+@([\w-]+(?:\.[\w-]+)+)/g;
+const REPLY_REQUEST_PATTERN = /antwort|antworten|kontakt|senden|schreiben|übermitteln|reply|respond|contact|write to|send (?:it|them|your)/i;
+
+/** A free mail address in the text, other than the sender's domain, with a request to write there shortly before it. */
+function freemailReplyInBody(text: string, fromDomain: string | null): string | null {
+  const fromBase = fromDomain ? baseDomain(fromDomain) : null;
+  for (const match of text.matchAll(EMAIL_ADDRESS_PATTERN)) {
+    const domain = baseDomain(match[1].toLowerCase());
+    if (!FREEMAIL_DOMAINS.has(domain) || domain === fromBase) continue;
+    if (REPLY_REQUEST_PATTERN.test(text.slice(Math.max(0, match.index - 200), match.index + 50))) return match[0];
+  }
+  return null;
+}
 
 const HTML_EXTENSIONS = new Set(['html', 'htm', 'shtml']);
 const RISKY_EXTENSIONS = new Set(['exe', 'scr', 'com', 'bat', 'cmd', 'pif', 'js', 'jse', 'vbs', 'vbe', 'wsf', 'hta', 'lnk', 'msi', 'iso', 'img', 'ps1', 'jar', ...HTML_EXTENSIONS, 'docm', 'xlsm']);
@@ -419,6 +440,14 @@ ${bodyWithoutLinks}`.match(MIXED_SCRIPT_WORD)?.length ?? 0;
     findings.push({
       code: 'crypto-recovery',
       severity: 'warning',
+    });
+  }
+  const replyAddress = context.isList ? null : freemailReplyInBody(content.bodyText ?? '', context.fromDomain);
+  if (replyAddress) {
+    findings.push({
+      code: 'reply-freemail-in-body',
+      severity: 'warning',
+      params: { address: replyAddress },
     });
   }
   if (ADVERTORIAL_PATTERN.test(words)) {

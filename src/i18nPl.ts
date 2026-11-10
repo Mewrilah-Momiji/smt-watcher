@@ -407,5 +407,6 @@ export const pl: Messages = {
     'to-stranger': { title: 'Zaadresowane do kogoś innego', detail: (p) => `Pole To wskazuje adres w ${p.other}, a nie ciebie. Dostałeś tylko kopię w UDW. To w porządku, jeśli jej oczekiwałeś, ale spamerzy często wysyłają tak do wielu osób.` },
     'sender-cloud-vm': { title: 'Wysłane z wynajętego serwera w chmurze', detail: (p) => `E-mail dotarł do twojego dostawcy bezpośrednio z ${p.host}, wynajętego serwera wirtualnego. Firmy zwykle wysyłają przez usługę pocztową, a spamerzy często wynajmują takie serwery na kilka godzin.` },
     'date-in-future': { title: 'Data w przyszłości', detail: (p) => `E-mail twierdzi, że został napisany około ${p.hours} godz. po tym, jak odebrał go twój dostawca. Spamerzy fałszują datę, aby ich wiadomość pozostała na górze skrzynki.` },
+    'reply-freemail-in-body': { title: 'Prosi o odpowiedź na darmowy adres e-mail', detail: (p) => `Tekst prosi, abyś pisał na ${p.address}, darmowy adres e-mail, który nie należy do nadawcy. Oszuści przenoszą tam rozmowę, z dala od konta, z którego pisali.` },
   },
 };

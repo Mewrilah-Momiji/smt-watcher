@@ -442,6 +442,7 @@ const en = {
     'to-stranger': { title: 'Addressed to someone else', detail: (p) => `The To field names an address at ${p.other}, not you. You only got a copy in Bcc. That is fine if you expected it, but spammers often send this way to many people.` },
     'sender-cloud-vm': { title: 'Sent from a rented cloud server', detail: (p) => `The email reached your provider straight from ${p.host}, a rented virtual server. Companies usually send through a mail service, while spammers often rent such servers for a few hours.` },
     'date-in-future': { title: 'Dated in the future', detail: (p) => `The email claims it was written about ${p.hours} hours after your provider received it. Spammers fake the date so that their email stays at the top of the inbox.` },
+    'reply-freemail-in-body': { title: 'Asks you to answer at a free mail address', detail: (p) => `The text asks you to write to ${p.address}, a free mail address that does not belong to the sender. Fraudsters move the conversation there, away from the account they sent from.` },
   } satisfies Record<FindingCode, FindingText> as Record<FindingCode, FindingText>,
 };
 
@@ -852,6 +853,7 @@ const de: typeof en = {
     'to-stranger': { title: 'An jemand anderen adressiert', detail: (p) => `Das To-Feld nennt eine Adresse bei ${p.other}, nicht dich. Du hast nur eine Kopie im Bcc bekommen. Das ist in Ordnung, wenn du sie erwartet hast, Spammer verschicken aber oft so an viele.` },
     'sender-cloud-vm': { title: 'Von einem gemieteten Cloud-Server verschickt', detail: (p) => `Die E-Mail kam direkt von ${p.host} bei deinem Anbieter an, einem gemieteten virtuellen Server. Firmen verschicken meist über einen Maildienst, Spammer mieten solche Server oft für wenige Stunden.` },
     'date-in-future': { title: 'Datum liegt in der Zukunft', detail: (p) => `Die E-Mail gibt an, etwa ${p.hours} Stunden nach dem Eingang bei deinem Anbieter geschrieben worden zu sein. Spammer fälschen das Datum, damit ihre E-Mail oben im Posteingang bleibt.` },
+    'reply-freemail-in-body': { title: 'Bittet um Antwort an eine Freemail-Adresse', detail: (p) => `Der Text bittet dich, an ${p.address} zu schreiben, eine Freemail-Adresse, die nicht zum Absender gehört. Betrüger verlegen das Gespräch dorthin, weg von dem Konto, über das sie geschrieben haben.` },
   },
 };
 

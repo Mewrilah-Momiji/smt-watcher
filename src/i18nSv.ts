@@ -407,5 +407,6 @@ export const sv: Messages = {
     'to-stranger': { title: 'Adresserat till någon annan', detail: (p) => `Fältet To nämner en adress hos ${p.other}, inte dig. Du fick bara en kopia i Bcc. Det är okej om du väntade den, men spammare skickar ofta så till många.` },
     'sender-cloud-vm': { title: 'Skickat från en hyrd molnserver', detail: (p) => `Mejlet kom till din leverantör direkt från ${p.host}, en hyrd virtuell server. Företag skickar oftast via en e-posttjänst, medan spammare ofta hyr sådana servrar för några timmar.` },
     'date-in-future': { title: 'Daterat i framtiden', detail: (p) => `Mejlet påstår att det skrevs ungefär ${p.hours} timmar efter att din leverantör tog emot det. Spammare förfalskar datumet så att mejlet ligger kvar högst upp i inkorgen.` },
+    'reply-freemail-in-body': { title: 'Ber om svar till en gratis e-postadress', detail: (p) => `Texten ber dig skriva till ${p.address}, en gratis e-postadress som inte tillhör avsändaren. Bedragare flyttar samtalet dit, bort från kontot de skrev från.` },
   },
 };
