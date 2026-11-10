@@ -9,6 +9,8 @@ export interface AuthResult {
   result: string;
   domain: string | null;
   source: AuthSource;
+  /** Read from below the oldest Received line, where the sender could have written it. Only counts against the sender. */
+  forgeable?: boolean;
 }
 
 export type AuthSummary = Record<AuthMethod, AuthResult | null>;
@@ -108,6 +110,22 @@ export function summarizeAuthentication(headers: Header[]): AuthSummary {
   const withName = (name: string) => trusted.filter((header) => header.name.toLowerCase() === name);
 
   const parsed = withName('authentication-results').map((header) => parseAuthenticationResults(header.value));
+  // Some providers, such as All-Inkl, write their results below the Received line they added, where a sender's own
+  // headers also end up. Such results only count if they name the server that received the email last, and a sender
+  // could still have written them, so a pass there never eases a check (see isSignedBySender).
+  // Measured on 2026-11-10: 110 of 259 private spam emails and 18 of 1872 legitimate ones had their results there only.
+  if (parsed.length === 0) {
+    const receiver = /\bby\s+(\S+)/i.exec(headers.find((header) => header.name.toLowerCase() === 'received')?.value ?? '')?.[1]?.toLowerCase();
+    if (receiver) {
+      parsed.push(
+        ...headers
+          .filter((header) => header.name.toLowerCase() === 'authentication-results')
+          .map((header) => parseAuthenticationResults(header.value))
+          .filter((entry) => entry.serverId === receiver)
+          .map((entry) => ({ ...entry, results: entry.results.map((result) => ({ ...result, forgeable: true })) })),
+      );
+    }
+  }
   const top = parsed[0];
   const sameServer = !top ? [] : top.serverId ? parsed.filter((entry) => entry.serverId === top.serverId) : [top];
 

@@ -138,9 +138,9 @@ export function parseAddress(value: string | null): ParsedAddress | null {
   return { name: decodeWords(first.name ?? ''), domain, address: address ?? null };
 }
 
-/** The domain in From also passed DKIM. Spammers can do this for their own domains too. */
+/** The domain in From also passed DKIM. Spammers can do this for their own domains too. A pass the sender could have written does not count. */
 export function isSignedBySender(fromDomain: string | null | undefined, dkim: AuthSummary['dkim']): boolean {
-  return Boolean(fromDomain) && dkim?.result === 'pass' && Boolean(dkim.domain) && baseDomain(dkim.domain!) === baseDomain(fromDomain!);
+  return Boolean(fromDomain) && dkim?.result === 'pass' && !dkim.forgeable && Boolean(dkim.domain) && baseDomain(dkim.domain!) === baseDomain(fromDomain!);
 }
 
 export function findIssues(input: FindingInput): Finding[] {

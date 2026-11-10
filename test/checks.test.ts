@@ -309,3 +309,44 @@ describe('sender domain without an ending', () => {
     expect(domainCodes('Admin <root@[192.0.2.1]>')).not.toContain('sender-domain-invalid');
   });
 });
+
+describe('provider results below the Received line', () => {
+  const received = { name: 'Received', value: 'from mail.shop.example (mail.shop.example [198.51.100.7]) by mx.mine.example (Postfix); Tue, 10 Nov 2026 12:24:38 +0100' };
+  const below = (value: string) => ({ name: 'Authentication-Results', value });
+
+  it('reads them when they name the server that received the email last', () => {
+    const summary = summarizeAuthentication([received, below('mx.mine.example; dkim=fail header.d=shop.example')]);
+    expect(summary.dkim?.result).toBe('fail');
+    expect(summary.dkim?.forgeable).toBe(true);
+  });
+
+  it('ignores them for another server or when the provider also wrote results above', () => {
+    expect(summarizeAuthentication([received, below('mx.other.example; dkim=pass header.d=shop.example')]).dkim).toBeNull();
+    const above = { name: 'Authentication-Results', value: 'mx.mine.example; spf=pass smtp.mailfrom=shop.example' };
+    const summary = summarizeAuthentication([above, received, below('mx.mine.example; dkim=pass header.d=shop.example')]);
+    expect(summary.spf?.result).toBe('pass');
+    expect(summary.dkim).toBeNull();
+  });
+
+  it('never lets a pass there ease a check', () => {
+    const mail = buildReport(
+      [
+        'Received: from mail.shop.example (mail.shop.example [198.51.100.7]) by mx.mine.example (Postfix); Tue, 10 Nov 2026 12:24:38 +0100',
+        'Authentication-Results: mx.mine.example; dkim=pass header.d=shop.example',
+        'X-Spam-Flag: YES',
+        'From: Shop <news@shop.example>',
+        'Reply-To: other@elsewhere.example',
+        'To: me@mine.example',
+        'Subject: Offer',
+        'Date: Tue, 10 Nov 2026 12:24:37 +0100',
+        'Message-ID: <1@shop.example>',
+      ].join('\r\n'),
+    );
+    expect(mail.authentication.dkim?.result).toBe('pass');
+    const codes = mail.findings.map((f) => f.code);
+    expect(codes).not.toContain('no-check-results');
+    expect(codes).toContain('provider-spam-verdict');
+    expect(codes).toContain('reply-to-other-domain');
+    expect(codes).not.toContain('reply-to-signed-sender');
+  });
+});

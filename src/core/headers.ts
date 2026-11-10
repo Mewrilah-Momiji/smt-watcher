@@ -137,7 +137,7 @@ export function buildReport(raw: string, content: Partial<MailContent> = {}): He
       }),
       // Providers also mark legitimate newsletters, so the verdict counts only for emails no sender signed.
       // Measured on 2026-11-05: 4 of the owner's 1872 legitimate emails, 52 of 237 spam emails.
-      ...(providerSaysSpam(headers) && authentication.dkim?.result !== 'pass' ? [{ code: 'provider-spam-verdict' as const, severity: 'note' as const }] : []),
+      ...(providerSaysSpam(headers) && !(authentication.dkim?.result === 'pass' && !authentication.dkim.forgeable) ? [{ code: 'provider-spam-verdict' as const, severity: 'note' as const }] : []),
       ...findOriginIssues(findSenderOrigin(received), first('date')),
       ...findContentIssues(
         { subject: subject ?? decoded('subject'), bodyText, bodyHtml: content.bodyHtml ?? null, attachmentNames: content.attachmentNames ?? [] },

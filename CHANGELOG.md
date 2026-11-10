@@ -4,6 +4,10 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.42 - 2026-11-10
+
+- Check results that some providers, such as All-Inkl, write in an unusual place are now read instead of being reported as missing. A passed check from there never makes an email look safer.
+
 ## 0.5.41 - 2026-11-10
 
 - A promised compensation payout with a large amount now counts as a windfall promise, a sign of fraud.
