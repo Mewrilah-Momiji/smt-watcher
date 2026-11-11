@@ -61,7 +61,8 @@ export type FindingCode =
   | 'to-stranger'
   | 'sender-cloud-vm'
   | 'date-in-future'
-  | 'reply-freemail-in-body';
+  | 'reply-freemail-in-body'
+  | 'local-part-as-name';
 
 export interface Finding {
   code: FindingCode;

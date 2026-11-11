@@ -408,5 +408,6 @@ export const lv: Messages = {
     'sender-cloud-vm': { title: 'Nosūtīts no īrēta mākoņservera', detail: (p) => `E-pasts nonāca pie tava pakalpojumu sniedzēja tieši no ${p.host} – īrēta virtuālā servera. Uzņēmumi parasti sūta caur pasta pakalpojumu, bet surogātpasta sūtītāji šādus serverus bieži īrē uz dažām stundām.` },
     'date-in-future': { title: 'Datums ir nākotnē', detail: (p) => `E-pasts apgalvo, ka uzrakstīts aptuveni ${p.hours} stundas pēc tam, kad tavs pakalpojumu sniedzējs to saņēma. Surogātpasta sūtītāji vilto datumu, lai viņu vēstule paliktu iesūtnes augšā.` },
     'reply-freemail-in-body': { title: 'Lūdz atbildēt uz bezmaksas e-pasta adresi', detail: (p) => `Teksts lūdz rakstīt uz ${p.address} – bezmaksas e-pasta adresi, kas nepieder sūtītājam. Krāpnieki pārceļ sarunu turp, prom no konta, no kura viņi rakstīja.` },
+    'local-part-as-name': { title: 'Izmanto tavu adresi kā vārdu', detail: (p) => `E-pasts tevi sauc par “${p.name}” – tā ir tavas e-pasta adreses daļa pirms @. Īsti sūtītāji, kas tevi pazīst, lieto tavu īsto vārdu. Masveida vēstules to aizpilda automātiski.` },
   },
 };

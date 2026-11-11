@@ -222,6 +222,27 @@ function escapeRegExp(text: string): string {
 }
 
 /**
+ * The lower-case part before the @ of the recipient's address, used as if it were a name: "Guten Abend trinklein",
+ * "trinklein Pillen Pharma" or "zodrik 様". Real senders know the name and capitalise it.
+ * Measured on 2026-11-11: 46 of 262 private spam emails (13 of them held out while writing the rule) and 342 in the public
+ * collections, mostly Nazario, none of 1872 legitimate emails or 5149 Apache list emails. Mailing lists are left out, as
+ * they greet a list by its address.
+ */
+function localPartAsName(subject: string, bodyText: string, recipientAddresses: string[]): string | null {
+  const text = `${subject}\n${bodyText.slice(0, 600)}`;
+  for (const address of recipientAddresses) {
+    const local = address.split('@')[0];
+    if (!/^[a-z][a-z.-]{3,}$/.test(local)) continue;
+    const name = escapeRegExp(local);
+    // Only the greeting may start with a capital letter, the name must stay in lower case.
+    const greeted = new RegExp(`(?:^|[\\s,])(?:[Hh]allo|[Hh]i|[Hh]ey|[Gg]uten (?:[Tt]ag|[Mm]orgen|[Aa]bend)|[Ll]iebe[rs]?|[Dd]ear|[Hh]ello)\\s+${name}\\b|^${name}[\\s,:]`, 'm');
+    const inSubject = new RegExp(`(?:^|\\s)${name}\\s+\\p{L}`, 'u');
+    if (greeted.test(text) || inSubject.test(subject)) return local;
+  }
+  return null;
+}
+
+/**
  * The name of the recipient's own domain in the sender's name, such as "Example IT Service" from another domain.
  * Scams pose as the recipient's IT or HR department this way. Measured on 2026-11-04: 139 of 481 phishing emails
  * in the Nazario corpus, none of the owner's 1872 legitimate emails.
@@ -326,6 +347,15 @@ export function findContentIssues(content: MailContent, context: MailContext): F
     findings.push({
       code: 'address-greeting',
       severity: 'note',
+    });
+  }
+
+  const localName = context.isList ? null : localPartAsName(content.subject ?? '', content.bodyText ?? '', context.recipientAddresses);
+  if (localName) {
+    findings.push({
+      code: 'local-part-as-name',
+      severity: 'warning',
+      params: { name: localName },
     });
   }
 

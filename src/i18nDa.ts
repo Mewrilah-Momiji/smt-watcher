@@ -408,5 +408,6 @@ export const da: Messages = {
     'sender-cloud-vm': { title: 'Sendt fra en lejet cloudserver', detail: (p) => `E-mailen nåede din udbyder direkte fra ${p.host}, en lejet virtuel server. Firmaer sender normalt via en mailtjeneste, mens spammere ofte lejer sådanne servere i få timer.` },
     'date-in-future': { title: 'Dateret i fremtiden', detail: (p) => `E-mailen påstår at være skrevet cirka ${p.hours} timer efter, at din udbyder modtog den. Spammere forfalsker datoen, så deres e-mail bliver øverst i indbakken.` },
     'reply-freemail-in-body': { title: 'Beder om svar til en gratis mailadresse', detail: (p) => `Teksten beder dig skrive til ${p.address}, en gratis mailadresse, der ikke tilhører afsenderen. Svindlere flytter samtalen derhen, væk fra den konto, de skrev fra.` },
+    'local-part-as-name': { title: 'Bruger din adresse som dit navn', detail: (p) => `E-mailen kalder dig "${p.name}", delen af din e-mailadresse før @. Rigtige afsendere, der kender dig, bruger dit rigtige navn. Masseudsendelser udfylder det automatisk.` },
   },
 };

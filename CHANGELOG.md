@@ -4,6 +4,11 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.43 - 2026-11-11
+
+- New sign: the email calls you by the part of your address before the @, such as "Hello jane", instead of your name.
+- The Japanese SAISON card now counts as an imitated brand.
+
 ## 0.5.42 - 2026-11-10
 
 - Check results that some providers, such as All-Inkl, write in an unusual place are now read instead of being reported as missing. A passed check from there never makes an email look safer.

@@ -454,3 +454,25 @@ describe('compensation payouts and replies to free mail', () => {
     expect(codes({ bodyText: 'Contact me at dev.example@gmail.com for the patch.' }, '', 'apache.example', { isList: true })).toEqual([]);
   });
 });
+
+describe('local part of the address as a name and SAISON', () => {
+  const me = { recipientAddresses: ['trinklein@mine.example'] };
+
+  it('flags the lower-case local part used as a name', () => {
+    expect(codes({ bodyText: 'Guten Abend trinklein, es macht einen krank.' }, '', 'shop.example', me)).toEqual(['local-part-as-name']);
+    expect(codes({ subject: 'trinklein Pillen Pharma', bodyText: 'Hallo' }, '', 'shop.example', me)).toEqual(['local-part-as-name']);
+    expect(codes({ bodyText: 'zodrik 様\nご利用ありがとうございます。' }, '', 'shop.example', { recipientAddresses: ['zodrik@mine.example'] })).toContain('local-part-as-name');
+  });
+
+  it('leaves a real name, a short local part and lists alone', () => {
+    expect(codes({ bodyText: 'Guten Abend Herr Trinklein, Ihre Bestellung.' }, '', 'shop.example', me)).toEqual([]);
+    expect(codes({ bodyText: 'Hallo max, neue Nachricht.' }, '', 'shop.example', { recipientAddresses: ['max@mine.example'] })).toEqual([]);
+    expect(codes({ bodyText: 'Hello trinklein, the build failed.' }, '', 'shop.example', { ...me, isList: true })).toEqual([]);
+  });
+
+  it('knows the SAISON card', () => {
+    expect(codes({ bodyText: 'Hallo' }, 'SAISON ID', 'vpgs.example')).toContain('brand-impersonation');
+    expect(codes({ bodyText: 'Hallo' }, 'セゾンカード', 'vpgs.example')).toContain('brand-impersonation');
+    expect(codes({ bodyText: 'Hallo' }, 'SAISON CARD', 'saisoncard.co.jp')).not.toContain('brand-impersonation');
+  });
+});

@@ -408,5 +408,6 @@ export const nl: Messages = {
     'sender-cloud-vm': { title: 'Verstuurd vanaf een gehuurde cloudserver', detail: (p) => `De e-mail kwam rechtstreeks van ${p.host} bij je provider aan, een gehuurde virtuele server. Bedrijven versturen meestal via een maildienst, spammers huren zulke servers vaak voor een paar uur.` },
     'date-in-future': { title: 'Gedateerd in de toekomst', detail: (p) => `De e-mail beweert ongeveer ${p.hours} uur na ontvangst door je provider geschreven te zijn. Spammers vervalsen de datum zodat hun e-mail bovenaan in de inbox blijft staan.` },
     'reply-freemail-in-body': { title: 'Vraagt om antwoord aan een gratis e-mailadres', detail: (p) => `De tekst vraagt je te schrijven naar ${p.address}, een gratis e-mailadres dat niet van de afzender is. Oplichters verplaatsen het gesprek daarheen, weg van het account waarmee ze schreven.` },
+    'local-part-as-name': { title: 'Gebruikt je adres als je naam', detail: (p) => `De e-mail noemt je "${p.name}", het deel van je e-mailadres vóór de @. Echte afzenders die je kennen, gebruiken je echte naam. Massamails vullen dit automatisch in.` },
   },
 };

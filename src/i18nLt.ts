@@ -408,5 +408,6 @@ export const lt: Messages = {
     'sender-cloud-vm': { title: 'Išsiųsta iš nuomojamo debesų serverio', detail: (p) => `Laiškas pasiekė tavo paslaugų teikėją tiesiai iš ${p.host} – nuomojamo virtualaus serverio. Įmonės paprastai siunčia per pašto paslaugą, o šiukšlių siuntėjai tokius serverius dažnai išsinuomoja kelioms valandoms.` },
     'date-in-future': { title: 'Data ateityje', detail: (p) => `Laiške teigiama, kad jis parašytas maždaug ${p.hours} val. po to, kai tavo paslaugų teikėjas jį gavo. Šiukšlių siuntėjai klastoja datą, kad jų laiškas liktų pašto dėžutės viršuje.` },
     'reply-freemail-in-body': { title: 'Prašo atsakyti nemokamu el. pašto adresu', detail: (p) => `Tekste prašoma rašyti adresu ${p.address} – tai nemokamas el. pašto adresas, nepriklausantis siuntėjui. Sukčiai perkelia pokalbį ten, toliau nuo paskyros, iš kurios rašė.` },
+    'local-part-as-name': { title: 'Naudoja tavo adresą kaip vardą', detail: (p) => `Laiške į tave kreipiamasi „${p.name}“ – tai tavo el. pašto adreso dalis prieš @. Tikri siuntėjai, kurie tave pažįsta, naudoja tikrąjį tavo vardą. Masiniai laiškai tai įrašo automatiškai.` },
   },
 };

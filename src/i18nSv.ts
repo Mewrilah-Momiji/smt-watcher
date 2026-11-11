@@ -408,5 +408,6 @@ export const sv: Messages = {
     'sender-cloud-vm': { title: 'Skickat från en hyrd molnserver', detail: (p) => `Mejlet kom till din leverantör direkt från ${p.host}, en hyrd virtuell server. Företag skickar oftast via en e-posttjänst, medan spammare ofta hyr sådana servrar för några timmar.` },
     'date-in-future': { title: 'Daterat i framtiden', detail: (p) => `Mejlet påstår att det skrevs ungefär ${p.hours} timmar efter att din leverantör tog emot det. Spammare förfalskar datumet så att mejlet ligger kvar högst upp i inkorgen.` },
     'reply-freemail-in-body': { title: 'Ber om svar till en gratis e-postadress', detail: (p) => `Texten ber dig skriva till ${p.address}, en gratis e-postadress som inte tillhör avsändaren. Bedragare flyttar samtalet dit, bort från kontot de skrev från.` },
+    'local-part-as-name': { title: 'Använder din adress som ditt namn', detail: (p) => `Mejlet kallar dig ”${p.name}”, delen av din e-postadress före @. Riktiga avsändare som känner dig använder ditt riktiga namn. Massutskick fyller i detta automatiskt.` },
   },
 };

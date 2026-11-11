@@ -408,5 +408,6 @@ export const hr: Messages = {
     'sender-cloud-vm': { title: 'Poslano s unajmljenog poslužitelja u oblaku', detail: (p) => `E-pošta je stigla do tvog pružatelja izravno s ${p.host}, unajmljenog virtualnog poslužitelja. Tvrtke obično šalju preko usluge e-pošte, a pošiljatelji neželjene pošte često unajme takve poslužitelje na nekoliko sati.` },
     'date-in-future': { title: 'Datum je u budućnosti', detail: (p) => `E-pošta tvrdi da je napisana oko ${p.hours} sati nakon što ju je tvoj pružatelj primio. Pošiljatelji neželjene pošte krivotvore datum kako bi njihova poruka ostala na vrhu pretinca.` },
     'reply-freemail-in-body': { title: 'Traži odgovor na besplatnu adresu e-pošte', detail: (p) => `Tekst te traži da pišeš na ${p.address}, besplatnu adresu e-pošte koja ne pripada pošiljatelju. Prevaranti tamo premještaju razgovor, dalje od računa s kojeg su pisali.` },
+    'local-part-as-name': { title: 'Koristi tvoju adresu kao ime', detail: (p) => `E-pošta te naziva „${p.name}“, dijelom tvoje adrese e-pošte prije znaka @. Pravi pošiljatelji koji te poznaju koriste tvoje pravo ime. Masovne poruke to popunjavaju automatski.` },
   },
 };

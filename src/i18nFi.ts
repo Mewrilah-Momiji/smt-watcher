@@ -408,5 +408,6 @@ export const fi: Messages = {
     'sender-cloud-vm': { title: 'Lähetetty vuokratulta pilvipalvelimelta', detail: (p) => `Sähköposti saapui palveluntarjoajallesi suoraan palvelimelta ${p.host}, joka on vuokrattu virtuaalipalvelin. Yritykset lähettävät yleensä sähköpostipalvelun kautta, roskapostittajat vuokraavat tällaisia palvelimia usein muutamaksi tunniksi.` },
     'date-in-future': { title: 'Päiväys on tulevaisuudessa', detail: (p) => `Sähköposti väittää, että se kirjoitettiin noin ${p.hours} tuntia sen jälkeen, kun palveluntarjoajasi vastaanotti sen. Roskapostittajat väärentävät päiväyksen, jotta viesti pysyisi saapuneiden kansion yläpäässä.` },
     'reply-freemail-in-body': { title: 'Pyytää vastaamaan ilmaiseen sähköpostiosoitteeseen', detail: (p) => `Teksti pyytää sinua kirjoittamaan osoitteeseen ${p.address}, joka on ilmainen sähköpostiosoite eikä kuulu lähettäjälle. Huijarit siirtävät keskustelun sinne, pois tililtä, jolta he kirjoittivat.` },
+    'local-part-as-name': { title: 'Käyttää osoitettasi nimenäsi', detail: (p) => `Sähköposti kutsuu sinua nimellä ”${p.name}”, joka on sähköpostiosoitteesi @-merkkiä edeltävä osa. Oikeat lähettäjät, jotka tuntevat sinut, käyttävät oikeaa nimeäsi. Joukkopostitukset täyttävät sen automaattisesti.` },
   },
 };

@@ -408,5 +408,6 @@ export const sk: Messages = {
     'sender-cloud-vm': { title: 'Odoslané z prenajatého cloudového servera', detail: (p) => `E-mail prišiel k tvojmu poskytovateľovi priamo z ${p.host}, prenajatého virtuálneho servera. Firmy zvyčajne posielajú cez poštovú službu, spammeri si také servery často prenajímajú na pár hodín.` },
     'date-in-future': { title: 'Dátum je v budúcnosti', detail: (p) => `E-mail tvrdí, že bol napísaný asi ${p.hours} hodín po tom, ako ho tvoj poskytovateľ prijal. Spammeri falšujú dátum, aby ich e-mail zostal hore v schránke.` },
     'reply-freemail-in-body': { title: 'Žiada o odpoveď na adresu bezplatnej pošty', detail: (p) => `Text ťa žiada, aby si písal na ${p.address}, adresu bezplatnej pošty, ktorá nepatrí odosielateľovi. Podvodníci tam presúvajú konverzáciu, preč od účtu, z ktorého písali.` },
+    'local-part-as-name': { title: 'Používa tvoju adresu ako meno', detail: (p) => `E-mail ťa oslovuje „${p.name}“, teda časťou tvojej e-mailovej adresy pred @. Skutoční odosielatelia, ktorí ťa poznajú, používajú tvoje skutočné meno. Hromadné e-maily to dopĺňajú automaticky.` },
   },
 };

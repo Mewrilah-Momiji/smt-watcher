@@ -55,6 +55,9 @@ export const BRANDS: Brand[] = [
   { name: '楽天', domains: ['rakuten.co.jp', 'rakuten.com'] },
   { name: '国税庁', domains: ['nta.go.jp', 'e-tax.nta.go.jp'] },
   { name: 'e-tax', domains: ['nta.go.jp'] },
+  // Japanese credit card, added on 2026-11-11: 17 of 262 private spam emails with both spellings, none of the owner's legitimate emails.
+  { name: 'saison', domains: ['saisoncard.co.jp'] },
+  { name: 'セゾン', domains: ['saisoncard.co.jp'] },
   // Imitated in the public Nazario phishing corpus of 2025, added on 2026-11-04. None appears in the owner's legitimate emails.
   { name: 'docusign', domains: [] },
   { name: 'walmart', domains: [] },

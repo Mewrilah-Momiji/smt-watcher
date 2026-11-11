@@ -408,5 +408,6 @@ export const pt: Messages = {
     'sender-cloud-vm': { title: 'Enviado a partir de um servidor na nuvem alugado', detail: (p) => `O email chegou ao teu fornecedor diretamente a partir de ${p.host}, um servidor virtual alugado. As empresas costumam enviar através de um serviço de email, enquanto os spammers alugam muitas vezes estes servidores por algumas horas.` },
     'date-in-future': { title: 'Data no futuro', detail: (p) => `O email afirma ter sido escrito cerca de ${p.hours} horas depois de o teu fornecedor o ter recebido. Os spammers falsificam a data para que o email fique no topo da caixa de entrada.` },
     'reply-freemail-in-body': { title: 'Pede resposta para um endereço de email gratuito', detail: (p) => `O texto pede-te que escrevas para ${p.address}, um endereço de email gratuito que não pertence ao remetente. Os burlões levam a conversa para lá, longe da conta de onde escreveram.` },
+    'local-part-as-name': { title: 'Usa o teu endereço como nome', detail: (p) => `O email chama-te «${p.name}», a parte do teu endereço de email antes do @. Os remetentes verdadeiros que te conhecem usam o teu nome real. Os envios em massa preenchem isto automaticamente.` },
   },
 };

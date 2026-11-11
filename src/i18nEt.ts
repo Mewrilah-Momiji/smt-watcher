@@ -408,5 +408,6 @@ export const et: Messages = {
     'sender-cloud-vm': { title: 'Saadetud renditud pilveserverist', detail: (p) => `E-kiri jõudis sinu teenusepakkujani otse serverist ${p.host}, mis on renditud virtuaalserver. Ettevõtted saadavad tavaliselt meiliteenuse kaudu, rämpsposti saatjad rendivad selliseid servereid sageli mõneks tunniks.` },
     'date-in-future': { title: 'Kuupäev on tulevikus', detail: (p) => `E-kiri väidab, et see kirjutati umbes ${p.hours} tundi pärast seda, kui sinu teenusepakkuja selle kätte sai. Rämpsposti saatjad võltsivad kuupäeva, et nende kiri püsiks postkastis ülal.` },
     'reply-freemail-in-body': { title: 'Palub vastata tasuta e-posti aadressile', detail: (p) => `Tekst palub sul kirjutada aadressile ${p.address}, mis on tasuta e-posti aadress ega kuulu saatjale. Petturid viivad vestluse sinna, eemale kontost, millelt nad kirjutasid.` },
+    'local-part-as-name': { title: 'Kasutab sinu aadressi nimena', detail: (p) => `E-kiri kutsub sind „${p.name}“, see on sinu e-posti aadressi osa enne @ märki. Päris saatjad, kes sind tunnevad, kasutavad sinu õiget nime. Masspostitused täidavad selle automaatselt.` },
   },
 };

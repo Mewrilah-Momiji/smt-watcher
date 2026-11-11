@@ -408,5 +408,6 @@ export const hu: Messages = {
     'sender-cloud-vm': { title: 'Bérelt felhőszerverről küldték', detail: (p) => `Az e-mail közvetlenül a(z) ${p.host} bérelt virtuális szerverről érkezett a szolgáltatódhoz. A cégek általában levelezőszolgáltatáson keresztül küldenek, a spammerek viszont gyakran csak néhány órára bérelnek ilyen szervereket.` },
     'date-in-future': { title: 'A dátum a jövőben van', detail: (p) => `Az e-mail szerint nagyjából ${p.hours} órával azután írták, hogy a szolgáltatód megkapta. A spammerek meghamisítják a dátumot, hogy levelük a postafiók tetején maradjon.` },
     'reply-freemail-in-body': { title: 'Ingyenes e-mail-címre kér választ', detail: (p) => `A szöveg arra kér, hogy a(z) ${p.address} címre írj, ami ingyenes e-mail-cím, és nem a feladóé. A csalók oda terelik a beszélgetést, el attól a fióktól, amelyről írtak.` },
+    'local-part-as-name': { title: 'A címedet használja névként', detail: (p) => `Az e-mail „${p.name}” néven szólít, ami az e-mail-címed @ előtti része. A valódi feladók, akik ismernek, a valódi nevedet használják. A tömeges levelek ezt automatikusan töltik ki.` },
   },
 };

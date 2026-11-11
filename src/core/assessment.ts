@@ -45,6 +45,8 @@ const WEIGHTS: Record<FindingCode, number> = {
   'date-in-future': 1,
   // Measured on 2026-11-10: 7 of 257 private spam emails and 13 in the public collections, none of 1872 legitimate emails or 5149 Apache list emails.
   'reply-freemail-in-body': 2,
+  // Measured on 2026-11-11: 46 of 262 private spam emails and 342 in the public collections, none of 1872 legitimate emails or 5149 Apache list emails.
+  'local-part-as-name': 2,
   'crypto-recovery': 2,
   // Measured on 2026-11-08: 1 of 244 private spam emails and 3 in the public spam and phishing collections, none of 1872 legitimate emails or 5149 Apache list emails.
   'extortion-threat': 3,

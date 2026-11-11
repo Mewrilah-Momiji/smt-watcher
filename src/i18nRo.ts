@@ -408,5 +408,6 @@ export const ro: Messages = {
     'sender-cloud-vm': { title: 'Trimis de pe un server cloud închiriat', detail: (p) => `E-mailul a ajuns la furnizorul tău direct de la ${p.host}, un server virtual închiriat. Firmele trimit de obicei printr-un serviciu de e-mail, iar spammerii închiriază adesea astfel de servere pentru câteva ore.` },
     'date-in-future': { title: 'Dată în viitor', detail: (p) => `E-mailul pretinde că a fost scris la aproximativ ${p.hours} ore după ce furnizorul tău l-a primit. Spammerii falsifică data ca e-mailul lor să rămână în partea de sus a căsuței.` },
     'reply-freemail-in-body': { title: 'Cere răspuns la o adresă de e-mail gratuită', detail: (p) => `Textul îți cere să scrii la ${p.address}, o adresă de e-mail gratuită care nu aparține expeditorului. Escrocii mută conversația acolo, departe de contul de pe care au scris.` },
+    'local-part-as-name': { title: 'Folosește adresa ta drept nume', detail: (p) => `E-mailul te numește „${p.name}”, adică partea din adresa ta de e-mail dinaintea @. Expeditorii reali care te cunosc folosesc numele tău adevărat. E-mailurile în masă completează asta automat.` },
   },
 };

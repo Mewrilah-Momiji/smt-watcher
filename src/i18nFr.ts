@@ -408,5 +408,6 @@ export const fr: Messages = {
     'sender-cloud-vm': { title: 'Envoyé depuis un serveur cloud loué', detail: (p) => `L’e-mail est arrivé chez ton fournisseur directement depuis ${p.host}, un serveur virtuel loué. Les entreprises passent en général par un service d’e-mail, alors que les spammeurs louent souvent ces serveurs pour quelques heures.` },
     'date-in-future': { title: 'Daté dans le futur', detail: (p) => `L’e-mail prétend avoir été écrit environ ${p.hours} heures après sa réception par ton fournisseur. Les spammeurs falsifient la date pour que leur e-mail reste en haut de la boîte de réception.` },
     'reply-freemail-in-body': { title: 'Demande une réponse à une adresse de messagerie gratuite', detail: (p) => `Le texte te demande d’écrire à ${p.address}, une adresse de messagerie gratuite qui n’appartient pas à l’expéditeur. Les escrocs y déplacent la conversation, loin du compte depuis lequel ils ont écrit.` },
+    'local-part-as-name': { title: 'Utilise ton adresse comme nom', detail: (p) => `L’e-mail t’appelle « ${p.name} », la partie de ton adresse avant le @. Les vrais expéditeurs qui te connaissent utilisent ton vrai nom. Les envois de masse le remplissent automatiquement.` },
   },
 };

@@ -443,6 +443,7 @@ const en = {
     'sender-cloud-vm': { title: 'Sent from a rented cloud server', detail: (p) => `The email reached your provider straight from ${p.host}, a rented virtual server. Companies usually send through a mail service, while spammers often rent such servers for a few hours.` },
     'date-in-future': { title: 'Dated in the future', detail: (p) => `The email claims it was written about ${p.hours} hours after your provider received it. Spammers fake the date so that their email stays at the top of the inbox.` },
     'reply-freemail-in-body': { title: 'Asks you to answer at a free mail address', detail: (p) => `The text asks you to write to ${p.address}, a free mail address that does not belong to the sender. Fraudsters move the conversation there, away from the account they sent from.` },
+    'local-part-as-name': { title: 'Uses your address as your name', detail: (p) => `The email calls you "${p.name}", the part of your email address before the @. Real senders who know you use your actual name. Mass mailings fill this in automatically.` },
   } satisfies Record<FindingCode, FindingText> as Record<FindingCode, FindingText>,
 };
 
@@ -854,6 +855,7 @@ const de: typeof en = {
     'sender-cloud-vm': { title: 'Von einem gemieteten Cloud-Server verschickt', detail: (p) => `Die E-Mail kam direkt von ${p.host} bei deinem Anbieter an, einem gemieteten virtuellen Server. Firmen verschicken meist über einen Maildienst, Spammer mieten solche Server oft für wenige Stunden.` },
     'date-in-future': { title: 'Datum liegt in der Zukunft', detail: (p) => `Die E-Mail gibt an, etwa ${p.hours} Stunden nach dem Eingang bei deinem Anbieter geschrieben worden zu sein. Spammer fälschen das Datum, damit ihre E-Mail oben im Posteingang bleibt.` },
     'reply-freemail-in-body': { title: 'Bittet um Antwort an eine Freemail-Adresse', detail: (p) => `Der Text bittet dich, an ${p.address} zu schreiben, eine Freemail-Adresse, die nicht zum Absender gehört. Betrüger verlegen das Gespräch dorthin, weg von dem Konto, über das sie geschrieben haben.` },
+    'local-part-as-name': { title: 'Nutzt deine Adresse als Namen', detail: (p) => `Die E-Mail nennt dich „${p.name}“, also den Teil deiner E-Mail-Adresse vor dem @. Echte Absender, die dich kennen, nutzen deinen richtigen Namen. Massenmails setzen das automatisch ein.` },
   },
 };
 
