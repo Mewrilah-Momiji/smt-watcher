@@ -58,6 +58,9 @@ export const BRANDS: Brand[] = [
   // Japanese credit card, added on 2026-11-11: 17 of 262 private spam emails with both spellings, none of the owner's legitimate emails.
   { name: 'saison', domains: ['saisoncard.co.jp'] },
   { name: 'セゾン', domains: ['saisoncard.co.jp'] },
+  // Added on 2026-11-11 after a fake "OpenAl" billing email. Together with lookalike letters: 1 of 263 private spam emails and 6 in the public collections, none of 1872 legitimate emails or 5149 Apache list emails.
+  { name: 'openai', domains: ['chatgpt.com'] },
+  { name: 'chatgpt', domains: ['openai.com'] },
   // Imitated in the public Nazario phishing corpus of 2025, added on 2026-11-04. None appears in the owner's legitimate emails.
   { name: 'docusign', domains: [] },
   { name: 'walmart', domains: [] },

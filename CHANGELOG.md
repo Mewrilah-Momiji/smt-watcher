@@ -4,6 +4,11 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.44 - 2026-11-11
+
+- OpenAI and ChatGPT now count as imitated brands.
+- A brand name written with lookalike letters in the sender's name, such as "OpenAl" with a small L or "PayPa1", now counts as an imitated brand.
+
 ## 0.5.43 - 2026-11-11
 
 - New sign: the email calls you by the part of your address before the @, such as "Hello jane", instead of your name.

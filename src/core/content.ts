@@ -204,10 +204,17 @@ function visibleDomain(text: string | null): string | null {
   return match[1].toLowerCase();
 }
 
+/** Letters that look alike in many fonts, as in "OpenAl" with a small L or "PayPa1". */
+function lookalikePattern(brand: string): string {
+  return [...brand]
+    .map((char) => (char === 'i' || char === 'l' ? '[il1|]' : char === 'o' ? '[o0]' : char === 'm' ? '(?:m|rn)' : char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+    .join('');
+}
+
 function mentionsBrand(displayName: string, brand: string): boolean {
   // Word boundaries do not exist in Japanese text.
   if (/^[^\x00-\x7F]+$/.test(brand)) return displayName.includes(brand);
-  return new RegExp(`(^|[^\\p{L}\\p{N}])${brand}($|[^\\p{L}\\p{N}])`, 'iu').test(displayName);
+  return new RegExp(`(^|[^\\p{L}\\p{N}])${lookalikePattern(brand)}($|[^\\p{L}\\p{N}])`, 'iu').test(displayName);
 }
 
 function isBrandDomain({ name, domains, manyDomains }: Brand, fromBase: string): boolean {

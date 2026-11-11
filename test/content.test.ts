@@ -475,4 +475,15 @@ describe('local part of the address as a name and SAISON', () => {
     expect(codes({ bodyText: 'Hallo' }, 'セゾンカード', 'vpgs.example')).toContain('brand-impersonation');
     expect(codes({ bodyText: 'Hallo' }, 'SAISON CARD', 'saisoncard.co.jp')).not.toContain('brand-impersonation');
   });
+
+  it('knows OpenAI and brand names written with lookalike letters', () => {
+    expect(codes({ bodyText: 'Hallo' }, 'OpenAl', 'freeway.example')).toContain('brand-impersonation');
+    expect(codes({ bodyText: 'Hallo' }, 'ChatGPT Billing', 'freeway.example')).toContain('brand-impersonation');
+    expect(codes({ bodyText: 'Hallo' }, 'SPECIAL_LlDL', 'shop.example')).toContain('brand-impersonation');
+    expect(codes({ bodyText: 'Hallo' }, 'PayPa1', 'shop.example')).toContain('brand-impersonation');
+    expect(codes({ bodyText: 'Hallo' }, 'Arnazon', 'shop.example')).toContain('brand-impersonation');
+    expect(codes({ bodyText: 'Hallo' }, 'OpenAI', 'openai.com')).not.toContain('brand-impersonation');
+    expect(codes({ bodyText: 'Hallo' }, 'ChatGPT', 'openai.com')).not.toContain('brand-impersonation');
+    expect(codes({ bodyText: 'Hallo' }, 'Opener Alarm', 'shop.example')).not.toContain('brand-impersonation');
+  });
 });
