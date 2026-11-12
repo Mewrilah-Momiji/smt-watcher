@@ -1,6 +1,6 @@
 // Uploads the built page in dist/ over encrypted FTP. Access data stays in .deploy.env, which Git ignores.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { Readable } from 'node:stream';
+import { Readable, Writable } from 'node:stream';
 import { Client } from 'basic-ftp';
 import { record } from './thunderbird-lib.mjs';
 
@@ -18,6 +18,36 @@ function readEnv(file) {
       .filter((line) => /^[A-Z_]+=/.test(line))
       .map((line) => [line.slice(0, line.indexOf('=')), line.slice(line.indexOf('=') + 1).trim()]),
   );
+}
+
+// Older Thunderbird packages stay downloadable forever otherwise. Only the version that updates.json on the server
+// offers is kept, together with smt-watcher.xpi and updates.json. Without a readable updates.json nothing is removed.
+async function removeOldPackages(client) {
+  const chunks = [];
+  try {
+    await client.downloadTo(new Writable({ write(chunk, _encoding, done) { chunks.push(chunk); done(); } }), 'thunderbird/updates.json');
+  } catch {
+    return 'no updates.json on the server, nothing removed';
+  }
+  let offered;
+  try {
+    offered = Object.values(JSON.parse(Buffer.concat(chunks).toString('utf8')).addons ?? {})[0]?.updates?.at(-1)?.version;
+  } catch {
+    offered = undefined;
+  }
+  if (typeof offered !== 'string' || !/^\d+\.\d+\.\d+$/.test(offered)) {
+    return 'updates.json names no version, nothing removed';
+  }
+  const files = (await client.list('thunderbird')).filter((file) => file.isFile);
+  const keep = `smt-watcher-${offered}.xpi`;
+  if (!files.some((file) => file.name === keep)) {
+    return `${keep} is missing on the server, nothing removed`;
+  }
+  const old = files.filter((file) => /^smt-watcher-\d+\.\d+\.\d+\.xpi$/.test(file.name) && file.name !== keep);
+  for (const file of old) {
+    await client.remove(`thunderbird/${file.name}`);
+  }
+  return `kept ${keep}, removed ${old.length} older package${old.length === 1 ? '' : 's'}`;
 }
 
 const phpString = (value) => `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
@@ -68,6 +98,7 @@ try {
     await client.uploadFrom(Readable.from([php]), 'private/config.php');
   }
   console.log(`Uploaded dist/ to ${config.FTP_DIR}${withSenderDb ? ' with the sender database on' : ''}`);
+  console.log(`Thunderbird packages: ${await removeOldPackages(client)}`);
   // scripts/thunderbird-release.mjs packaged the extension for this deploy only if it changed. Now that it is online, it counts as released.
   if (existsSync(new URL('thunderbird/updates.json', DIST))) {
     console.log(`Recorded Thunderbird ${record()} as released. Commit extensions/thunderbird/released.json with the release.`);

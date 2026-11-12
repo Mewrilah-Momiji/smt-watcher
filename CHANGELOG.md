@@ -4,6 +4,10 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.49 - 2026-11-12
+
+- Only the current version of the Thunderbird extension can be downloaded from the page. Older packages are removed with each update.
+
 ## 0.5.48 - 2026-11-12
 
 - The contact form only accepts messages sent from this site, so other websites cannot make their visitors send messages through it.
