@@ -4,6 +4,11 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.52 - 2026-11-12
+
+- Emails that pose as UPS from another domain are now marked as impersonating a brand.
+- A sender domain made of six or more letters without a vowel, such as qthshtjc.com, now counts as a sign. Such names are registered in bulk for spam.
+
 ## 0.5.51 - 2026-11-12
 
 - The address with www. leads to the page without it, so the page has one address only.

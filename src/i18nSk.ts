@@ -399,6 +399,7 @@ export const sk: Messages = {
     'provider-spam-verdict': { title: 'Spamový filter pri doručení ju označil ako spam', detail: () => 'Spamový filter na ceste k tebe označil tento e-mail ako spam a žiadny odosielateľ ho nepodpísal. Aj filtre sa mýlia, ale spolu je to jasný znak.' },
     'sender-domain-invalid': { title: 'Doména odosielateľa nemôže existovať', detail: (p) => `Adresa odosielateľa končí na „${p.domain}“, čo nemá koncovku ako .sk, a preto to nemôže byť skutočná doména na internete. Odosielateľ je vymyslený.` },
     'bulk-sender-address': { title: 'Automaticky vytvorená adresa odosielateľa', detail: () => 'Adresa odosielateľa vyzerá ako vytvorená systémom na hromadné rozosielanie, nie ako kontakt, ktorému by si mohol napísať.' },
+    'random-sender-domain': { title: 'Doména odosielateľa vyzerá náhodne', detail: (p) => `Názov ${p.domain} je rad písmen bez samohlások. Odosielatelia spamu registrujú takéto názvy hromadne a rýchlo ich opúšťajú.` },
     'foreign-script': { title: 'Napísané neočakávaným písmom', detail: () => 'Väčšina textu používa písmo ako japončinu alebo cyriliku. Ak takéto e-maily bežne nedostávaš, buď opatrný.' },
     'windfall-promise': { title: 'Sľubuje veľkú sumu peňazí', detail: () => 'Sľúbené dary, výhry alebo dedičstvá od cudzích ľudí sú rozšírený podvod so zálohou. Neodpovedaj.' },
     'liquidation-offer': { title: 'Ponúka tovar z konkurzu', detail: () => 'Podvodníci sa často vydávajú za správcov konkurznej podstaty a inkasujú platby za tovar, ktorý neexistuje. Kým zaplatíš, over si firmu nezávisle.' },

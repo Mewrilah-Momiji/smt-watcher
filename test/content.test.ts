@@ -84,6 +84,8 @@ describe('findContentIssues', () => {
     expect(codes({}, 'SumUp', 'kursportal.example')).toEqual(['brand-impersonation']);
     expect(codes({}, 'Stripe Compliance', 'gmail.com')).toEqual(['brand-impersonation']);
     expect(codes({}, 'Stripe', 'stripe.com')).toEqual([]);
+    expect(codes({}, 'UPS Kundenservice', 'classa.example')).toEqual(['brand-impersonation']);
+    expect(codes({}, 'UPS', 'ups.com')).toEqual([]);
   });
 
   it('accepts a carrier named through a shop only if the shop signed and links lead to the carrier', () => {
@@ -320,6 +322,14 @@ describe('patterns found in real spam', () => {
     expect(codes({}, '', 'shop.example', { fromAddress: 'perfekt1791193663@shop.example' })).toEqual(['bulk-sender-address']);
     expect(codes({}, '', 'shop.example', { fromAddress: 'null@shop.example' })).toEqual(['bulk-sender-address']);
     expect(codes({}, '', 'shop.example', { fromAddress: 'info2024@shop.example' })).toEqual([]);
+  });
+
+  it('reports a sender domain of six or more letters without a vowel', () => {
+    expect(codes({}, 'Ratgeber', 'qthshtjc.com')).toEqual(['random-sender-domain']);
+    expect(codes({}, 'Ratgeber', 'news.qthshtjc.com')).toEqual(['random-sender-domain']);
+    expect(codes({}, 'Ratgeber', 'rhythm.example')).toEqual([]);
+    expect(codes({}, 'Ratgeber', 'bmw.de')).toEqual([]);
+    expect(codes({}, 'Ratgeber', 'xyz123.example')).toEqual([]);
   });
 
   it('reports public hosting and shortener subdomains', () => {

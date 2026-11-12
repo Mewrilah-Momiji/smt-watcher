@@ -399,6 +399,7 @@ export const lv: Messages = {
     'provider-spam-verdict': { title: 'Saņemšanas surogātpasta filtrs to atzīmēja kā surogātpastu', detail: () => 'Surogātpasta filtrs ceļā pie tevis atzīmēja šo e-pastu kā surogātpastu, un neviens sūtītājs to nav parakstījis. Arī filtri kļūdās, bet kopā tā ir skaidra pazīme.' },
     'sender-domain-invalid': { title: 'Sūtītāja domēns nevar pastāvēt', detail: (p) => `Sūtītāja adrese beidzas ar “${p.domain}”, kam nav galotnes kā .lv, tāpēc tas nevar būt īsts domēns internetā. Sūtītājs ir izdomāts.` },
     'bulk-sender-address': { title: 'Automātiski izveidota sūtītāja adrese', detail: () => 'Sūtītāja adrese izskatās izveidota ar masveida sūtīšanas sistēmu, nevis kā kontakts, kam varētu rakstīt.' },
+    'random-sender-domain': { title: 'Sūtītāja domēns izskatās nejaušs', detail: (p) => `Nosaukums ${p.domain} ir burtu virkne bez patskaņiem. Surogātpasta sūtītāji šādus nosaukumus reģistrē masveidā un ātri no tiem atsakās.` },
     'foreign-script': { title: 'Rakstīts negaidītā rakstībā', detail: () => 'Lielākā daļa teksta izmanto rakstību, piemēram, japāņu vai kirilicu. Ja parasti šādus e-pastus nesaņem, esi piesardzīgs.' },
     'windfall-promise': { title: 'Sola lielu naudas summu', detail: () => 'Svešinieku solīti ziedojumi, laimesti vai mantojumi ir izplatīta avansa krāpšana. Neatbildi.' },
     'liquidation-offer': { title: 'Piedāvā preces no maksātnespējas', detail: () => 'Krāpnieki bieži uzdodas par maksātnespējas administratoriem un iekasē naudu par precēm, kuru nav. Pirms maksāšanas neatkarīgi pārbaudi uzņēmumu.' },

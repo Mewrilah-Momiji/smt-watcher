@@ -399,6 +399,7 @@ export const et: Messages = {
     'provider-spam-verdict': { title: 'Vastuvõtmisel märkis rämpspostifilter selle rämpspostiks', detail: () => 'Rämpspostifilter sinuni jõudmise teel märkis selle kirja rämpspostiks ja ükski saatja ei ole seda allkirjastanud. Ka filtrid eksivad, kuid koos on see selge märk.' },
     'sender-domain-invalid': { title: 'Saatja domeeni ei saa olla olemas', detail: (p) => `Saatja aadress lõpeb osaga „${p.domain}“, millel pole lõppu nagu .ee, seega ei saa see olla päris domeen internetis. Saatja on välja mõeldud.` },
     'bulk-sender-address': { title: 'Automaatselt loodud saatjaaadress', detail: () => 'Saatjaaadress näib olevat loodud masssaatmissüsteemi poolt, mitte kontakt, kellele saaksid kirjutada.' },
+    'random-sender-domain': { title: 'Saatja domeen näib juhuslik', detail: (p) => `Nimi ${p.domain} on täishäälikuteta tähtede jada. Rämpsposti saatjad registreerivad selliseid nimesid hulgi ja loobuvad neist kiiresti.` },
     'foreign-script': { title: 'Kirjutatud ootamatus kirjas', detail: () => 'Suurem osa tekstist kasutab kirja, näiteks jaapani või kirillitsat. Kui sa selliseid e-kirju tavaliselt ei saa, ole ettevaatlik.' },
     'windfall-promise': { title: 'Lubab suurt rahasummat', detail: () => 'Võõraste lubatud annetused, võidud või pärandused on levinud ettemaksupettus. Ära vasta.' },
     'liquidation-offer': { title: 'Pakub pankrotipesast kaupa', detail: () => 'Petturid esinevad sageli pankrotihalduritena ja võtavad raha kauba eest, mida pole olemas. Kontrolli ettevõtet enne maksmist sõltumatult.' },

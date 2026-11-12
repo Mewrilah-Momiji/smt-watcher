@@ -399,6 +399,7 @@ export const lt: Messages = {
     'provider-spam-verdict': { title: 'Gavimo šlamšto filtras pažymėjo jį kaip šlamštą', detail: () => 'Šlamšto filtras pakeliui pas tave pažymėjo šį laišką kaip šlamštą, ir joks siuntėjas jo nepasirašė. Filtrai irgi klysta, bet kartu tai aiškus ženklas.' },
     'sender-domain-invalid': { title: 'Siuntėjo domenas negali egzistuoti', detail: (p) => `Siuntėjo adresas baigiasi „${p.domain}“, be galūnės kaip .lt, todėl tai negali būti tikras domenas internete. Siuntėjas išgalvotas.` },
     'bulk-sender-address': { title: 'Automatiškai sukurtas siuntėjo adresas', detail: () => 'Siuntėjo adresas atrodo sukurtas masinio siuntimo sistemos, o ne kaip kontaktas, kuriam galima parašyti.' },
+    'random-sender-domain': { title: 'Siuntėjo domenas atrodo atsitiktinis', detail: (p) => `Pavadinimas ${p.domain} yra raidžių seka be balsių. Šlamšto siuntėjai tokius pavadinimus registruoja masiškai ir greitai jų atsisako.` },
     'foreign-script': { title: 'Parašyta netikėtu raštu', detail: () => 'Didžioji teksto dalis naudoja raštą, pavyzdžiui, japonų ar kirilicą. Jei tokių laiškų paprastai negauni, būk atsargus.' },
     'windfall-promise': { title: 'Žada didelę pinigų sumą', detail: () => 'Nepažįstamųjų žadamos aukos, laimėjimai ar palikimai yra dažnas išankstinio mokėjimo sukčiavimas. Neatsakyk.' },
     'liquidation-offer': { title: 'Siūlo prekes iš bankroto', detail: () => 'Sukčiai dažnai apsimeta bankroto administratoriais ir ima pinigus už prekes, kurių nėra. Prieš mokėdamas nepriklausomai patikrink įmonę.' },

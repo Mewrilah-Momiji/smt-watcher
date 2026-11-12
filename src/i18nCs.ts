@@ -399,6 +399,7 @@ export const cs: Messages = {
     'provider-spam-verdict': { title: 'Spamový filtr při doručení ji označil jako spam', detail: () => 'Spamový filtr na cestě k tobě označil tento e-mail jako spam a žádný odesílatel ho nepodepsal. I filtry se mýlí, ale dohromady je to jasný znak.' },
     'sender-domain-invalid': { title: 'Doména odesílatele nemůže existovat', detail: (p) => `Adresa odesílatele končí na „${p.domain}“, což nemá koncovku jako .cz, a proto to nemůže být skutečná doména na internetu. Odesílatel je smyšlený.` },
     'bulk-sender-address': { title: 'Automaticky vytvořená adresa odesílatele', detail: () => 'Adresa odesílatele vypadá jako vytvořená systémem pro hromadné rozesílání, ne jako kontakt, kterému bys mohl napsat.' },
+    'random-sender-domain': { title: 'Doména odesílatele vypadá náhodně', detail: (p) => `Název ${p.domain} je řada písmen bez samohlásek. Rozesílatelé spamu registrují taková jména hromadně a rychle je opouštějí.` },
     'foreign-script': { title: 'Napsáno neočekávaným písmem', detail: () => 'Většina textu používá písmo jako japonštinu nebo cyrilici. Pokud takové e-maily běžně nedostáváš, buď opatrný.' },
     'windfall-promise': { title: 'Slibuje velkou sumu peněz', detail: () => 'Slíbené dary, výhry nebo dědictví od cizích lidí jsou rozšířený podvod se zálohou. Neodpovídej.' },
     'liquidation-offer': { title: 'Nabízí zboží z insolvence', detail: () => 'Podvodníci se často vydávají za insolvenční správce a inkasují platby za zboží, které neexistuje. Než zaplatíš, prověř firmu nezávisle.' },

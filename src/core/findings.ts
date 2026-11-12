@@ -52,6 +52,7 @@ export type FindingCode =
   | 'provider-spam-verdict'
   | 'sender-domain-invalid'
   | 'bulk-sender-address'
+  | 'random-sender-domain'
   | 'link-public-host'
   | 'foreign-script'
   | 'windfall-promise'

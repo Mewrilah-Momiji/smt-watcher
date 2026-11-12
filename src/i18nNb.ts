@@ -399,6 +399,7 @@ export const nb: Messages = {
     'provider-spam-verdict': { title: 'Spamfilteret ved mottak markerte den som spam', detail: () => 'Et spamfilter på veien til deg markerte denne e-posten som spam, og ingen avsender har signert den. Filtre tar også feil, men sammen er dette et tydelig tegn.' },
     'sender-domain-invalid': { title: 'Avsenderens domene kan ikke finnes', detail: (p) => `Avsenderadressen slutter på «${p.domain}», som ikke har en endelse som .no og derfor ikke kan være et ekte domene på internett. Avsenderen er oppdiktet.` },
     'bulk-sender-address': { title: 'Automatisk generert avsenderadresse', detail: () => 'Avsenderadressen ser ut til å være laget av et system for masseutsendelse, ikke en kontakt du kan skrive til.' },
+    'random-sender-domain': { title: 'Avsenderdomenet ser tilfeldig ut', detail: (p) => `Navnet ${p.domain} er en rekke bokstaver uten vokaler. Spamavsendere registrerer slike navn i store mengder og gir dem raskt opp.` },
     'foreign-script': { title: 'Skrevet med et uventet skriftsystem', detail: () => 'Det meste av teksten bruker et skriftsystem som japansk eller kyrillisk. Hvis du vanligvis ikke får slike e-poster, vær forsiktig.' },
     'windfall-promise': { title: 'Lover en stor pengesum', detail: () => 'Lovede gaver, gevinster eller arv fra fremmede er en vanlig forskuddssvindel. Ikke svar.' },
     'liquidation-offer': { title: 'Tilbyr varer fra en konkurs', detail: () => 'Svindlere utgir seg ofte for å være bobestyrere og tar betalt for varer som ikke finnes. Sjekk bedriften selv før du betaler.' },

@@ -73,6 +73,7 @@ export const BRANDS: Brand[] = [
   { name: 'bank of america', domains: ['bofa.com'] },
   { name: 'usps', domains: [] },
   { name: 'fedex', domains: [] },
+  { name: 'ups', domains: [] },
   { name: 'office 365', domains: ['microsoft.com', 'office.com', 'outlook.com'] },
   { name: 'sharepoint', domains: ['microsoft.com', 'sharepointonline.com'] },
   { name: 'onedrive', domains: ['microsoft.com', 'live.com'] },

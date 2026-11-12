@@ -85,6 +85,8 @@ const NAME_DOMAIN = /(?:^|[\s|(<])((?:[a-z0-9-]+\.)+(?:com|de|net|org|info|eu|at
 
 const FAKE_REPLY_PATTERN = /^\s*(re|aw|wg|fw|fwd)\s*:/i;
 const BULK_ADDRESS_PATTERN = /^(.*\d{8,}|null)@/i;
+// Six or more letters without a vowel, such as qthshtjc.com: names registered in bulk. y counts as a vowel, as in rhythm.
+const RANDOM_LABEL_PATTERN = /^[b-df-hj-np-tv-xz]{6,}$/i;
 // "ATM-Karte" added on 2026-11-06: 1 of 239 private spam emails, none of 1872 legitimate ones.
 // Compensation payouts added on 2026-11-10: 2 of 257 private spam emails and 1 in Untroubled 2026-10, none of 1872 legitimate emails or 5149 Apache list emails.
 const WINDFALL_PATTERN = /(beg[üu]nstigter|erbschaft|lotterie|lottery|spende in h[öo]he|inheritance|atm[- ]?(?:karte|card)|entsch[äa]digungs(?:summe|zahlung|betrag|fonds)|compensation (?:fund|payment|sum|amount))/i;
@@ -381,6 +383,15 @@ export function findContentIssues(content: MailContent, context: MailContext): F
     findings.push({
       code: 'bulk-sender-address',
       severity: 'note',
+    });
+  }
+
+  const fromBaseDomain = fromDomain ? baseDomain(fromDomain) : '';
+  if (RANDOM_LABEL_PATTERN.test(fromBaseDomain.split('.')[0])) {
+    findings.push({
+      code: 'random-sender-domain',
+      severity: 'note',
+      params: { domain: fromBaseDomain },
     });
   }
 

@@ -54,6 +54,7 @@ const WEIGHTS: Record<FindingCode, number> = {
   'plain-password': 1,
   'reply-to-freemail': 2,
   'to-sender-only': 1,
+  'random-sender-domain': 1,
   'link-public-host': 2,
   'foreign-script': 2,
   'fake-reply': 2,
