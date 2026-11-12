@@ -50,7 +50,27 @@ async function removeOldPackages(client) {
   return `kept ${keep}, removed ${old.length} older package${old.length === 1 ? '' : 's'}`;
 }
 
-const phpString = (value) => `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+// private/ holds the database, the keys and the settings and must never be served. Each file must answer 403 or 404;
+// anything else, including a network error, fails the deploy. Bodies are discarded unread.
+const PRIVATE_PATHS = ['private/', 'private/smtw.sqlite', 'private/secret.php', 'private/day-key.php', 'private/config.php', 'private/contact.php', 'private/common.php'];
+async function checkPrivateClosed(siteUrl) {
+  const open = [];
+  for (const path of PRIVATE_PATHS) {
+    const url = new URL(path, siteUrl);
+    try {
+      const response = await fetch(url, { cache: 'no-store' });
+      await response.body?.cancel();
+      if (response.status !== 403 && response.status !== 404) {
+        open.push(`${url} answered ${response.status}`);
+      }
+    } catch (error) {
+      open.push(`${url} could not be checked: ${error.message}`);
+    }
+  }
+  return open;
+}
+
+const phpString =(value) => `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
 
 if (!existsSync(CONFIG_FILE)) {
   console.error('.deploy.env is missing. Copy .deploy.env.example and fill it in.');
@@ -63,9 +83,16 @@ if (missing.length > 0) {
   process.exit(1);
 }
 // The contact form sends to the operator's address from .env.local, which the build also used for the imprint.
-const operatorEmail = existsSync(OPERATOR_FILE) ? readEnv(OPERATOR_FILE).VITE_OPERATOR_EMAIL : undefined;
+const operatorEnv = existsSync(OPERATOR_FILE) ? readEnv(OPERATOR_FILE) : {};
+const operatorEmail = operatorEnv.VITE_OPERATOR_EMAIL;
 if (!operatorEmail) {
   console.error('.env.local lacks VITE_OPERATOR_EMAIL. Copy .env.example to .env.local and fill it in.');
+  process.exit(1);
+}
+// The live address, used after the upload to check that private/ stays closed.
+const siteUrl = operatorEnv.VITE_SITE_URL;
+if (!siteUrl || !/^https:\/\/[^/]+\/$/.test(siteUrl)) {
+  console.error('.env.local lacks VITE_SITE_URL as https://host/ . The deploy checks private/ there.');
   process.exit(1);
 }
 if (!existsSync(new URL('index.html', DIST)) || !existsSync(new URL('private/lists.php', DIST))) {
@@ -102,4 +129,14 @@ try {
   process.exitCode = 1;
 } finally {
   client.close();
+}
+
+if (!process.exitCode) {
+  const open = await checkPrivateClosed(siteUrl);
+  if (open.length > 0) {
+    console.error(`private/ is NOT closed to the web. Fix this at once:\n  ${open.join('\n  ')}`);
+    process.exitCode = 1;
+  } else {
+    console.log(`Checked ${PRIVATE_PATHS.length} paths in private/: all closed (403/404)`);
+  }
 }

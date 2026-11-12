@@ -80,7 +80,7 @@ The page itself is static and runs on any web server. The sender database and th
   location ^~ /private/ { deny all; }
   ```
 
-  After each deploy, check that `https://your-host/private/` and `https://your-host/private/smtw.sqlite` answer 403 or 404, never 200.
+  After each upload, `scripts/deploy.mjs` checks that `private/`, the database, the keys and the settings at `VITE_SITE_URL` answer 403 or 404, and fails if any of them answers otherwise or cannot be reached.
 - A backup is a copy of `private/smtw.sqlite`, taken over FTP while nobody reports. Keep `private/secret.php` with it: without that key, the stored hashes no longer match any domain.
 - The public `.htaccess` also redirects to https and sets security headers. On other web servers, set the same headers yourself.
 
