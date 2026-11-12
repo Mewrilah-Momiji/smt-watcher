@@ -89,6 +89,6 @@ if (field('topic') === 'translation') {
     $subject = 'SMT Watcher translation error (' . $lang . ')';
     $details = 'Language: ' . $lang . "\nPage: " . $page . "\n";
 }
-$body = 'Name: ' . ($name === '' ? '-' : $name) . "\nE-Mail: " . $email . "\n" . $details . "\n" . $message . "\n";
+$body = 'Name: ' . ($name === '' ? '-' : $name) . "\nE-Mail: " . $email . "\nTime to fill in: " . (int) $seconds . " s\n" . $details . "\n" . $message . "\n";
 $sent = mail($operator, $subject, chunk_split(base64_encode($body)), $headers, '-f' . $operator);
 finish($sent ? 'sent' : 'failed');
