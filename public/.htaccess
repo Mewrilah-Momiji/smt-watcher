@@ -11,6 +11,7 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 RedirectMatch 301 /legal\.html$ /imprint.html
 
 <IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000"
   Header always set Content-Security-Policy "frame-ancestors 'none'"
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "no-referrer"
