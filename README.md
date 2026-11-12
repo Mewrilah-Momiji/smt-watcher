@@ -69,6 +69,21 @@ Before the first build, copy `.env.example` to `.env.local` and enter the operat
 
 `SpamMails/` and `LegitimeMails/` are local folders for real test emails. Git ignores them, and they must never be committed.
 
+## Hosting your own copy
+
+The page itself is static and runs on any web server. The sender database and the contact form need PHP 8.1 or later with the PDO SQLite driver (`pdo_sqlite`), which most hosts offer. No separate database server is needed.
+
+- `npm run deploy:senderdb` uploads the page and switches the database on. On the first report or lookup, PHP creates the database file `private/smtw.sqlite` with its tables, and the keys `private/secret.php` and `private/day-key.php`. PHP must be allowed to write to `private/`.
+- **`private/` must be closed to the web.** It holds the database, the keys and the settings. On Apache, the included `public/private/.htaccess` does this (`Require all denied`), as long as the host allows `.htaccess` files. Other web servers ignore that file, so close the folder in their own settings, for example on nginx:
+
+  ```nginx
+  location ^~ /private/ { deny all; }
+  ```
+
+  After each deploy, check that `https://your-host/private/` and `https://your-host/private/smtw.sqlite` answer 403 or 404, never 200.
+- A backup is a copy of `private/smtw.sqlite`, taken over FTP while nobody reports. Keep `private/secret.php` with it: without that key, the stored hashes no longer match any domain.
+- The public `.htaccess` also redirects to https and sets security headers. On other web servers, set the same headers yourself.
+
 ## License
 
 Copyright (C) 2026 Marc Trinklein, [pixel-heaven.net](https://pixel-heaven.net)
