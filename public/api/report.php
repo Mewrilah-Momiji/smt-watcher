@@ -12,7 +12,7 @@ const SOURCE_RETENTION_DAYS = 30;
 const LEVEL_COLUMNS = ['many-signs' => 'level_many', 'some-signs' => 'level_some', 'no-signs' => 'level_none'];
 const VERDICT_COLUMNS = ['spam' => 'votes_spam', 'legit' => 'votes_legit', 'unsure' => 'votes_unsure'];
 
-$config = acceptRequest();
+acceptRequest();
 $input = readJson();
 $authentication = $input['authentication'] ?? null;
 $codes = $input['codes'] ?? null;
@@ -53,28 +53,30 @@ $source = sourceHash();
 
 try {
     $step = 'database-tables';
-    $db = openDatabase($config);
+    $db = openDatabase();
     $step = 'database-write';
-    $db->beginTransaction();
+    beginWriting($db);
 
-    $db->prepare('DELETE FROM smtw_sources WHERE seen < CURRENT_DATE - INTERVAL ? DAY')->execute([SOURCE_RETENTION_DAYS]);
-    $db->prepare("DELETE c FROM smtw_codes c JOIN smtw_groups g ON g.id = c.group_id WHERE g.last_month < DATE_FORMAT(CURRENT_DATE - INTERVAL 3 YEAR, '%Y-%m')")->execute();
-    $db->prepare("DELETE FROM smtw_groups WHERE last_month < DATE_FORMAT(CURRENT_DATE - INTERVAL 3 YEAR, '%Y-%m')")->execute();
+    $today = date('Y-m-d');
+    $db->prepare('DELETE FROM smtw_sources WHERE seen < ?')->execute([date('Y-m-d', strtotime('-' . SOURCE_RETENTION_DAYS . ' days'))]);
+    $oldest = date('Y-m', strtotime('-3 years'));
+    $db->prepare('DELETE FROM smtw_codes WHERE group_id IN (SELECT id FROM smtw_groups WHERE last_month < ?)')->execute([$oldest]);
+    $db->prepare('DELETE FROM smtw_groups WHERE last_month < ?')->execute([$oldest]);
     if (!withinLimit($db, $source, MAX_REPORTS_PER_HOUR)) {
-        $db->commit();
+        $db->exec('COMMIT');
         answer(429, 'limit');
     }
 
-    $db->prepare('INSERT IGNORE INTO smtw_groups (fingerprint, domain_hash, first_month, last_month) VALUES (?, ?, ?, ?)')->execute([$fingerprint, $domainHash, $month, $month]);
+    $db->prepare('INSERT OR IGNORE INTO smtw_groups (fingerprint, domain_hash, first_month, last_month) VALUES (?, ?, ?, ?)')->execute([$fingerprint, $domainHash, $month, $month]);
     $find = $db->prepare('SELECT id FROM smtw_groups WHERE fingerprint = ?');
     $find->execute([$fingerprint]);
     $group = (int) $find->fetchColumn();
 
     // One source counts once per group, so that repeating a report changes nothing.
-    $first = $db->prepare('INSERT IGNORE INTO smtw_sources (group_id, source_hash, seen) VALUES (?, ?, CURRENT_DATE)');
-    $first->execute([$group, $source]);
+    $first = $db->prepare('INSERT OR IGNORE INTO smtw_sources (group_id, source_hash, seen) VALUES (?, ?, ?)');
+    $first->execute([$group, $source, $today]);
     if ($first->rowCount() === 0) {
-        $db->commit();
+        $db->exec('COMMIT');
         answer(200, 'counted');
     }
 
@@ -84,7 +86,7 @@ try {
         "UPDATE smtw_groups SET last_month = ?, sources = sources + 1, signed_reports = signed_reports + ?,
          assessment_wrong = assessment_wrong + ?, $level = $level + 1, $vote = $vote + 1 WHERE id = ?",
     )->execute([$month, (int) $input['signedBySender'], (int) $input['assessmentWrong'], $group]);
-    $addCode = $db->prepare('INSERT INTO smtw_codes (group_id, code, reports) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE reports = reports + 1');
+    $addCode = $db->prepare('INSERT INTO smtw_codes (group_id, code, reports) VALUES (?, ?, 1) ON CONFLICT (group_id, code) DO UPDATE SET reports = reports + 1');
     foreach (array_unique($codes) as $code) {
         $addCode->execute([$group, $code]);
     }
@@ -99,7 +101,7 @@ try {
     if ((int) $total->fetchColumn() >= MIN_SOURCES_FOR_CLEAR_DOMAIN) {
         $db->prepare('UPDATE smtw_groups SET domain = ? WHERE domain_hash = ? AND domain IS NULL')->execute([$input['senderDomain'], $domainHash]);
     }
-    $db->commit();
+    $db->exec('COMMIT');
 } catch (Throwable) {
     // Only the failed step: a database message could contain the submitted values or access data.
     answer(503, $step);

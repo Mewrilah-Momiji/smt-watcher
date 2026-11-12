@@ -18,7 +18,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || !hash_equals(TOKEN_HASH, ha
     answer(404, ['result' => 'not-found']);
 }
 
-$config = require __DIR__ . '/../private/config.php';
 $secretFile = __DIR__ . '/../private/secret.php';
 $secretText = is_file($secretFile) ? (string) file_get_contents($secretFile) : '';
 if (preg_match('/^<\?php \/\/ ([0-9a-f]{64})$/', trim($secretText), $match) !== 1) {
@@ -33,36 +32,32 @@ if (!is_array($groups) || count($groups) > 1000) {
 }
 
 try {
-    $db = new PDO(
-        'mysql:host=' . $config['host'] . ';dbname=' . $config['name'] . ';charset=utf8mb4',
-        $config['user'],
-        $config['password'],
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_EMULATE_PREPARES => false],
-    );
-    // An existing table needs the new column before the schema renews the view that uses it.
-    if ($db->query("SHOW TABLES LIKE 'smtw_groups'")->fetchColumn() !== false) {
-        $db->exec('ALTER TABLE smtw_groups ADD COLUMN IF NOT EXISTS seed_spam INT UNSIGNED NOT NULL DEFAULT 0');
+    $file = __DIR__ . '/../private/smtw.sqlite';
+    $new = !is_file($file);
+    $db = new PDO('sqlite:' . $file, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 5]);
+    if ($new) {
+        chmod($file, 0600);
     }
     $db->exec((string) file_get_contents(__DIR__ . '/../private/schema.sql'));
-    $db->beginTransaction();
+    $db->exec('BEGIN IMMEDIATE');
     $month = date('Y-m');
     // Setting the count instead of adding to it makes a repeated import harmless.
     $write = $db->prepare(
         'INSERT INTO smtw_groups (fingerprint, domain_hash, first_month, last_month, seed_spam) VALUES (?, ?, ?, ?, ?)
-         ON DUPLICATE KEY UPDATE seed_spam = VALUES(seed_spam)',
+         ON CONFLICT (fingerprint) DO UPDATE SET seed_spam = excluded.seed_spam',
     );
     foreach ($groups as $group) {
         $domain = $group['senderDomain'] ?? null;
         $links = $group['linkDomains'] ?? null;
         $count = $group['count'] ?? null;
         if (!is_string($domain) || preg_match('/^[a-z0-9-]+(\.[a-z0-9-]+)+$/', $domain) !== 1 || !is_array($links) || !is_int($count) || $count < 1) {
-            $db->rollBack();
+            $db->exec('ROLLBACK');
             answer(400, ['result' => 'invalid']);
         }
         sort($links);
         $write->execute([$hash('group', $domain . "\0" . implode(',', $links)), $hash('domain', $domain), $month, $month, $count]);
     }
-    $db->commit();
+    $db->exec('COMMIT');
     $total = (int) $db->query('SELECT COUNT(*) FROM smtw_groups WHERE seed_spam > 0')->fetchColumn();
     $sum = (int) $db->query('SELECT COALESCE(SUM(seed_spam), 0) FROM smtw_groups')->fetchColumn();
     $clear = (int) $db->query('SELECT COUNT(*) FROM smtw_groups WHERE seed_spam > 0 AND domain IS NOT NULL')->fetchColumn();

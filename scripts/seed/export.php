@@ -18,15 +18,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || !hash_equals(TOKEN_HASH, ha
     answer(404, ['result' => 'not-found']);
 }
 
-$config = require __DIR__ . '/../private/config.php';
-
 try {
-    $db = new PDO(
-        'mysql:host=' . $config['host'] . ';dbname=' . $config['name'] . ';charset=utf8mb4',
-        $config['user'],
-        $config['password'],
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_EMULATE_PREPARES => false],
-    );
+    $file = __DIR__ . '/../private/smtw.sqlite';
+    if (!is_file($file)) {
+        answer(503, ['result' => 'no-database']);
+    }
+    $db = new PDO('sqlite:' . $file, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 5]);
     $groups = $db->query(
         'SELECT g.id, g.domain, g.first_month, g.last_month, g.sources, g.signed_reports, g.level_many, g.level_some,
                 g.level_none, g.votes_spam, g.votes_legit, g.votes_unsure, g.assessment_wrong, g.seed_spam, t.verdict

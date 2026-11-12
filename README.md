@@ -46,7 +46,7 @@ Before the first build, copy `.env.example` to `.env.local` and enter the operat
 | `npm run build` | Build the web page into `dist/` |
 | `npm run test:browser:db` | Build the page with the sender database and run its browser tests |
 | `npm run deploy` | Build the page and upload `dist/` over encrypted FTP. Needs `.deploy.env`, see `.deploy.env.example` |
-| `npm run deploy:senderdb` | The same with the sender database on, as the live page uses. Also needs `.database.env` |
+| `npm run deploy:senderdb` | The same with the sender database on, as the live page uses. The server keeps the sender database as a SQLite file in its closed `private/` folder |
 | `npm run build:thunderbird` | Build the extension into `dist-thunderbird/`. Load its `manifest.json` as a temporary add-on |
 | `npm run check:thunderbird` | Report whether the extension changed since its last release |
 | `npm run package:thunderbird` | Build the extension and write `public/thunderbird/` (XPI and `updates.json`) to test it. The deploy packages and uploads the extension by itself when it changed |

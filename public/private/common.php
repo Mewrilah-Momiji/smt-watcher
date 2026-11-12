@@ -95,8 +95,8 @@ function sourceNetwork(string $address): string
     return bin2hex(substr($mapped, 0, 8)) . '::/64';
 }
 
-/** Accepts only a JSON POST from this page, and stops if the database is switched off. Returns the config. */
-function acceptRequest(): array
+/** Accepts only a JSON POST from this page, and stops if the database is switched off. */
+function acceptRequest(): void
 {
     $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
     // The Thunderbird extension sends this form of origin, or none. Other websites can do neither.
@@ -124,7 +124,6 @@ function acceptRequest(): array
     if (!is_array($config) || ($config['enabled'] ?? false) !== true) {
         answer(503, 'unavailable');
     }
-    return $config;
 }
 
 function readJson(): mixed
@@ -133,26 +132,35 @@ function readJson(): mixed
     return is_string($body) && strlen($body) <= MAX_BODY_BYTES ? json_decode($body, true) : null;
 }
 
-function openDatabase(array $config): PDO
+/** The database is one SQLite file in this closed folder. Only the server's PHP reads and writes it. */
+const DATABASE_FILE = __DIR__ . '/smtw.sqlite';
+
+function openDatabase(): PDO
 {
-    $db = new PDO(
-        'mysql:host=' . $config['host'] . ';dbname=' . $config['name'] . ';charset=utf8mb4',
-        $config['user'],
-        $config['password'],
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_EMULATE_PREPARES => false],
-    );
-    if ($db->query("SHOW TABLES LIKE 'smtw_rate'")->fetchColumn() === false) {
+    $new = !is_file(DATABASE_FILE);
+    // Waits up to 5 seconds for another request that is writing, instead of failing at once.
+    $db = new PDO('sqlite:' . DATABASE_FILE, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 5]);
+    if ($new) {
+        chmod(DATABASE_FILE, 0600);
+    }
+    if ($db->query("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'smtw_rate'")->fetchColumn() === false) {
         $db->exec((string) file_get_contents(__DIR__ . '/schema.sql'));
     }
     return $db;
+}
+
+/** Takes the write lock right away, so that two reports at the same moment wait in turn instead of failing. */
+function beginWriting(PDO $db): void
+{
+    $db->exec('BEGIN IMMEDIATE');
 }
 
 /** Counts one request of this source. Returns false above the limit for this hour. */
 function withinLimit(PDO $db, string $source, int $limit): bool
 {
     $hour = date('Y-m-d H:00:00');
-    $db->prepare('DELETE FROM smtw_rate WHERE hour_start < NOW() - INTERVAL 2 HOUR')->execute();
-    $db->prepare('INSERT INTO smtw_rate (source_hash, hour_start, reports) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE reports = reports + 1')->execute([$source, $hour]);
+    $db->prepare('DELETE FROM smtw_rate WHERE hour_start < ?')->execute([date('Y-m-d H:00:00', time() - 2 * 3600)]);
+    $db->prepare('INSERT INTO smtw_rate (source_hash, hour_start, reports) VALUES (?, ?, 1) ON CONFLICT (source_hash, hour_start) DO UPDATE SET reports = reports + 1')->execute([$source, $hour]);
     $count = $db->prepare('SELECT reports FROM smtw_rate WHERE source_hash = ? AND hour_start = ?');
     $count->execute([$source, $hour]);
     return (int) $count->fetchColumn() <= $limit;

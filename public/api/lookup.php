@@ -9,7 +9,7 @@ const MAX_LOOKUPS_PER_HOUR = 60;
 const MIN_VOTES = 5;
 const AGREEMENT = 0.8;
 
-$config = acceptRequest();
+acceptRequest();
 $domain = readJson()['senderDomain'] ?? null;
 if (!isDomain($domain)) {
     answer(400, 'invalid');
@@ -19,7 +19,7 @@ $source = sourceHash();
 
 $step = 'database-connect';
 try {
-    $db = openDatabase($config);
+    $db = openDatabase();
     $step = 'database-read';
     if (!withinLimit($db, $source, MAX_LOOKUPS_PER_HOUR)) {
         answer(429, 'limit');

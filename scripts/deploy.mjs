@@ -5,10 +5,10 @@ import { Client } from 'basic-ftp';
 import { record } from './thunderbird-lib.mjs';
 
 const CONFIG_FILE = new URL('../.deploy.env', import.meta.url);
-const DATABASE_FILE = new URL('../.database.env', import.meta.url);
 const OPERATOR_FILE = new URL('../.env.local', import.meta.url);
 const DIST = new URL('../dist/', import.meta.url);
-// Only with this switch does the server get database access and accept reports.
+// Only with this switch is the database switched on and the server accepts reports. The database is a SQLite file
+// that the server's PHP creates in private/ on first use, so it needs no access data.
 const withSenderDb = process.argv.includes('--sender-db');
 
 function readEnv(file) {
@@ -57,12 +57,6 @@ if (!existsSync(CONFIG_FILE)) {
   process.exit(1);
 }
 const config = readEnv(CONFIG_FILE);
-const database = withSenderDb && existsSync(DATABASE_FILE) ? readEnv(DATABASE_FILE) : {};
-const missingDatabase = withSenderDb ? ['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASSWORD'].filter((key) => !database[key]) : [];
-if (missingDatabase.length > 0) {
-  console.error(`.database.env lacks: ${missingDatabase.join(', ')}`);
-  process.exit(1);
-}
 const missing = ['FTP_HOST', 'FTP_USER', 'FTP_PASSWORD', 'FTP_DIR'].filter((key) => !config[key]);
 if (missing.length > 0) {
   console.error(`.deploy.env lacks: ${missing.join(', ')}`);
@@ -94,8 +88,7 @@ try {
   console.log(`Removed ${stale.length} unused files from assets/`);
   await client.uploadFrom(Readable.from([`<?php return ['email' => ${phpString(operatorEmail)}];\n`]), 'private/contact.php');
   if (withSenderDb) {
-    const php = `<?php return ['enabled' => true, 'host' => ${phpString(database.DB_HOST)}, 'name' => ${phpString(database.DB_NAME)}, 'user' => ${phpString(database.DB_USER)}, 'password' => ${phpString(database.DB_PASSWORD)}];\n`;
-    await client.uploadFrom(Readable.from([php]), 'private/config.php');
+    await client.uploadFrom(Readable.from([`<?php return ['enabled' => true];\n`]), 'private/config.php');
   }
   console.log(`Uploaded dist/ to ${config.FTP_DIR}${withSenderDb ? ' with the sender database on' : ''}`);
   console.log(`Thunderbird packages: ${await removeOldPackages(client)}`);
