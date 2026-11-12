@@ -172,6 +172,21 @@ test.describe('getting an email into the page', () => {
     await expect(page.locator('#contact')).toHaveAttribute('method', 'post');
   });
 
+  test('sends how many seconds the contact form was open, measured on the page and not by the clock', async ({ page }) => {
+    await page.goto('/imprint.html');
+    await page.waitForTimeout(2100);
+    const seconds = await page.locator('#contact').evaluate((form: HTMLFormElement) => {
+      let sent: FormDataEntryValue | null = null;
+      form.addEventListener('submit', (event) => {
+        sent = new FormData(form).get('seconds');
+        event.preventDefault();
+      });
+      form.dispatchEvent(new Event('submit', { cancelable: true }));
+      return sent;
+    });
+    expect(Number(seconds)).toBeGreaterThanOrEqual(2);
+  });
+
   test('keeps a typed contact message through a language change and shows the result', async ({ page }) => {
     await page.goto('/imprint.html');
     await page.getByRole('textbox', { name: 'Your message' }).fill('Hello');

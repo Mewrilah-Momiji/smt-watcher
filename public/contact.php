@@ -52,8 +52,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 }
 
 // Bots fill the hidden field or send at once. They get the normal answer, so that they learn nothing.
-$started = (int) field('started');
-if (field('website') !== '' || $started === 0 || time() - $started < MIN_SECONDS_TO_FILL) {
+// The page measures how long the form was open; without a number the form was not sent from the page.
+$seconds = field('seconds');
+if (field('website') !== '' || preg_match('/^\d{1,9}$/', $seconds) !== 1 || (int) $seconds < MIN_SECONDS_TO_FILL) {
     finish('sent');
 }
 

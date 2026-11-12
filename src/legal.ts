@@ -7,8 +7,9 @@ import { getLang, t } from './i18n';
 const NAME = import.meta.env.VITE_OPERATOR_NAME ?? '';
 const OPERATOR = [NAME, import.meta.env.VITE_OPERATOR_STREET ?? '', import.meta.env.VITE_OPERATOR_CITY ?? ''];
 const EMAIL = import.meta.env.VITE_OPERATOR_EMAIL ?? '';
-// Tells the server how long filling in took, which stops simple bots.
-const STARTED = String(Math.floor(Date.now() / 1000));
+// Tells the server how long filling in took, which stops simple bots. The time is measured on the page
+// instead of read from the device clock, so a clock that is wrong does not drop real messages.
+const OPENED = performance.now();
 const STATUSES = ['sent', 'invalid', 'busy', 'failed'] as const;
 
 function el(tag: string, text?: string): HTMLElement {
@@ -75,10 +76,12 @@ function contactForm(draft: FormData | null): HTMLElement {
   trapLabel.setAttribute('aria-hidden', 'true');
   trapLabel.append(trap);
 
-  const started = document.createElement('input');
-  started.type = 'hidden';
-  started.name = 'started';
-  started.value = STARTED;
+  const seconds = document.createElement('input');
+  seconds.type = 'hidden';
+  seconds.name = 'seconds';
+  form.addEventListener('submit', () => {
+    seconds.value = String(Math.floor((performance.now() - OPENED) / 1000));
+  });
 
   // A translation error gets its own subject on the server, with the language and the page it was seen on.
   const topicFields: HTMLElement[] = [];
@@ -103,7 +106,7 @@ function contactForm(draft: FormData | null): HTMLElement {
     formField(m.email, email, 'email', draft),
     formField(m.message, message, 'message', draft),
     trapLabel,
-    started,
+    seconds,
     ...topicFields,
     el('p', m.note),
     send,
