@@ -51,6 +51,16 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     exit;
 }
 
+// Only the imprint of this site may send the form, not a page elsewhere that makes its visitors send it.
+// The browser sets Sec-Fetch-Site itself. Origin is often "null" here because of the no-referrer policy, so only a named foreign origin counts.
+$fetchSite = $_SERVER['HTTP_SEC_FETCH_SITE'] ?? '';
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$originHost = $origin === '' || $origin === 'null' ? null : parse_url($origin, PHP_URL_HOST);
+$host = explode(':', $_SERVER['HTTP_HOST'] ?? '')[0];
+if (($fetchSite !== '' && $fetchSite !== 'same-origin') || ($originHost !== null && $originHost !== $host)) {
+    finish('failed');
+}
+
 // Bots fill the hidden field or send at once. They get the normal answer, so that they learn nothing.
 // The page measures how long the form was open; without a number the form was not sent from the page.
 $seconds = field('seconds');

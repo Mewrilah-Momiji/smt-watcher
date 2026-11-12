@@ -4,6 +4,11 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.48 - 2026-11-12
+
+- The contact form only accepts messages sent from this site, so other websites cannot make their visitors send messages through it.
+- Reports and lookups from an IPv6 connection count once per connection instead of once per address, so the hourly limit cannot be avoided by changing addresses.
+
 ## 0.5.47 - 2026-11-12
 
 - The page now always opens encrypted: an address with http:// leads to https://.

@@ -75,7 +75,24 @@ function domainHash(string $secret, string $domain): string
 
 function sourceHash(): string
 {
-    return hash_hmac('sha256', $_SERVER['REMOTE_ADDR'] ?? '', dayKey());
+    return hash_hmac('sha256', sourceNetwork($_SERVER['REMOTE_ADDR'] ?? ''), dayKey());
+}
+
+/** One IPv6 connection usually holds a whole /64 network, so only that part tells sources apart. */
+function sourceNetwork(string $address): string
+{
+    if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
+        return $address;
+    }
+    $mapped = inet_pton($address);
+    if ($mapped === false) {
+        return $address;
+    }
+    // An IPv4 address written in IPv6 form (::ffff:a.b.c.d) stays one address.
+    if (str_starts_with($mapped, str_repeat("\0", 10) . "\xff\xff")) {
+        return inet_ntop(substr($mapped, 12)) ?: $address;
+    }
+    return bin2hex(substr($mapped, 0, 8)) . '::/64';
 }
 
 /** Accepts only a JSON POST from this page, and stops if the database is switched off. Returns the config. */
