@@ -4,6 +4,10 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.56 - 2026-11-13
+
+- For an extortion email, the report view shows where to turn: the online police stations of the German states, and Chainabuse for every Bitcoin address named in the email, to copy, look up and report publicly.
+
 ## 0.5.55 - 2026-11-13
 
 - 50 more brands that are often imitated are checked, among them Revolut, ADAC, Deutsche Bahn, Facebook, Anthropic and Claude AI. A first name such as Claude alone does not count as a brand.

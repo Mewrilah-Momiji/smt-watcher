@@ -3,6 +3,8 @@ import type { HeaderReport } from './core/headers';
 import { findPhoneCandidates, parsePhoneInput } from './core/phones';
 import { buildAbuseReport, buildEmailReport, buildFormValues, needsConsentStatement, suggestBodies, type EmailReport, type ReportInput } from './core/reporting';
 import { findSenderOrigin } from './core/senderOrigin';
+import { findBitcoinAddresses } from './core/wallets';
+import { CHAINABUSE_REPORT, chainabuseAddressUrl, GERMAN_POLICE_PORTAL } from './data/extortion';
 import { createCountryPicker } from './chrome';
 import { getCountryCode } from './countryPreference';
 import { COUNTRIES, localized, OTHER_COUNTRY, type ReportCase, type ReportingBody } from './data/reportingBodies';
@@ -322,6 +324,34 @@ function renderAbuseCard(report: HeaderReport, reportedTo: string[], source: Mai
   return card;
 }
 
+/** For extortion emails: where to file a police complaint, and the Bitcoin addresses to report publicly. */
+function renderExtortionCard(report: HeaderReport, countryCode: string): HTMLElement | null {
+  if (!report.findings.some((finding) => finding.code === 'extortion-threat')) return null;
+  const m = t();
+  const card = el('details') as HTMLDetailsElement;
+  card.className = 'fold recipient extortion';
+  card.open = true;
+  const content = el('article');
+  content.className = 'body-card';
+  const linkLine = (text: string, url: string): HTMLElement => {
+    const line = el('p');
+    line.append(externalLink(text, url));
+    return line;
+  };
+  content.append(el('p', m.extortionIntro));
+  if (countryCode === 'DE') content.append(el('p', m.extortionPoliceDe), linkLine(m.extortionPoliceLink, GERMAN_POLICE_PORTAL));
+  else content.append(el('p', m.extortionPoliceOther));
+
+  const wallets = report.bodyText ? findBitcoinAddresses(report.bodyText) : [];
+  if (wallets.length > 0) {
+    content.append(el('p', m.extortionChainabuse));
+    for (const wallet of wallets) content.append(copyField(m.extortionWallet, wallet), linkLine(m.extortionCheckAddress, chainabuseAddressUrl(wallet)));
+    content.append(linkLine(m.extortionReportLink, CHAINABUSE_REPORT));
+  }
+  card.append(el('summary', m.extortionTitle), content);
+  return card;
+}
+
 /** Builds the reporting section. Nothing is sent: the user reviews and submits everything. */
 export function renderReportSection(report: HeaderReport, source: MailSource): HTMLElement {
   const m = t();
@@ -533,6 +563,7 @@ export function renderReportSection(report: HeaderReport, source: MailSource): H
       : country.language === 'en' ? m.reportIntroEnglish(countryName) : m.reportIntro(countryName, m.reportLanguages[country.language])),
     // Nobody should take the page for a body or think a body stands behind it.
     Object.assign(el('p', m.independent), { className: 'hint' }),
+    ...[renderExtortionCard(report, country.code)].filter((card): card is HTMLElement => card !== null),
     caseGroup,
     phoneGroup,
     consent,

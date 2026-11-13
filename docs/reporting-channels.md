@@ -53,6 +53,29 @@ Source, page dated 30 October 2026: <https://www.verbraucherzentrale.de/wissen/d
 - An older government listing names `phishing@vz-nrw.de`. The page uses the address from the current source.
 
 
+## Extortion emails
+
+Checked on 2026-11-13. For an email the page finds to demand money with a threat, the report view shows a separate card before the reporting cases. Neither place below is a reporting body in the usual sense: the page only links to them and prepares nothing to send. The data lives in `src/data/extortion.ts`.
+
+### Online police stations in Germany
+
+Source: <https://portal.onlinewache.polizei.de/de/>, linked from <https://www.polizei.de/Polizei/DE/Einrichtungen/Onlinewache/onlinewache_node.html>
+
+- The joint portal of the state police forces, published by the interior ministry of Saarland. Each state runs its own online police station and forms.
+- The portal lists all 16 states. For a crime on the internet, abroad or at an unknown place, the user chooses the state they live in.
+- Files such as screenshots or email exports can be attached at the end of a complaint. Complaints are not anonymous, and the portal is not for emergencies.
+- Shown only when Germany is the chosen country. For other countries the card says to go to the police in that country, without a link.
+
+### Chainabuse
+
+Source: <https://www.chainabuse.com/report>
+
+- A public database of reports on crypto addresses, run by TRM Labs ("Powered by TRM"). The first step of the report form needs no account.
+- Each address has a public page, `https://www.chainabuse.com/address/<address>`, with the reports on it. Categories include sextortion and other blackmail.
+- By its own statement, a report there is not a police complaint, and personal data is only shared with law enforcement with explicit consent.
+- The page finds Bitcoin addresses in the email text only for emails that already show the extortion sign, as it does not check the address checksum.
+
+
 ## France
 
 Checked on 2026-11-03. Reports are in French.
