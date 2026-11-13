@@ -4,6 +4,10 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.55 - 2026-11-13
+
+- 50 more brands that are often imitated are checked, among them Revolut, ADAC, Deutsche Bahn, Facebook, Anthropic and Claude AI. A first name such as Claude alone does not count as a brand.
+
 ## 0.5.54 - 2026-11-13
 
 - Each page has its own title, which follows the chosen language, such as "Is this email genuine? – SMT Watcher".

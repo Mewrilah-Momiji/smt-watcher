@@ -88,6 +88,13 @@ describe('findContentIssues', () => {
     expect(codes({}, 'UPS', 'ups.com')).toEqual([]);
     expect(codes({}, 'Obi-Umfrageprämie verfügbar', 'stillen-und-tragen.example')).toEqual(['brand-impersonation']);
     expect(codes({}, 'OBI Markt', 'obi.de')).toEqual([]);
+    expect(codes({}, 'Revolut Support', 'secure-mail.example')).toEqual(['brand-impersonation']);
+    expect(codes({}, 'Claude AI Billing', 'billing.example')).toEqual(['brand-impersonation']);
+    expect(codes({}, 'Anthropic', 'mail.anthropic.com')).toEqual([]);
+    expect(codes({}, 'Claude Pro', 'claude.ai')).toEqual([]);
+    // A first name alone is no brand.
+    expect(codes({}, 'Claude Dupont', 'example.fr')).toEqual([]);
+    expect(codes({}, 'Deutsche Bahn', 'bahn.de')).toEqual([]);
   });
 
   it('accepts a carrier named through a shop only if the shop signed and links lead to the carrier', () => {
