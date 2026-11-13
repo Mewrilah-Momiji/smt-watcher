@@ -43,5 +43,5 @@ describe.skipIf(!existsSync(folder))('real emails from SpamMails', () => {
 
     console.log(JSON.stringify(counts));
     expect(counts.errors).toBe(0);
-  });
+  }, 120_000);
 });

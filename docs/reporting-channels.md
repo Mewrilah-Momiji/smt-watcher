@@ -64,7 +64,22 @@ Source: <https://portal.onlinewache.polizei.de/de/>, linked from <https://www.po
 - The joint portal of the state police forces, published by the interior ministry of Saarland. Each state runs its own online police station and forms.
 - The portal lists all 16 states. For a crime on the internet, abroad or at an unknown place, the user chooses the state they live in.
 - Files such as screenshots or email exports can be attached at the end of a complaint. Complaints are not anonymous, and the portal is not for emergencies.
-- Shown only when Germany is the chosen country. For other countries the card says to go to the police in that country, without a link.
+- Shown only when Germany is the chosen country. Austria and Switzerland have their own entries below. For all other countries the card says in bold to go to the police in that country, without a link, and still offers Chainabuse.
+
+### Austria: Meldestelle against Cybercrime
+
+Source, page updated 27 August 2026: <https://www.bundeskriminalamt.at/306/start.html>
+
+- The reporting office of the Bundeskriminalamt (C4) takes tips on suspected internet crime at `against-cybercrime@bmi.gv.at`. The card asks to forward the email there.
+- By its own statement, a criminal complaint cannot be filed through the office yet. Complaints go to any police station, which the card says.
+
+### Switzerland: Federal Office for Cybersecurity (BACS)
+
+Source: <https://www.bacs.admin.ch/de/fake-sextortion-de>
+
+- The BACS asks that fake sextortion emails be forwarded to `reports@stop-sextortion.ch`, which supports the investigation.
+- Its online form <https://www.report.ncsc.admin.ch/de/> helps it see current trends. The crypto wallet addresses used can help law enforcement.
+- It recommends a criminal complaint to the local police if the person has suffered a financial loss, and points to Suisse ePolice to find a police station.
 
 ### Chainabuse
 

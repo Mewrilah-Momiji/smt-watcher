@@ -4,7 +4,7 @@ import { findPhoneCandidates, parsePhoneInput } from './core/phones';
 import { buildAbuseReport, buildEmailReport, buildFormValues, needsConsentStatement, suggestBodies, type EmailReport, type ReportInput } from './core/reporting';
 import { findSenderOrigin } from './core/senderOrigin';
 import { findBitcoinAddresses } from './core/wallets';
-import { CHAINABUSE_REPORT, chainabuseAddressUrl, GERMAN_POLICE_PORTAL } from './data/extortion';
+import { AUSTRIAN_CYBERCRIME_ADDRESS, CHAINABUSE_REPORT, chainabuseAddressUrl, GERMAN_POLICE_PORTAL, SWISS_BACS_FORM, SWISS_SEXTORTION_ADDRESS } from './data/extortion';
 import { createCountryPicker } from './chrome';
 import { getCountryCode } from './countryPreference';
 import { COUNTRIES, localized, OTHER_COUNTRY, type ReportCase, type ReportingBody } from './data/reportingBodies';
@@ -340,7 +340,14 @@ function renderExtortionCard(report: HeaderReport, countryCode: string): HTMLEle
   };
   content.append(el('p', m.extortionIntro));
   if (countryCode === 'DE') content.append(el('p', m.extortionPoliceDe), linkLine(m.extortionPoliceLink, GERMAN_POLICE_PORTAL));
-  else content.append(el('p', m.extortionPoliceOther));
+  else if (countryCode === 'AT') content.append(el('p', m.extortionReportAt), copyField(m.extortionForwardTo, AUSTRIAN_CYBERCRIME_ADDRESS));
+  else if (countryCode === 'CH') content.append(el('p', m.extortionReportCh), copyField(m.extortionForwardTo, SWISS_SEXTORTION_ADDRESS), linkLine(m.extortionBacsForm, SWISS_BACS_FORM));
+  else {
+    // Without a checked way, the police is still the place to go, so it should not get lost among the other text.
+    const police = el('p');
+    police.append(el('strong', m.extortionPoliceOther));
+    content.append(police);
+  }
 
   const wallets = report.bodyText ? findBitcoinAddresses(report.bodyText) : [];
   if (wallets.length > 0) {
