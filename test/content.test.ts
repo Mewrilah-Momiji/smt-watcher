@@ -86,6 +86,8 @@ describe('findContentIssues', () => {
     expect(codes({}, 'Stripe', 'stripe.com')).toEqual([]);
     expect(codes({}, 'UPS Kundenservice', 'classa.example')).toEqual(['brand-impersonation']);
     expect(codes({}, 'UPS', 'ups.com')).toEqual([]);
+    expect(codes({}, 'Obi-Umfrageprämie verfügbar', 'stillen-und-tragen.example')).toEqual(['brand-impersonation']);
+    expect(codes({}, 'OBI Markt', 'obi.de')).toEqual([]);
   });
 
   it('accepts a carrier named through a shop only if the shop signed and links lead to the carrier', () => {

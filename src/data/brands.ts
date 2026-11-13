@@ -20,6 +20,7 @@ export const BRANDS: Brand[] = [
   { name: 'stripe', domains: [] },
   { name: 'edeka', domains: [], manyDomains: true },
   { name: 'hellweg', domains: [] },
+  { name: 'obi', domains: [] },
   { name: 'mastercard', domains: [] },
   { name: 'eurojackpot', domains: ['lotto.de'] },
   { name: 'süddeutsche zeitung', domains: ['sz.de', 'sueddeutsche.de'] },
