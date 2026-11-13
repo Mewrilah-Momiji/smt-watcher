@@ -903,6 +903,21 @@ export function findingText(finding: Finding): { title: string; detail: string }
   return { title: text.title, detail: text.detail(finding.params ?? {}) };
 }
 
+export function messagesFor(lang: Lang): Messages {
+  return MESSAGES[lang];
+}
+
+/** A page's title: its own name followed by the brand, or the brand alone. */
+export function pageTitle(texts: Messages['static'], key?: string): string {
+  const name = key ? (texts as Record<string, string>)[key] : undefined;
+  return name ? `${name} – ${texts.brand}` : texts.brand;
+}
+
+/** Names the page after the text on <html data-title-key>, so that search results show what it is about. Only the website calls it, so the extension's code stays unchanged. */
+export function applyPageTitle(): void {
+  document.title = pageTitle(t().static, document.documentElement.dataset.titleKey);
+}
+
 export function applyStaticText(): void {
   document.documentElement.lang = current;
   document.title = t().static.brand;

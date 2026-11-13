@@ -4,6 +4,12 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.54 - 2026-11-13
+
+- Each page has its own title, which follows the chosen language, such as "Is this email genuine? – SMT Watcher".
+- Search engines find a description, the page's address and a sitemap. The start page and the help carry their English text in the page itself, so it is readable before the script runs.
+- The imprint and the privacy policy no longer appear as search results of their own.
+
 ## 0.5.53 - 2026-11-13
 
 - Emails that pose as OBI from another domain are now marked as impersonating a brand.

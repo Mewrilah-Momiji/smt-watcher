@@ -2,7 +2,7 @@
   "name": "smt-watcher",
   "private": true,
   "license": "AGPL-3.0-only",
-  "version": "0.5.53",
+  "version": "0.5.54",
   "thunderbirdVersion": "0.5.46",
   "type": "module",
   "scripts": {

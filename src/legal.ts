@@ -1,7 +1,7 @@
 import './style.css';
 import { setupControls } from './chrome';
 import { SENDER_DB_ENABLED } from './core/contribution';
-import { getLang, t } from './i18n';
+import { applyPageTitle, getLang, t } from './i18n';
 
 // The operator's details are settings in .env.local, so that a copy of the code does not carry them. The build checks that they are set.
 const NAME = import.meta.env.VITE_OPERATOR_NAME ?? '';
@@ -138,6 +138,7 @@ function help(): HTMLElement[] {
 }
 
 function render(): void {
+  applyPageTitle();
   const m = t().legal;
   const main = document.querySelector<HTMLElement>('#legal')!;
   if (main.dataset.page === 'help') {

@@ -3,7 +3,7 @@ import { renderBatch, type BatchEntry } from './batchView';
 import { setupControls } from './chrome';
 import type { HeaderReport } from './core/headers';
 import { MailReadError, readMail, readPastedText, textAsEml } from './core/readMail';
-import { t } from './i18n';
+import { applyPageTitle, t } from './i18n';
 import type { MailSource } from './reportView';
 import { renderResult } from './resultView';
 
@@ -23,6 +23,7 @@ let batch: { entries: BatchEntry[]; skipped: number } | null = null;
 let currentRun = 0;
 
 setupControls(() => {
+  applyPageTitle();
   error.hidden = true;
   if (result.hidden) return;
   if (shown) renderResult(result, shown.report, shown.source, { keepView: true, backToList: shown.backToList });
@@ -34,6 +35,7 @@ setupControls(() => {
   renderResult(result, shown.report, shown.source, { keepView: true, backToList: shown.backToList });
   if (fromReport) result.querySelector<HTMLElement>('#report-country')?.focus();
 });
+applyPageTitle();
 
 function showError(message: string): void {
   result.hidden = true;

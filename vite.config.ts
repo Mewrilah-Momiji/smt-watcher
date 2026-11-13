@@ -1,9 +1,11 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import { RDAP_HOSTS } from './src/core/abuseContact';
 import { serverListsPhp } from './src/core/sharedLists';
+import { messagesFor, pageTitle } from './src/i18n';
+import { fillStaticText, headTags, helpHtml, SEO_PAGES, sitemapXml } from './src/seo';
 
 const require = createRequire(import.meta.url);
 // package.json holds both versions. The extension has its own, so that it is only released when its build changes.
@@ -29,6 +31,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
   const site = mode === 'thunderbird' ? env.VITE_SITE_URL ?? '' : '';
   const addonId = env.VITE_ADDON_ID ?? '';
+  // The page's own address for search engines. Without one, the build leaves out canonical links and the sitemap.
+  const siteUrl = /^https:\/\/[^/]+\/$/.test(env.VITE_SITE_URL ?? '') ? env.VITE_SITE_URL! : '';
   // The normal build may not reach the database. The extension has to name the page's server.
   const databaseOrigin = mode === 'senderdb' ? "'self' " : mode === 'thunderbird' && URL.canParse(site) ? `${new URL(site).origin} ` : '';
   return {
@@ -91,6 +95,32 @@ export default defineConfig(({ mode }) => {
       apply: 'build',
       generateBundle() {
         if (mode !== 'thunderbird') this.emitFile({ type: 'asset', fileName: 'private/lists.php', source: serverListsPhp() });
+      },
+    },
+    {
+      // Search engines get each page's text in English, a title and description, and, with VITE_SITE_URL set,
+      // its address, preview data and a sitemap. The extension is not a website and gets none of it.
+      name: 'search-engines',
+      apply: 'build',
+      transformIndexHtml(html, { path }) {
+        if (mode === 'thunderbird') return html;
+        const file = path.replace(/^\//, '');
+        const senderDb = env.VITE_SENDER_DB === '1';
+        const page = SEO_PAGES.find((entry) => entry.file === file);
+        let filled = fillStaticText(html, senderDb);
+        if (page) filled = filled.replace(/<title>[^<]*<\/title>/, `<title>${pageTitle(messagesFor('en').static, page.titleKey)}</title>`);
+        if (file === 'help.html') filled = filled.replace('<main id="legal" class="legal" data-page="help"></main>', `<main id="legal" class="legal" data-page="help">${helpHtml(senderDb)}</main>`);
+        return { html: filled, tags: headTags(file, siteUrl, senderDb) };
+      },
+      generateBundle() {
+        if (mode !== 'thunderbird' && siteUrl) this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemapXml(siteUrl) });
+      },
+      closeBundle() {
+        // robots.txt comes from public/ without an address, so that copies of the code do not point to this site.
+        const robots = resolve('dist/robots.txt');
+        if (mode === 'thunderbird' || !siteUrl || !existsSync(robots)) return;
+        const text = readFileSync(robots, 'utf8');
+        if (!text.includes('Sitemap:')) writeFileSync(robots, `${text.trimEnd()}\n\nSitemap: ${siteUrl}sitemap.xml\n`);
       },
     },
     {
