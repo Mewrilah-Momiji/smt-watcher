@@ -4,6 +4,10 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.58 - 2026-11-13
+
+- A sender name written entirely in Cyrillic or Greek letters that look like Latin ones, such as a fake "PayPal", is now marked as impersonating a brand.
+
 ## 0.5.57 - 2026-11-13
 
 - For an extortion email, Austria and Switzerland get their own checked way: forwarding to the cybercrime reporting office of the Bundeskriminalamt, or to the address the Swiss Federal Office for Cybersecurity asks for, with its online form. For other countries, the hint to go to the police is shown in bold.

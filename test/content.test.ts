@@ -505,4 +505,11 @@ describe('local part of the address as a name and SAISON', () => {
     expect(codes({ bodyText: 'Hallo' }, 'ChatGPT', 'openai.com')).not.toContain('brand-impersonation');
     expect(codes({ bodyText: 'Hallo' }, 'Opener Alarm', 'shop.example')).not.toContain('brand-impersonation');
   });
+
+  it('knows brand names written entirely in Cyrillic or Greek lookalike letters', () => {
+    // "РауРаІ" and "Αpplе" contain no Latin letter at all.
+    expect(codes({ bodyText: 'Hallo' }, 'РауРаІ', 'academy.example')).toContain('brand-impersonation');
+    expect(codes({ bodyText: 'Hallo' }, 'Αpplе', 'shop.example')).toContain('brand-impersonation');
+    expect(codes({ bodyText: 'Hallo' }, 'Собака', 'shop.example')).not.toContain('brand-impersonation');
+  });
 });

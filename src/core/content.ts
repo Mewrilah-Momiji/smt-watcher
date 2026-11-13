@@ -206,11 +206,29 @@ function visibleDomain(text: string | null): string | null {
   return match[1].toLowerCase();
 }
 
-/** Letters that look alike in many fonts, as in "OpenAl" with a small L or "PayPa1". */
+/**
+ * Letters that look alike in many fonts, as in "OpenAl" with a small L or "PayPa1", and Cyrillic or Greek letters that
+ * look like Latin ones, as in "РауРаІ" written without a single Latin letter.
+ */
+const LOOKALIKES: Record<string, string> = {
+  a: '[aаα]',
+  c: '[cсϲ]',
+  e: '[eеε]',
+  h: '[hһ]',
+  i: '[il1|іӏι]',
+  j: '[jј]',
+  k: '[kкκ]',
+  l: '[il1|іӏι]',
+  m: '(?:m|rn)',
+  o: '[o0оο]',
+  p: '[pрρ]',
+  s: '[sѕ]',
+  x: '[xхχ]',
+  y: '[yуү]',
+};
+
 function lookalikePattern(brand: string): string {
-  return [...brand]
-    .map((char) => (char === 'i' || char === 'l' ? '[il1|]' : char === 'o' ? '[o0]' : char === 'm' ? '(?:m|rn)' : char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
-    .join('');
+  return [...brand].map((char) => LOOKALIKES[char] ?? char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('');
 }
 
 function mentionsBrand(displayName: string, brand: string): boolean {
