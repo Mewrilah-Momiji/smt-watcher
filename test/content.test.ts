@@ -147,6 +147,9 @@ describe('findContentIssues', () => {
     const link = 'https://a.example/';
     expect(codes({ bodyText: `Cloud Services Disabled. Your storage limit has been reached. ${link}` })).toEqual(['credential-request']);
     expect(codes({ bodyText: `Please upgrade your storage plan today. ${link}` })).toEqual(['credential-request']);
+    expect(codes({ bodyText: `Your storage is full. You have run out of space. ${link}` })).toEqual(['credential-request']);
+    expect(codes({ bodyText: `Syncing disabled: Capacity exceeded. ${link}` })).toEqual(['credential-request']);
+    expect(codes({ bodyText: `Ihr Speicher ist fast voll. ${link}` })).toEqual(['credential-request']);
     expect(codes({ bodyText: `Ihr Speicherplatz ist voll. ${link}` })).toEqual(['credential-request']);
     expect(codes({ bodyText: `ストレージプランの更新失敗によるデータ消失のご注意 ${link}` })).toEqual(['foreign-script', 'credential-request']);
     // Without a link it is only a statement.
@@ -368,6 +371,8 @@ describe('patterns found in real spam', () => {
     expect(codes({ bodyText: 'Sie sind Begünstigter einer Spende in Höhe von 1.200.000,00 €' })).toEqual(['windfall-promise']);
     expect(codes({ bodyText: 'Sie wurden als Empfänger einer Spende in Höhe von 500.000 US-Dollar ausgewählt.' })).toEqual(['windfall-promise']);
     expect(codes({ bodyText: 'You are the beneficiary of an inheritance of 2,500,000 $' })).toEqual(['windfall-promise']);
+    expect(codes({ bodyText: 'The lottery prize due to you is €3,540,225.33.' })).toEqual(['windfall-promise']);
+    expect(codes({ bodyText: 'Your inheritance of USD 2,500,000.00 is waiting.' })).toEqual(['windfall-promise']);
     expect(codes({ bodyText: 'Der Nachlass beträgt 10 %.' })).toEqual([]);
   });
 

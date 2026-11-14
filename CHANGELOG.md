@@ -4,6 +4,11 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.59 - 2026-11-14
+
+- Fake storage alerts such as "Your storage is full", "You have run out of space" or "Syncing disabled" are now counted as a lure to a login page when the email has a link.
+- A promised windfall now also counts when the currency stands before the amount, as in "€3,540,225.33" or "USD 2,500,000".
+
 ## 0.5.58 - 2026-11-13
 
 - A sender name written entirely in Cyrillic or Greek letters that look like Latin ones, such as a fake "PayPal", is now marked as impersonating a brand.
