@@ -251,6 +251,10 @@ describe('patterns found in real spam', () => {
     expect(codes({}, '楽天ペイ アカウント管理チーム', 'spielportal.example')).toEqual(['brand-impersonation']);
     expect(codes({}, 'LiDL', 'muster-schuhe.shop')).toEqual(['risky-tld', 'brand-impersonation']);
     expect(codes({}, 'iCloud', 'icloud.com')).toEqual([]);
+    expect(codes({}, 'ANA公式', 'mileage-club.example')).toEqual(['brand-impersonation']);
+    expect(codes({}, 'ANA公式', 'ana.co.jp')).toEqual([]);
+    // A first name alone is no brand.
+    expect(codes({}, 'Ana Müller', 'example.de')).toEqual([]);
   });
 
   it('reports a domain in the display name that differs from the sender', () => {

@@ -4,6 +4,10 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.60 - 2026-11-18
+
+- A sender name such as "ANA公式" (official ANA) from a domain other than ana.co.jp is now marked as impersonating the Japanese airline, as seen in fake mileage emails.
+
 ## 0.5.59 - 2026-11-14
 
 - Fake storage alerts such as "Your storage is full", "You have run out of space" or "Syncing disabled" are now counted as a lure to a login page when the email has a link.
