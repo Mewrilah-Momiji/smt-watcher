@@ -143,6 +143,14 @@ describe('findContentIssues', () => {
     expect(codes({ bodyText: `Wir bitten Sie, Ihre Daten zu überprüfen. ${link}` })).toEqual([]);
   });
 
+  it('counts a declined payment that asks to update billing', () => {
+    const link = 'https://a.example/';
+    expect(codes({ bodyText: `Your Payment Was Declined. Update Billing ${link}` })).toEqual(['credential-request']);
+    expect(codes({ bodyText: `Your subscription payment has FAILED more than 3 times. ${link}` })).toEqual(['credential-request']);
+    expect(codes({ bodyText: `Ihre Zahlung wurde abgelehnt. ${link}` })).toEqual(['credential-request']);
+    expect(codes({ bodyText: 'Your Payment Was Declined.' })).toEqual([]);
+  });
+
   it('counts a fake storage alert with a link', () => {
     const link = 'https://a.example/';
     expect(codes({ bodyText: `Cloud Services Disabled. Your storage limit has been reached. ${link}` })).toEqual(['credential-request']);
@@ -255,6 +263,9 @@ describe('patterns found in real spam', () => {
     expect(codes({}, 'ANA公式', 'ana.co.jp')).toEqual([]);
     // A first name alone is no brand.
     expect(codes({}, 'Ana Müller', 'example.de')).toEqual([]);
+    expect(codes({}, 'MIGROS Angebote', 'lesarchivesduspectacle.example')).toEqual(['brand-impersonation']);
+    expect(codes({}, 'Migros', 'migros.ch')).toEqual([]);
+    expect(codes({}, 'Migros Bank', 'migrosbank.ch')).toEqual([]);
   });
 
   it('reports a domain in the display name that differs from the sender', () => {

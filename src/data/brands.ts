@@ -61,6 +61,8 @@ export const BRANDS: Brand[] = [
   { name: 'セゾン', domains: ['saisoncard.co.jp'] },
   // Japanese airline, added on 2026-11-18 after "ANA公式" mile phishing. Only with 公式, as "ana" alone is a common first name.
   { name: 'ana公式', domains: ['ana.co.jp'] },
+  // Swiss retailer, added on 2026-11-19 after fake "MIGROS Angebote" ads. Regional cooperatives and the bank use longer domains.
+  { name: 'migros', domains: [], manyDomains: true },
   // Added on 2026-11-11 after a fake "OpenAl" billing email. Together with lookalike letters: 1 of 263 private spam emails and 6 in the public collections, none of 1872 legitimate emails or 5149 Apache list emails.
   { name: 'openai', domains: ['chatgpt.com'] },
   { name: 'chatgpt', domains: ['openai.com'] },

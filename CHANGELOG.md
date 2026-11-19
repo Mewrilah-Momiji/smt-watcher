@@ -4,6 +4,11 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.61 - 2026-11-19
+
+- A declined or failed payment with a link to "update billing", as in fake antivirus renewals, now counts as a request for account details.
+- A sender name with "MIGROS" from a domain that is not the Swiss retailer's is now marked as impersonating a brand.
+
 ## 0.5.60 - 2026-11-18
 
 - A sender name such as "ANA公式" (official ANA) from a domain other than ana.co.jp is now marked as impersonating the Japanese airline, as seen in fake mileage emails.
