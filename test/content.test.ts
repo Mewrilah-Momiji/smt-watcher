@@ -481,6 +481,43 @@ describe('assess', () => {
 });
 
 describe('buildReport', () => {
+  it.each([
+    ['Validate Account', 'forms.third-party.org', 'email=OWNER%40example.net', true],
+    ['Unsubscribe', 'forms.third-party.org', 'email=owner%40example.net', false],
+    ['Validate Account', 'forms.third-party.org', 'email=other%40example.net', false],
+    ['Validate Account', 'portal.registrar.org', 'email=owner%40example.net', false],
+    ['Validate Account', 'portal.example.net', 'email=owner%40example.net', false],
+  ])('checks a personalized %s action to %s with %s', (label, host, query, warn) => {
+    const report = buildReport('From: verify@registrar.org\nTo: owner@example.net\nMessage-ID: <1@registrar.org>', {
+      bodyHtml: `<a href="https://${host}/check?${query}">${label}</a>`,
+    });
+    expect(assess(report.findings).phishingSigns).toBe(warn);
+  });
+
+  it.each([
+    ['El cobro mensual ha sido rechazado.', 'pay.third-party.org', true],
+    ['El cobro mensual ha sido confirmado.', 'pay.third-party.org', false],
+    ['El cobro mensual ha sido rechazado.', 'campaign.ct.sendgrid.net', false],
+  ])('checks a payment action for %s with a link to %s', (message, host, warn) => {
+    const report = buildReport('From: verify@registrar.org\nTo: owner@example.net\nMessage-ID: <1@registrar.org>', {
+      bodyHtml: `<p>${message}</p><a href="https://${host}/check">Concluir Ahora</a>`,
+    });
+    expect(assess(report.findings).phishingSigns).toBe(warn);
+  });
+
+  it.each([
+    ['billing.example.org', 'Call (202) 555-0142 to dispute this charge.', true],
+    ['billing.paypal.com', 'Call (202) 555-0142 to dispute this charge.', false],
+    ['service.paypal.de', 'Call (202) 555-0142 to dispute this charge.', false],
+    ['billing.example.org', 'Questions? Call (202) 555-0142.', false],
+  ])('checks a branded charge from %s with callback text %s', (sender, instructions, warn) => {
+    const report = buildReport(`From: billing@${sender}\nMessage-ID: <1@${sender}>`, {
+      subject: 'Welcome to PayPal Business',
+      bodyText: `Processing Charge: $400.00. ${instructions}`,
+    });
+    expect(assess(report.findings).phishingSigns).toBe(warn);
+  });
+
   it('merges content findings with warnings first', () => {
     const report = buildReport('Received: from a by b; Sun, 01 Nov 2026 10:00:02 +0100\nFrom: Amazon <x@mailer.example>\nTo: a@a.example\nSubject: Order\nMessage-ID: <1@mailer.example>', {
       bodyHtml: '<a href="https://evil.example/">www.shop.example</a>',

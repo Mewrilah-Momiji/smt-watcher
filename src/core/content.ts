@@ -1,4 +1,5 @@
 import { BRANDS, SENDING_PLATFORMS, type Brand } from '../data/brands';
+import { externalAccountActions, unexpectedChargeCallback } from './credentialAction';
 import { baseDomain, type Finding } from './findings';
 import { FREEMAIL_DOMAINS } from './sharedLists';
 
@@ -601,13 +602,24 @@ ${bodyWithoutLinks}`.match(MIXED_SCRIPT_WORD)?.length ?? 0;
     }
   }
 
-  if (links.length > 0 && (CREDENTIAL_PATTERN.test(words) || STORAGE_ALERT_PATTERN.test(words))) {
+  const accountParams = fromDomain ? externalAccountActions(content, fromDomain, context.recipientAddresses) : {};
+  const callbackBrand = fromDomain && unexpectedChargeCallback(content, (name) => {
+    const entry = BRANDS.find((brand) => brand.name === name);
+    return !entry || isBrandDomain(entry, baseDomain(fromDomain));
+  });
+  if (callbackBrand) accountParams.callbackBrand = callbackBrand;
+  const specificAccountRisk = Object.keys(accountParams).length > 0;
+  const accountRequest = links.length > 0 && (CREDENTIAL_PATTERN.test(words) || STORAGE_ALERT_PATTERN.test(words));
+  if (specificAccountRisk || accountRequest) {
+    // The trusted own-link exception applies only to the generic account notice.
+    if (!specificAccountRisk && context.signedBySender && fromDomain
+      && links.some((link) => isOwnOrSameNamed(baseDomain(link.host), baseDomain(fromDomain)))) {
+      accountParams.signedOwnLink = 'yes';
+    }
     findings.push({
       code: 'credential-request',
       severity: 'note',
-      ...(context.signedBySender && fromDomain && links.some((link) => isOwnOrSameNamed(baseDomain(link.host), baseDomain(fromDomain)))
-        ? { params: { signedOwnLink: 'yes' } }
-        : {}),
+      ...(specificAccountRisk || accountParams.signedOwnLink ? { params: accountParams } : {}),
     });
   }
 

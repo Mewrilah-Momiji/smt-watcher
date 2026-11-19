@@ -431,7 +431,12 @@ const en = {
     'link-shortener': { title: 'A link hides its destination', detail: (p) => `A link uses the URL shortener ${p.host}, so the real destination is not visible. This is always suspicious, as honest senders can use the full link.` },
     'link-public-host': { title: 'A link leads to free public hosting', detail: (p) => `A link uses ${p.host}, where anyone can publish a page. Regular companies rarely send customers there.` },
     'brand-impersonation': { title: 'Sender name uses a brand from another domain', detail: (p) => `The sender name mentions "${p.brand}", but the email comes from ${p.domain}.` },
-    'credential-request': { title: 'Asks about your account or login', detail: () => 'The text mentions account checks or login details and includes a link. Banks and shops do not ask for passwords by email.' },
+    'credential-request': { title: 'Asks about your account or login', detail: (p) => {
+      if (p.callbackBrand) return `The email mentions a charge from ${p.callbackBrand} and asks you to dispute it by phone. It comes from outside the known domains of that brand.`;
+      if (p.rejectedPaymentHost) return `The email says a payment was rejected. The payment button leads to ${p.rejectedPaymentHost}, outside both the sender’s and recipient’s domains.`;
+      if (p.recipientActionHost) return `The account link passes your email address to ${p.recipientActionHost}, outside both the sender’s and recipient’s domains.`;
+      return 'The text mentions account checks or login details and includes a link. Banks and shops do not ask for passwords by email.';
+    } },
     'risky-attachment': { title: 'Risky attachment', detail: (p) => `The attachment "${p.name}" can run code or open a fake login page. Do not open it.` },
     'hidden-characters': { title: 'Invisible characters inside words', detail: () => 'The text contains invisible characters within words. Scams use them to get past spam filters.' },
     'styled-letters': { title: 'Disguised letters', detail: () => 'The text uses decorative mathematical letters that only look like normal ones. Scams use them to get past spam filters.' },
@@ -857,7 +862,12 @@ const de: typeof en = {
     'link-shortener': { title: 'Ein Link verbirgt sein Ziel', detail: (p) => `Ein Link nutzt den Kurzlink-Dienst ${p.host}, das eigentliche Ziel ist also nicht sichtbar. Das ist immer verdächtig, denn ehrliche Absender können den vollen Link nutzen.` },
     'link-public-host': { title: 'Ein Link führt zu freiem öffentlichem Hosting', detail: (p) => `Ein Link nutzt ${p.host}, wo jeder eine Seite veröffentlichen kann. Normale Firmen schicken Kunden selten dorthin.` },
     'brand-impersonation': { title: 'Absendername nutzt eine Marke von fremder Domain', detail: (p) => `Der Absendername nennt „${p.brand}“, die E-Mail kommt aber von ${p.domain}.` },
-    'credential-request': { title: 'Fragt nach deinem Konto oder Login', detail: () => 'Der Text spricht von Kontoprüfungen oder Zugangsdaten und enthält einen Link. Banken und Shops fragen nicht per E-Mail nach Passwörtern.' },
+    'credential-request': { title: 'Fragt nach deinem Konto oder Login', detail: (p) => {
+      if (p.callbackBrand) return `Die Mail nennt eine Abbuchung von ${p.callbackBrand} und fordert dazu auf, sie telefonisch anzufechten. Sie kommt von außerhalb der bekannten Markendomains.`;
+      if (p.rejectedPaymentHost) return `Die Mail meldet eine abgelehnte Zahlung. Der Zahlungsbutton führt zu ${p.rejectedPaymentHost}, außerhalb deiner Domain und der Absenderdomain.`;
+      if (p.recipientActionHost) return `Der Kontolink übergibt deine E-Mail-Adresse an ${p.recipientActionHost}, außerhalb deiner Domain und der Absenderdomain.`;
+      return 'Der Text spricht von Kontoprüfungen oder Zugangsdaten und enthält einen Link. Banken und Shops fragen nicht per E-Mail nach Passwörtern.';
+    } },
     'risky-attachment': { title: 'Riskanter Anhang', detail: (p) => `Der Anhang „${p.name}“ kann Code ausführen oder eine gefälschte Anmeldeseite öffnen. Öffne ihn nicht.` },
     'hidden-characters': { title: 'Unsichtbare Zeichen in Wörtern', detail: () => 'Der Text enthält unsichtbare Zeichen innerhalb von Wörtern. Betrüger umgehen damit Spamfilter.' },
     'styled-letters': { title: 'Getarnte Buchstaben', detail: () => 'Der Text nutzt mathematische Zierbuchstaben, die nur wie normale aussehen. Betrüger umgehen damit Spamfilter.' },
