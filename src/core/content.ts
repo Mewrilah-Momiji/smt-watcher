@@ -297,6 +297,14 @@ function recipientOrgInName(fromName: string, fromDomain: string | null, recipie
   return null;
 }
 
+/** A link base domain that is the sender's own, or carries the same name, such as firma.de and firma-shop.com. */
+function isOwnOrSameNamed(linkBase: string, fromBase: string): boolean {
+  if (linkBase === fromBase) return true;
+  const link = linkBase.split('.')[0];
+  const from = fromBase.split('.')[0];
+  return link.length >= 4 && from.length >= 4 && (link.includes(from) || from.includes(link));
+}
+
 function isRecipientDomain(domain: string, recipientAddresses: string[]): boolean {
   const base = baseDomain(domain);
   return recipientAddresses.some((address) => baseDomain(address.split('@').at(-1) ?? '') === base);
@@ -597,6 +605,9 @@ ${bodyWithoutLinks}`.match(MIXED_SCRIPT_WORD)?.length ?? 0;
     findings.push({
       code: 'credential-request',
       severity: 'note',
+      ...(context.signedBySender && fromDomain && links.some((link) => isOwnOrSameNamed(baseDomain(link.host), baseDomain(fromDomain)))
+        ? { params: { signedOwnLink: 'yes' } }
+        : {}),
     });
   }
 

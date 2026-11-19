@@ -95,12 +95,18 @@ export function rankFindings(findings: Finding[]): Finding[] {
   return [...findings].sort((a, b) => WEIGHTS[b.code] - WEIGHTS[a.code]);
 }
 
+// Measured on 2026-11-19: 3 of the 4 legitimate emails with a fraud warning had only this reason, a DKIM pass and a link to
+// the sender's own or same-named domain. No spam or phishing email in the private or public collections had all three.
+function isSignedOwnAccountNotice(reasons: Finding[]): boolean {
+  return reasons.length === 1 && reasons[0].code === 'credential-request' && reasons[0].params?.signedOwnLink === 'yes';
+}
+
 export function assess(findings: Finding[]): Assessment {
   const reasons = findings.filter((finding) => WEIGHTS[finding.code] > 0);
   const score = reasons.reduce((sum, finding) => sum + WEIGHTS[finding.code], 0);
   return {
     level: score >= MANY_SIGNS_SCORE ? 'many-signs' : score > 0 ? 'some-signs' : 'no-signs',
     reasons,
-    phishingSigns: reasons.some((finding) => PHISHING_CODES.has(finding.code)),
+    phishingSigns: !isSignedOwnAccountNotice(reasons) && reasons.some((finding) => PHISHING_CODES.has(finding.code)),
   };
 }

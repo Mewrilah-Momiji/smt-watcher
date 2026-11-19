@@ -210,6 +210,23 @@ describe('findContentIssues', () => {
     expect(codes({ bodyText: `Ihre Kontodaten sind bei uns sicher. ${link}` })).toEqual([]);
   });
 
+  it('drops the fraud warning for a signed account notice that links to the sender itself', () => {
+    const notice = (bodyText: string, domain: string, signedBySender: boolean) => assess(findContentIssues(
+      { ...empty, bodyText },
+      { fromName: '', fromDomain: domain, fromAddress: null, hasReplyHeaders: false, recipientAddresses: [], signedBySender },
+    ));
+    const text = 'Please confirm your account: ';
+    expect(notice(`${text}https://www.firma.example/login`, 'mail.firma.example', true)).toMatchObject({ level: 'some-signs', phishingSigns: false });
+    expect(notice(`${text}https://firma-shop.example/login`, 'firma.example', true).phishingSigns).toBe(false);
+    expect(notice(`${text}https://login.other.example/`, 'firma.example', true).phishingSigns).toBe(true);
+    expect(notice(`${text}https://www.firma.example/login`, 'firma.example', false).phishingSigns).toBe(true);
+    // Too short a name to count as the same.
+    expect(notice(`${text}https://abcshop.example/`, 'abc.example', true).phishingSigns).toBe(true);
+    // Another weighted sign keeps the warning.
+    const withOther = assess([{ code: 'credential-request', severity: 'note', params: { signedOwnLink: 'yes' } }, finding('link-shortener')]);
+    expect(withOther.phishingSigns).toBe(true);
+  });
+
   it('puts a numbered bulk address at the top level, without a fraud warning', () => {
     const assessment = assess(findContentIssues(empty, { fromName: '', fromDomain: 'shop.example', fromAddress: 'perfekt1790166875@shop.example', hasReplyHeaders: false, recipientAddresses: [] }));
     expect(assessment.level).toBe('many-signs');
