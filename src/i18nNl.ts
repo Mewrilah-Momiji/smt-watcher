@@ -396,7 +396,12 @@ export const nl: Messages = {
     'link-shortener': { title: 'Een link verbergt zijn bestemming', detail: (p) => `Een link gebruikt de linkverkorter ${p.host}, dus de echte bestemming is niet zichtbaar. Dit is altijd verdacht, want eerlijke afzenders kunnen de volledige link gebruiken.` },
     'link-public-host': { title: 'Een link leidt naar gratis openbare hosting', detail: (p) => `Een link gebruikt ${p.host}, waar iedereen een pagina kan publiceren. Gewone bedrijven sturen klanten daar zelden heen.` },
     'brand-impersonation': { title: 'Afzendernaam gebruikt een merk van een ander domein', detail: (p) => `De afzendernaam noemt “${p.brand}”, maar de e-mail komt van ${p.domain}.` },
-    'credential-request': { title: 'Vraagt naar je account of inloggegevens', detail: () => 'De tekst noemt accountcontroles of inloggegevens en bevat een link. Banken en winkels vragen niet per e-mail om wachtwoorden.' },
+    'credential-request': { title: 'Vraagt naar je account of inloggegevens', detail: (p) => {
+      if (p.callbackBrand) return `De e-mail noemt een afschrijving van ${p.callbackBrand} en vraagt je die telefonisch te betwisten. Het domein van de afzender hoort niet bij de bekende domeinen van dat merk.`;
+      if (p.rejectedPaymentHost) return `Volgens de e-mail is een betaling geweigerd. De betaalknop leidt naar ${p.rejectedPaymentHost}, buiten de domeinen van de afzender en de ontvanger.`;
+      if (p.recipientActionHost) return `De accountlink geeft je e-mailadres door aan ${p.recipientActionHost}, buiten de domeinen van de afzender en de ontvanger.`;
+      return 'De tekst noemt accountcontroles of inloggegevens en bevat een link. Banken en winkels vragen niet per e-mail om wachtwoorden.';
+    } },
     'risky-attachment': { title: 'Riskante bijlage', detail: (p) => `De bijlage “${p.name}” kan code uitvoeren of een valse inlogpagina openen. Open haar niet.` },
     'hidden-characters': { title: 'Onzichtbare tekens in woorden', detail: () => 'De tekst bevat onzichtbare tekens midden in woorden. Oplichters gebruiken die om spamfilters te omzeilen.' },
     'styled-letters': { title: 'Vermomde letters', detail: () => 'De tekst gebruikt decoratieve wiskundige letters die alleen op gewone letters lijken. Oplichters gebruiken die om spamfilters te omzeilen.' },

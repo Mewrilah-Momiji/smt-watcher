@@ -396,7 +396,12 @@ export const cs: Messages = {
     'link-shortener': { title: 'Odkaz skrývá svůj cíl', detail: (p) => `Odkaz používá zkracovač ${p.host}, takže skutečný cíl není vidět. Je to vždy podezřelé, protože poctiví odesílatelé mohou použít celý odkaz.` },
     'link-public-host': { title: 'Odkaz vede na bezplatný veřejný hosting', detail: (p) => `Odkaz používá ${p.host}, kde může stránku zveřejnit kdokoli. Běžné firmy tam zákazníky posílají zřídka.` },
     'brand-impersonation': { title: 'Jméno odesílatele používá značku z jiné domény', detail: (p) => `Jméno odesílatele uvádí „${p.brand}“, ale e-mail přichází z ${p.domain}.` },
-    'credential-request': { title: 'Ptá se na tvůj účet nebo přihlašovací údaje', detail: () => 'Text zmiňuje ověření účtu nebo přihlašovací údaje a obsahuje odkaz. Banky a obchody o hesla e-mailem nežádají.' },
+    'credential-request': { title: 'Ptá se na tvůj účet nebo přihlašovací údaje', detail: (p) => {
+      if (p.callbackBrand) return `E-mail uvádí, že ti ${p.callbackBrand} naúčtoval poplatek, a žádá, abys ho reklamoval telefonicky. Doména odesílatele nepatří mezi známé domény této značky.`;
+      if (p.rejectedPaymentHost) return `E-mail uvádí, že platba byla zamítnuta. Platební tlačítko vede na ${p.rejectedPaymentHost}, mimo domény odesílatele a příjemce.`;
+      if (p.recipientActionHost) return `Odkaz k účtu předává tvou e-mailovou adresu na ${p.recipientActionHost}, mimo domény odesílatele a příjemce.`;
+      return 'Text zmiňuje ověření účtu nebo přihlašovací údaje a obsahuje odkaz. Banky a obchody o hesla e-mailem nežádají.';
+    } },
     'risky-attachment': { title: 'Riziková příloha', detail: (p) => `Příloha „${p.name}“ může spustit kód nebo otevřít falešnou přihlašovací stránku. Neotvírej ji.` },
     'hidden-characters': { title: 'Neviditelné znaky ve slovech', detail: () => 'Text obsahuje neviditelné znaky uvnitř slov. Podvodníci je používají k obejití spamových filtrů.' },
     'styled-letters': { title: 'Maskovaná písmena', detail: () => 'Text používá ozdobná matematická písmena, která jen vypadají jako běžná. Podvodníci je používají k obejití spamových filtrů.' },

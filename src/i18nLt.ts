@@ -396,7 +396,12 @@ export const lt: Messages = {
     'link-shortener': { title: 'Nuoroda slepia savo paskirtį', detail: (p) => `Nuoroda naudoja trumpintuvą ${p.host}, todėl tikroji paskirtis nematoma. Tai visada įtartina, nes sąžiningi siuntėjai gali naudoti visą nuorodą.` },
     'link-public-host': { title: 'Nuoroda veda į nemokamą viešą talpinimą', detail: (p) => `Nuoroda naudoja ${p.host}, kur kiekvienas gali paskelbti puslapį. Įprastai įmonės retai siunčia klientus ten.` },
     'brand-impersonation': { title: 'Siuntėjo varde naudojamas kito domeno prekės ženklas', detail: (p) => `Siuntėjo varde minimas „${p.brand}“, bet laiškas atkeliavo iš ${p.domain}.` },
-    'credential-request': { title: 'Klausia apie tavo paskyrą ar prisijungimo duomenis', detail: () => 'Tekste minimas paskyros patvirtinimas ar prisijungimo duomenys, ir jame yra nuoroda. Bankai ir parduotuvės neprašo slaptažodžių el. paštu.' },
+    'credential-request': { title: 'Klausia apie tavo paskyrą ar prisijungimo duomenis', detail: (p) => {
+      if (p.callbackBrand) return `Laiške minimas prekių ženklo ${p.callbackBrand} taikomas mokestis ir prašoma jį užginčyti telefonu. Siuntėjo domenas nepriklauso žinomiems šio prekių ženklo domenams.`;
+      if (p.rejectedPaymentHost) return `Laiške teigiama, kad mokėjimas atmestas. Mokėjimo mygtukas nukreipia į ${p.rejectedPaymentHost}, kuris nepriklauso nei siuntėjo, nei gavėjo domenui.`;
+      if (p.recipientActionHost) return `Paskyros nuoroda perduoda tavo el. pašto adresą į ${p.recipientActionHost}, kuris nepriklauso nei siuntėjo, nei gavėjo domenui.`;
+      return 'Tekste minimas paskyros patvirtinimas ar prisijungimo duomenys, ir jame yra nuoroda. Bankai ir parduotuvės neprašo slaptažodžių el. paštu.';
+    } },
     'risky-attachment': { title: 'Rizikingas priedas', detail: (p) => `Priedas „${p.name}“ gali paleisti kodą arba atidaryti netikrą prisijungimo puslapį. Neatidaryk jo.` },
     'hidden-characters': { title: 'Nematomi simboliai žodžiuose', detail: () => 'Tekste žodžių viduje yra nematomų simbolių. Sukčiai juos naudoja šlamšto filtrams apeiti.' },
     'styled-letters': { title: 'Užmaskuotos raidės', detail: () => 'Tekste naudojamos dekoratyvios matematinės raidės, kurios tik atrodo kaip įprastos. Sukčiai jas naudoja šlamšto filtrams apeiti.' },

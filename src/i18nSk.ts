@@ -396,7 +396,12 @@ export const sk: Messages = {
     'link-shortener': { title: 'Odkaz skrýva svoj cieľ', detail: (p) => `Odkaz používa skracovač ${p.host}, takže skutočný cieľ nie je vidieť. Je to vždy podozrivé, pretože poctiví odosielatelia môžu použiť celý odkaz.` },
     'link-public-host': { title: 'Odkaz vedie na bezplatný verejný hosting', detail: (p) => `Odkaz používa ${p.host}, kde môže stránku zverejniť ktokoľvek. Bežné firmy tam zákazníkov posielajú zriedka.` },
     'brand-impersonation': { title: 'Meno odosielateľa používa značku z inej domény', detail: (p) => `Meno odosielateľa uvádza „${p.brand}“, ale e-mail prichádza z ${p.domain}.` },
-    'credential-request': { title: 'Pýta sa na tvoj účet alebo prihlasovacie údaje', detail: () => 'Text spomína overenie účtu alebo prihlasovacie údaje a obsahuje odkaz. Banky a obchody o heslá e-mailom nežiadajú.' },
+    'credential-request': { title: 'Pýta sa na tvoj účet alebo prihlasovacie údaje', detail: (p) => {
+      if (p.callbackBrand) return `E-mail uvádza poplatok od značky ${p.callbackBrand} a žiada ťa, aby si ho reklamoval telefonicky. Doména odosielateľa nepatrí medzi známe domény tejto značky.`;
+      if (p.rejectedPaymentHost) return `E-mail uvádza, že platba bola zamietnutá. Platobné tlačidlo vedie na ${p.rejectedPaymentHost}, mimo domén odosielateľa a príjemcu.`;
+      if (p.recipientActionHost) return `Odkaz k účtu odovzdáva tvoju e-mailovú adresu na ${p.recipientActionHost}, mimo domén odosielateľa a príjemcu.`;
+      return 'Text spomína overenie účtu alebo prihlasovacie údaje a obsahuje odkaz. Banky a obchody o heslá e-mailom nežiadajú.';
+    } },
     'risky-attachment': { title: 'Riziková príloha', detail: (p) => `Príloha „${p.name}“ môže spustiť kód alebo otvoriť falošnú prihlasovaciu stránku. Neotváraj ju.` },
     'hidden-characters': { title: 'Neviditeľné znaky v slovách', detail: () => 'Text obsahuje neviditeľné znaky vo vnútri slov. Podvodníci ich používajú na obídenie spamových filtrov.' },
     'styled-letters': { title: 'Maskované písmená', detail: () => 'Text používa ozdobné matematické písmená, ktoré len vyzerajú ako bežné. Podvodníci ich používajú na obídenie spamových filtrov.' },

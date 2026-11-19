@@ -396,7 +396,12 @@ export const it: Messages = {
     'link-shortener': { title: 'Un link nasconde la sua destinazione', detail: (p) => `Un link usa l’accorciatore di URL ${p.host}, quindi la destinazione reale non è visibile. È sempre sospetto, perché i mittenti onesti possono usare il link completo.` },
     'link-public-host': { title: 'Un link porta a un hosting pubblico gratuito', detail: (p) => `Un link usa ${p.host}, dove chiunque può pubblicare una pagina. Le aziende abituali vi mandano raramente i clienti.` },
     'brand-impersonation': { title: 'Il nome del mittente usa un marchio di un altro dominio', detail: (p) => `Il nome del mittente cita «${p.brand}», ma l’e-mail proviene da ${p.domain}.` },
-    'credential-request': { title: 'Chiede del tuo account o delle tue credenziali', detail: () => 'Il testo parla di verifiche dell’account o di credenziali e contiene un link. Banche e negozi non chiedono password via e-mail.' },
+    'credential-request': { title: 'Chiede del tuo account o delle tue credenziali', detail: (p) => {
+      if (p.callbackBrand) return `L’e-mail menziona un addebito di ${p.callbackBrand} e ti chiede di contestarlo per telefono. Il dominio del mittente non è tra quelli noti del marchio.`;
+      if (p.rejectedPaymentHost) return `L’e-mail indica che un pagamento è stato rifiutato. Il pulsante di pagamento porta a ${p.rejectedPaymentHost}, un dominio diverso da quelli del mittente e del destinatario.`;
+      if (p.recipientActionHost) return `Il link relativo all’account trasmette il tuo indirizzo e-mail a ${p.recipientActionHost}, un dominio diverso da quelli del mittente e del destinatario.`;
+      return 'Il testo parla di verifiche dell’account o di credenziali e contiene un link. Banche e negozi non chiedono password via e-mail.';
+    } },
     'risky-attachment': { title: 'Allegato rischioso', detail: (p) => `L’allegato «${p.name}» può eseguire codice o aprire una falsa pagina di accesso. Non aprirlo.` },
     'hidden-characters': { title: 'Caratteri invisibili nelle parole', detail: () => 'Il testo contiene caratteri invisibili all’interno delle parole. Le truffe li usano per aggirare i filtri antispam.' },
     'styled-letters': { title: 'Lettere camuffate', detail: () => 'Il testo usa lettere matematiche decorative che sembrano soltanto normali. Le truffe le usano per aggirare i filtri antispam.' },

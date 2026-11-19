@@ -396,7 +396,12 @@ export const es: Messages = {
     'link-shortener': { title: 'Un enlace oculta su destino', detail: (p) => `Un enlace usa el acortador ${p.host}, así que el destino real no se ve. Siempre es sospechoso, porque los remitentes honrados pueden usar el enlace completo.` },
     'link-public-host': { title: 'Un enlace lleva a un alojamiento público gratuito', detail: (p) => `Un enlace usa ${p.host}, donde cualquiera puede publicar una página. Las empresas habituales rara vez envían ahí a sus clientes.` },
     'brand-impersonation': { title: 'El nombre del remitente usa una marca de otro dominio', detail: (p) => `El nombre del remitente menciona «${p.brand}», pero el correo procede de ${p.domain}.` },
-    'credential-request': { title: 'Pregunta por tu cuenta o tus credenciales', detail: () => 'El texto menciona comprobaciones de cuenta o credenciales e incluye un enlace. Los bancos y las tiendas no piden contraseñas por correo.' },
+    'credential-request': { title: 'Pregunta por tu cuenta o tus credenciales', detail: (p) => {
+      if (p.callbackBrand) return `El correo menciona un cargo de ${p.callbackBrand} y te pide que lo impugnes por teléfono. El dominio del remitente no está entre los dominios conocidos de esa marca.`;
+      if (p.rejectedPaymentHost) return `El correo indica que se ha rechazado un pago. El botón de pago lleva a ${p.rejectedPaymentHost}, fuera de los dominios del remitente y del destinatario.`;
+      if (p.recipientActionHost) return `El enlace de la cuenta envía tu dirección de correo a ${p.recipientActionHost}, fuera de los dominios del remitente y del destinatario.`;
+      return 'El texto menciona comprobaciones de cuenta o credenciales e incluye un enlace. Los bancos y las tiendas no piden contraseñas por correo.';
+    } },
     'risky-attachment': { title: 'Adjunto peligroso', detail: (p) => `El adjunto «${p.name}» puede ejecutar código o abrir una página de acceso falsa. No lo abras.` },
     'hidden-characters': { title: 'Caracteres invisibles dentro de palabras', detail: () => 'El texto contiene caracteres invisibles dentro de palabras. Las estafas los usan para esquivar los filtros de spam.' },
     'styled-letters': { title: 'Letras disfrazadas', detail: () => 'El texto usa letras matemáticas decorativas que solo parecen normales. Las estafas las usan para esquivar los filtros de spam.' },

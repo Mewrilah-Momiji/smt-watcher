@@ -396,7 +396,12 @@ export const fr: Messages = {
     'link-shortener': { title: 'Un lien cache sa destination', detail: (p) => `Un lien utilise le raccourcisseur d’URL ${p.host}, la vraie destination n’est donc pas visible. C’est toujours suspect, car les expéditeurs honnêtes peuvent utiliser le lien complet.` },
     'link-public-host': { title: 'Un lien mène vers un hébergement public gratuit', detail: (p) => `Un lien utilise ${p.host}, où n’importe qui peut publier une page. Les entreprises habituelles y envoient rarement leurs clients.` },
     'brand-impersonation': { title: 'Le nom de l’expéditeur utilise une marque d’un autre domaine', detail: (p) => `Le nom de l’expéditeur mentionne « ${p.brand} », mais le courriel vient de ${p.domain}.` },
-    'credential-request': { title: 'Pose des questions sur ton compte ou tes identifiants', detail: () => 'Le texte mentionne des vérifications de compte ou des identifiants et contient un lien. Les banques et les boutiques ne demandent pas de mots de passe par courriel.' },
+    'credential-request': { title: 'Pose des questions sur ton compte ou tes identifiants', detail: (p) => {
+      if (p.callbackBrand) return `Le message mentionne un prélèvement de ${p.callbackBrand} et te demande de le contester par téléphone. Le domaine de l’expéditeur ne fait pas partie des domaines connus de cette marque.`;
+      if (p.rejectedPaymentHost) return `Le message indique qu’un paiement a été refusé. Le bouton de paiement mène à ${p.rejectedPaymentHost}, en dehors des domaines de l’expéditeur et du destinataire.`;
+      if (p.recipientActionHost) return `Le lien vers le compte transmet ton adresse e-mail à ${p.recipientActionHost}, en dehors des domaines de l’expéditeur et du destinataire.`;
+      return 'Le texte mentionne des vérifications de compte ou des identifiants et contient un lien. Les banques et les boutiques ne demandent pas de mots de passe par courriel.';
+    } },
     'risky-attachment': { title: 'Pièce jointe risquée', detail: (p) => `La pièce jointe « ${p.name} » peut exécuter du code ou ouvrir une fausse page de connexion. Ne l’ouvre pas.` },
     'hidden-characters': { title: 'Caractères invisibles dans les mots', detail: () => 'Le texte contient des caractères invisibles au milieu des mots. Les arnaques s’en servent pour passer les filtres anti-spam.' },
     'styled-letters': { title: 'Lettres déguisées', detail: () => 'Le texte utilise des lettres mathématiques décoratives qui ressemblent seulement à des lettres normales. Les arnaques s’en servent pour passer les filtres anti-spam.' },

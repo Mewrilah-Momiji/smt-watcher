@@ -396,7 +396,12 @@ export const et: Messages = {
     'link-shortener': { title: 'Link varjab oma sihtkohta', detail: (p) => `Link kasutab lühendajat ${p.host}, seega tegelikku sihtkohta pole näha. See on alati kahtlane, sest ausad saatjad saavad kasutada täispikka linki.` },
     'link-public-host': { title: 'Link viib tasuta avalikule majutusele', detail: (p) => `Link kasutab teenust ${p.host}, kus igaüks saab lehe avaldada. Tavalised ettevõtted saadavad kliente sinna harva.` },
     'brand-impersonation': { title: 'Saatja nimi kasutab teise domeeni kaubamärki', detail: (p) => `Saatja nimi mainib „${p.brand}”, kuid e-kiri tuleb domeenist ${p.domain}.` },
-    'credential-request': { title: 'Küsib sinu konto või sisselogimisandmete kohta', detail: () => 'Tekst mainib konto kontrolli või sisselogimisandmeid ja sisaldab linki. Pangad ja poed ei küsi paroole e-posti teel.' },
+    'credential-request': { title: 'Küsib sinu konto või sisselogimisandmete kohta', detail: (p) => {
+      if (p.callbackBrand) return `Kirjas mainitakse kaubamärgi ${p.callbackBrand} esitatud tasu ja palutakse sul see telefoni teel vaidlustada. Saatja domeen ei kuulu selle kaubamärgi teadaolevate domeenide hulka.`;
+      if (p.rejectedPaymentHost) return `Kirja kohaselt lükati makse tagasi. Maksenupp viib aadressile ${p.rejectedPaymentHost}, mis jääb väljapoole saatja ja saaja domeene.`;
+      if (p.recipientActionHost) return `Konto link edastab sinu e-posti aadressi aadressile ${p.recipientActionHost}, mis jääb väljapoole saatja ja saaja domeene.`;
+      return 'Tekst mainib konto kontrolli või sisselogimisandmeid ja sisaldab linki. Pangad ja poed ei küsi paroole e-posti teel.';
+    } },
     'risky-attachment': { title: 'Riskantne manus', detail: (p) => `Manus „${p.name}” võib käivitada koodi või avada võltsitud sisselogimislehe. Ära ava seda.` },
     'hidden-characters': { title: 'Nähtamatud märgid sõnades', detail: () => 'Tekst sisaldab sõnade sees nähtamatuid märke. Petturid kasutavad neid rämpspostifiltritest mööda pääsemiseks.' },
     'styled-letters': { title: 'Varjatud tähed', detail: () => 'Tekst kasutab dekoratiivseid matemaatilisi tähti, mis ainult näevad välja nagu tavalised. Petturid kasutavad neid rämpspostifiltritest mööda pääsemiseks.' },

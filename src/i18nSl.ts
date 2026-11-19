@@ -396,7 +396,12 @@ export const sl: Messages = {
     'link-shortener': { title: 'Povezava skriva svoj cilj', detail: (p) => `Povezava uporablja skrajševalnik ${p.host}, zato pravi cilj ni viden. To je vedno sumljivo, saj lahko pošteni pošiljatelji uporabijo celotno povezavo.` },
     'link-public-host': { title: 'Povezava vodi na brezplačno javno gostovanje', detail: (p) => `Povezava uporablja ${p.host}, kjer lahko stran objavi kdor koli. Običajna podjetja tja redko pošiljajo stranke.` },
     'brand-impersonation': { title: 'Ime pošiljatelja uporablja znamko z druge domene', detail: (p) => `Ime pošiljatelja omenja »${p.brand}«, e-pošta pa prihaja z ${p.domain}.` },
-    'credential-request': { title: 'Sprašuje po tvojem računu ali prijavnih podatkih', detail: () => 'Besedilo omenja preverjanje računa ali prijavne podatke in vsebuje povezavo. Banke in trgovine ne zahtevajo gesel po e-pošti.' },
+    'credential-request': { title: 'Sprašuje po tvojem računu ali prijavnih podatkih', detail: (p) => {
+      if (p.callbackBrand) return `E-poštno sporočilo omenja bremenitev znamke ${p.callbackBrand} in te prosi, da ji ugovarjaš po telefonu. Domena pošiljatelja ni med znanimi domenami te znamke.`;
+      if (p.rejectedPaymentHost) return `Sporočilo navaja, da je bilo plačilo zavrnjeno. Gumb za plačilo vodi na ${p.rejectedPaymentHost}, zunaj domen pošiljatelja in prejemnika.`;
+      if (p.recipientActionHost) return `Povezava za račun posreduje tvoj e-poštni naslov na ${p.recipientActionHost}, zunaj domen pošiljatelja in prejemnika.`;
+      return 'Besedilo omenja preverjanje računa ali prijavne podatke in vsebuje povezavo. Banke in trgovine ne zahtevajo gesel po e-pošti.';
+    } },
     'risky-attachment': { title: 'Tvegana priloga', detail: (p) => `Priloga »${p.name}« lahko zažene kodo ali odpre lažno prijavno stran. Ne odpiraj je.` },
     'hidden-characters': { title: 'Nevidni znaki v besedah', detail: () => 'Besedilo vsebuje nevidne znake znotraj besed. Goljufi jih uporabljajo, da se izognejo filtrom neželene pošte.' },
     'styled-letters': { title: 'Prikrite črke', detail: () => 'Besedilo uporablja okrasne matematične črke, ki so le videti kot običajne. Goljufi jih uporabljajo, da se izognejo filtrom neželene pošte.' },

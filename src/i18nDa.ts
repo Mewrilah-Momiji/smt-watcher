@@ -396,7 +396,12 @@ export const da: Messages = {
     'link-shortener': { title: 'Et link skjuler sin destination', detail: (p) => `Et link bruger linkforkorteren ${p.host}, så den rigtige destination er ikke synlig. Det er altid mistænkeligt, for ærlige afsendere kan bruge det fulde link.` },
     'link-public-host': { title: 'Et link fører til gratis offentlig hosting', detail: (p) => `Et link bruger ${p.host}, hvor alle kan udgive en side. Almindelige virksomheder sender sjældent kunder dertil.` },
     'brand-impersonation': { title: 'Afsendernavnet bruger et mærke fra et andet domæne', detail: (p) => `Afsendernavnet nævner “${p.brand}”, men e-mailen kommer fra ${p.domain}.` },
-    'credential-request': { title: 'Spørger om din konto eller dine loginoplysninger', detail: () => 'Teksten nævner kontotjek eller loginoplysninger og indeholder et link. Banker og butikker beder ikke om adgangskoder pr. e-mail.' },
+    'credential-request': { title: 'Spørger om din konto eller dine loginoplysninger', detail: (p) => {
+      if (p.callbackBrand) return `Mailen nævner en opkrævning fra ${p.callbackBrand} og beder dig om at gøre indsigelse pr. telefon. Afsenderens domæne er ikke blandt mærkets kendte domæner.`;
+      if (p.rejectedPaymentHost) return `Mailen siger, at en betaling blev afvist. Betalingsknappen fører til ${p.rejectedPaymentHost}, som ligger uden for afsenderens og modtagerens domæner.`;
+      if (p.recipientActionHost) return `Kontolinket sender din e-mailadresse videre til ${p.recipientActionHost}, som ligger uden for afsenderens og modtagerens domæner.`;
+      return 'Teksten nævner kontotjek eller loginoplysninger og indeholder et link. Banker og butikker beder ikke om adgangskoder pr. e-mail.';
+    } },
     'risky-attachment': { title: 'Risikabel vedhæftet fil', detail: (p) => `Den vedhæftede fil “${p.name}” kan køre kode eller åbne en falsk login-side. Åbn den ikke.` },
     'hidden-characters': { title: 'Usynlige tegn i ord', detail: () => 'Teksten indeholder usynlige tegn inde i ord. Svindlere bruger dem til at komme uden om spamfiltre.' },
     'styled-letters': { title: 'Forklædte bogstaver', detail: () => 'Teksten bruger dekorative matematiske bogstaver, der kun ligner almindelige. Svindlere bruger dem til at komme uden om spamfiltre.' },

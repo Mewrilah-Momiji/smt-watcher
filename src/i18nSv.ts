@@ -396,7 +396,12 @@ export const sv: Messages = {
     'link-shortener': { title: 'En länk döljer sitt mål', detail: (p) => `En länk använder länkförkortaren ${p.host}, så det verkliga målet syns inte. Det är alltid misstänkt, eftersom ärliga avsändare kan använda hela länken.` },
     'link-public-host': { title: 'En länk leder till ett gratis offentligt webbhotell', detail: (p) => `En länk använder ${p.host}, där vem som helst kan publicera en sida. Vanliga företag skickar sällan kunder dit.` },
     'brand-impersonation': { title: 'Avsändarnamnet använder ett varumärke från en annan domän', detail: (p) => `Avsändarnamnet nämner ”${p.brand}”, men mejlet kommer från ${p.domain}.` },
-    'credential-request': { title: 'Frågar om ditt konto eller dina inloggningsuppgifter', detail: () => 'Texten nämner kontokontroller eller inloggningsuppgifter och innehåller en länk. Banker och butiker ber inte om lösenord via mejl.' },
+    'credential-request': { title: 'Frågar om ditt konto eller dina inloggningsuppgifter', detail: (p) => {
+      if (p.callbackBrand) return `Mejlet nämner en debitering från ${p.callbackBrand} och ber dig att bestrida den per telefon. Avsändarens domän hör inte till varumärkets kända domäner.`;
+      if (p.rejectedPaymentHost) return `Mejlet säger att en betalning har avvisats. Betalningsknappen leder till ${p.rejectedPaymentHost}, utanför avsändarens och mottagarens domäner.`;
+      if (p.recipientActionHost) return `Kontolänken skickar din e-postadress till ${p.recipientActionHost}, utanför avsändarens och mottagarens domäner.`;
+      return 'Texten nämner kontokontroller eller inloggningsuppgifter och innehåller en länk. Banker och butiker ber inte om lösenord via mejl.';
+    } },
     'risky-attachment': { title: 'Riskabel bilaga', detail: (p) => `Bilagan ”${p.name}” kan köra kod eller öppna en falsk inloggningssida. Öppna den inte.` },
     'hidden-characters': { title: 'Osynliga tecken i ord', detail: () => 'Texten innehåller osynliga tecken inuti ord. Bedragare använder dem för att ta sig förbi skräppostfilter.' },
     'styled-letters': { title: 'Förklädda bokstäver', detail: () => 'Texten använder dekorativa matematiska bokstäver som bara ser ut som vanliga. Bedragare använder dem för att ta sig förbi skräppostfilter.' },

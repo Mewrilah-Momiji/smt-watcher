@@ -396,7 +396,12 @@ export const lv: Messages = {
     'link-shortener': { title: 'Saite slēpj savu mērķi', detail: (p) => `Saite izmanto saīsinātāju ${p.host}, tāpēc īstais mērķis nav redzams. Tas vienmēr ir aizdomīgi, jo godīgi sūtītāji var izmantot pilnu saiti.` },
     'link-public-host': { title: 'Saite ved uz bezmaksas publisku mitināšanu', detail: (p) => `Saite izmanto ${p.host}, kur ikviens var publicēt lapu. Parasti uzņēmumi reti sūta klientus uz turieni.` },
     'brand-impersonation': { title: 'Sūtītāja vārdā izmantots cita domēna zīmols', detail: (p) => `Sūtītāja vārdā minēts “${p.brand}”, bet e-pasts nāk no ${p.domain}.` },
-    'credential-request': { title: 'Jautā par tavu kontu vai pieteikšanās datiem', detail: () => 'Tekstā minēta konta pārbaude vai pieteikšanās dati, un tajā ir saite. Bankas un veikali neprasa paroles pa e-pastu.' },
+    'credential-request': { title: 'Jautā par tavu kontu vai pieteikšanās datiem', detail: (p) => {
+      if (p.callbackBrand) return `E-pastā minēta zīmola ${p.callbackBrand} ieturēta maksa un lūgts to apstrīdēt pa tālruni. Sūtītāja domēns nav starp šī zīmola zināmajiem domēniem.`;
+      if (p.rejectedPaymentHost) return `E-pastā teikts, ka maksājums ir noraidīts. Maksājuma poga ved uz ${p.rejectedPaymentHost}, ārpus sūtītāja un saņēmēja domēniem.`;
+      if (p.recipientActionHost) return `Konta saite nosūta tavu e-pasta adresi uz ${p.recipientActionHost}, ārpus sūtītāja un saņēmēja domēniem.`;
+      return 'Tekstā minēta konta pārbaude vai pieteikšanās dati, un tajā ir saite. Bankas un veikali neprasa paroles pa e-pastu.';
+    } },
     'risky-attachment': { title: 'Riskants pielikums', detail: (p) => `Pielikums “${p.name}” var palaist kodu vai atvērt viltotu pieteikšanās lapu. Neatver to.` },
     'hidden-characters': { title: 'Neredzamas rakstzīmes vārdos', detail: () => 'Tekstā vārdu iekšienē ir neredzamas rakstzīmes. Krāpnieki tās izmanto, lai apietu surogātpasta filtrus.' },
     'styled-letters': { title: 'Maskēti burti', detail: () => 'Tekstā izmantoti dekoratīvi matemātiskie burti, kas tikai izskatās pēc parastiem. Krāpnieki tos izmanto, lai apietu surogātpasta filtrus.' },

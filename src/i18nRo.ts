@@ -396,7 +396,12 @@ export const ro: Messages = {
     'link-shortener': { title: 'Un link își ascunde destinația', detail: (p) => `Un link folosește scurtătorul ${p.host}, deci destinația reală nu se vede. Este mereu suspect, fiindcă expeditorii cinstiți pot folosi linkul complet.` },
     'link-public-host': { title: 'Un link duce la găzduire publică gratuită', detail: (p) => `Un link folosește ${p.host}, unde oricine poate publica o pagină. Firmele obișnuite își trimit rar clienții acolo.` },
     'brand-impersonation': { title: 'Numele expeditorului folosește o marcă de pe alt domeniu', detail: (p) => `Numele expeditorului menționează „${p.brand}”, dar e-mailul vine de la ${p.domain}.` },
-    'credential-request': { title: 'Întreabă de contul tău sau de datele de autentificare', detail: () => 'Textul menționează verificări de cont sau date de autentificare și conține un link. Băncile și magazinele nu cer parole prin e-mail.' },
+    'credential-request': { title: 'Întreabă de contul tău sau de datele de autentificare', detail: (p) => {
+      if (p.callbackBrand) return `Mesajul menționează o sumă percepută de ${p.callbackBrand} și îți cere să o contești prin telefon. Domeniul expeditorului nu se numără printre domeniile cunoscute ale mărcii.`;
+      if (p.rejectedPaymentHost) return `Mesajul spune că o plată a fost refuzată. Butonul de plată duce la ${p.rejectedPaymentHost}, în afara domeniilor expeditorului și destinatarului.`;
+      if (p.recipientActionHost) return `Linkul pentru cont transmite adresa ta de e-mail către ${p.recipientActionHost}, în afara domeniilor expeditorului și destinatarului.`;
+      return 'Textul menționează verificări de cont sau date de autentificare și conține un link. Băncile și magazinele nu cer parole prin e-mail.';
+    } },
     'risky-attachment': { title: 'Atașament riscant', detail: (p) => `Atașamentul „${p.name}” poate rula cod sau deschide o pagină de autentificare falsă. Nu-l deschide.` },
     'hidden-characters': { title: 'Caractere invizibile în cuvinte', detail: () => 'Textul conține caractere invizibile în interiorul cuvintelor. Escrocii le folosesc ca să ocolească filtrele de spam.' },
     'styled-letters': { title: 'Litere deghizate', detail: () => 'Textul folosește litere matematice decorative care doar arată ca unele obișnuite. Escrocii le folosesc ca să ocolească filtrele de spam.' },

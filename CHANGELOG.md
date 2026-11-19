@@ -4,6 +4,10 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.64 - 2026-11-19
+
+- The explanations for the three account checks of 0.5.63 are now available in all languages, not only English and German.
+
 ## 0.5.63 - 2026-11-19
 
 - An account button that passes your email address to an unrelated domain, a Spanish "payment rejected" notice whose button leads elsewhere, and a fake PayPal, Amazon, Apple or Microsoft charge that asks you to call to cancel it now count as account requests with the fraud warning, each with its own explanation in English and German.

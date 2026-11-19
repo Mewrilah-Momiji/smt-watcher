@@ -8,6 +8,22 @@ import { findingText, getLang, guideTitlePart, LANGS, setLang, t } from '../src/
 afterEach(() => setLang('en'));
 
 describe('findingText', () => {
+  it.each([
+    ['callbackBrand', 'ExampleBrand'],
+    ['rejectedPaymentHost', 'payment.example'],
+    ['recipientActionHost', 'account.example'],
+  ])('localizes the account warning detail for %s in every language', (key, value) => {
+    const finding = { code: 'credential-request', severity: 'note' } as const;
+    const details = LANGS.map((lang) => {
+      setLang(lang);
+      const detail = findingText({ ...finding, params: { [key]: value } }).detail;
+      expect(detail, lang).toContain(value);
+      expect(detail, lang).not.toBe(findingText(finding).detail);
+      return detail;
+    });
+    expect(new Set(details).size).toBe(LANGS.length);
+  });
+
   it('fills in values in the chosen language', () => {
     const finding = { code: 'link-shortener', severity: 'note', params: { host: 'bit.ly' } } as const;
     setLang('en');

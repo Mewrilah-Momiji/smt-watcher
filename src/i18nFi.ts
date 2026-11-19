@@ -396,7 +396,12 @@ export const fi: Messages = {
     'link-shortener': { title: 'Linkki piilottaa kohteensa', detail: (p) => `Linkki käyttää lyhentäjää ${p.host}, joten todellinen kohde ei näy. Tämä on aina epäilyttävää, koska rehelliset lähettäjät voivat käyttää koko linkkiä.` },
     'link-public-host': { title: 'Linkki vie ilmaiseen julkiseen palveluun', detail: (p) => `Linkki käyttää palvelua ${p.host}, jossa kuka tahansa voi julkaista sivun. Tavalliset yritykset ohjaavat asiakkaitaan sinne harvoin.` },
     'brand-impersonation': { title: 'Lähettäjän nimessä on toisen verkkotunnuksen tuotemerkki', detail: (p) => `Lähettäjän nimessä mainitaan ”${p.brand}”, mutta sähköposti tulee verkkotunnuksesta ${p.domain}.` },
-    'credential-request': { title: 'Kysyy tilistäsi tai kirjautumistiedoistasi', detail: () => 'Tekstissä mainitaan tilin tarkistuksia tai kirjautumistietoja, ja siinä on linkki. Pankit ja kaupat eivät pyydä salasanoja sähköpostitse.' },
+    'credential-request': { title: 'Kysyy tilistäsi tai kirjautumistiedoistasi', detail: (p) => {
+      if (p.callbackBrand) return `Viestissä kerrotaan ${p.callbackBrand}-tuotemerkin veloituksesta ja pyydetään riitauttamaan se puhelimitse. Lähettäjän verkkotunnus ei kuulu tuotemerkin tunnettuihin verkkotunnuksiin.`;
+      if (p.rejectedPaymentHost) return `Viestin mukaan maksu hylättiin. Maksupainike vie osoitteeseen ${p.rejectedPaymentHost}, joka ei kuulu lähettäjän eikä vastaanottajan verkkotunnukseen.`;
+      if (p.recipientActionHost) return `Tililinkki välittää sähköpostiosoitteesi osoitteeseen ${p.recipientActionHost}, joka ei kuulu lähettäjän eikä vastaanottajan verkkotunnukseen.`;
+      return 'Tekstissä mainitaan tilin tarkistuksia tai kirjautumistietoja, ja siinä on linkki. Pankit ja kaupat eivät pyydä salasanoja sähköpostitse.';
+    } },
     'risky-attachment': { title: 'Vaarallinen liite', detail: (p) => `Liite ”${p.name}” voi suorittaa koodia tai avata väärennetyn kirjautumissivun. Älä avaa sitä.` },
     'hidden-characters': { title: 'Näkymättömiä merkkejä sanojen sisällä', detail: () => 'Tekstissä on näkymättömiä merkkejä sanojen sisällä. Huijarit käyttävät niitä roskapostisuodattimien ohittamiseen.' },
     'styled-letters': { title: 'Naamioituja kirjaimia', detail: () => 'Tekstissä käytetään koristeellisia matemaattisia kirjaimia, jotka vain näyttävät tavallisilta. Huijarit käyttävät niitä roskapostisuodattimien ohittamiseen.' },

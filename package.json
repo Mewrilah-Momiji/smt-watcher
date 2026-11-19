@@ -2,8 +2,8 @@
   "name": "smt-watcher",
   "private": true,
   "license": "AGPL-3.0-only",
-  "version": "0.5.63",
-  "thunderbirdVersion": "0.5.55",
+  "version": "0.5.64",
+  "thunderbirdVersion": "0.5.56",
   "type": "module",
   "scripts": {
     "dev": "vite",

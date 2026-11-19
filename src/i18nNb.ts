@@ -396,7 +396,12 @@ export const nb: Messages = {
     'link-shortener': { title: 'En lenke skjuler målet sitt', detail: (p) => `En lenke bruker lenkeforkorteren ${p.host}, så det egentlige målet vises ikke. Det er alltid mistenkelig, fordi ærlige avsendere kan bruke hele lenken.` },
     'link-public-host': { title: 'En lenke fører til gratis offentlig nettlagring', detail: (p) => `En lenke bruker ${p.host}, der hvem som helst kan publisere en side. Vanlige bedrifter sender sjelden kunder dit.` },
     'brand-impersonation': { title: 'Avsendernavnet bruker et merke fra et annet domene', detail: (p) => `Avsendernavnet nevner «${p.brand}», men e-posten kommer fra ${p.domain}.` },
-    'credential-request': { title: 'Spør om kontoen din eller innloggingsopplysninger', detail: () => 'Teksten nevner kontosjekker eller innloggingsopplysninger og inneholder en lenke. Banker og butikker ber ikke om passord per e-post.' },
+    'credential-request': { title: 'Spør om kontoen din eller innloggingsopplysninger', detail: (p) => {
+      if (p.callbackBrand) return `E-posten nevner en belastning fra ${p.callbackBrand} og ber deg bestride den på telefon. Avsenderens domene er ikke blant de kjente domenene til merkevaren.`;
+      if (p.rejectedPaymentHost) return `E-posten sier at en betaling ble avvist. Betalingsknappen fører til ${p.rejectedPaymentHost}, utenfor avsenderens og mottakerens domener.`;
+      if (p.recipientActionHost) return `Kontolenken sender e-postadressen din til ${p.recipientActionHost}, utenfor avsenderens og mottakerens domener.`;
+      return 'Teksten nevner kontosjekker eller innloggingsopplysninger og inneholder en lenke. Banker og butikker ber ikke om passord per e-post.';
+    } },
     'risky-attachment': { title: 'Risikabelt vedlegg', detail: (p) => `Vedlegget «${p.name}» kan kjøre kode eller åpne en falsk innloggingsside. Ikke åpne det.` },
     'hidden-characters': { title: 'Usynlige tegn i ord', detail: () => 'Teksten inneholder usynlige tegn inne i ord. Svindlere bruker dem for å komme forbi søppelpostfiltre.' },
     'styled-letters': { title: 'Forkledde bokstaver', detail: () => 'Teksten bruker dekorative matematiske bokstaver som bare ligner vanlige. Svindlere bruker dem for å komme forbi søppelpostfiltre.' },

@@ -396,7 +396,12 @@ export const hr: Messages = {
     'link-shortener': { title: 'Poveznica skriva svoje odredište', detail: (p) => `Poveznica koristi skraćivač ${p.host}, pa stvarno odredište nije vidljivo. To je uvijek sumnjivo jer pošteni pošiljatelji mogu koristiti punu poveznicu.` },
     'link-public-host': { title: 'Poveznica vodi na besplatno javno udomljavanje', detail: (p) => `Poveznica koristi ${p.host}, gdje svatko može objaviti stranicu. Uobičajene tvrtke rijetko onamo šalju klijente.` },
     'brand-impersonation': { title: 'Ime pošiljatelja koristi marku s druge domene', detail: (p) => `Ime pošiljatelja spominje „${p.brand}”, ali e-poruka dolazi s ${p.domain}.` },
-    'credential-request': { title: 'Pita za tvoj račun ili podatke za prijavu', detail: () => 'Tekst spominje provjeru računa ili podatke za prijavu i sadrži poveznicu. Banke i trgovine ne traže lozinke e-poštom.' },
+    'credential-request': { title: 'Pita za tvoj račun ili podatke za prijavu', detail: (p) => {
+      if (p.callbackBrand) return `U poruci se spominje naplata koju je izvršila tvrtka ${p.callbackBrand} i traži se da je osporiš telefonom. Domena pošiljatelja nije među poznatim domenama te tvrtke.`;
+      if (p.rejectedPaymentHost) return `U poruci se navodi da je plaćanje odbijeno. Gumb za plaćanje vodi na ${p.rejectedPaymentHost}, izvan domena pošiljatelja i primatelja.`;
+      if (p.recipientActionHost) return `Poveznica za račun šalje tvoju adresu e-pošte na ${p.recipientActionHost}, izvan domena pošiljatelja i primatelja.`;
+      return 'Tekst spominje provjeru računa ili podatke za prijavu i sadrži poveznicu. Banke i trgovine ne traže lozinke e-poštom.';
+    } },
     'risky-attachment': { title: 'Rizičan privitak', detail: (p) => `Privitak „${p.name}” može pokrenuti kod ili otvoriti lažnu stranicu za prijavu. Ne otvaraj ga.` },
     'hidden-characters': { title: 'Nevidljivi znakovi u riječima', detail: () => 'Tekst sadrži nevidljive znakove unutar riječi. Prevaranti ih koriste kako bi zaobišli filtre za spam.' },
     'styled-letters': { title: 'Prikrivena slova', detail: () => 'Tekst koristi ukrasna matematička slova koja samo izgledaju kao obična. Prevaranti ih koriste kako bi zaobišli filtre za spam.' },

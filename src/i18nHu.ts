@@ -396,7 +396,12 @@ export const hu: Messages = {
     'link-shortener': { title: 'Egy link elrejti a célját', detail: (p) => `Egy link a(z) ${p.host} linkrövidítőt használja, így a valódi cél nem látható. Ez mindig gyanús, mert a becsületes feladók használhatják a teljes linket.` },
     'link-public-host': { title: 'Egy link ingyenes nyilvános tárhelyre vezet', detail: (p) => `Egy link a(z) ${p.host} szolgáltatást használja, ahol bárki közzétehet oldalt. A szokásos cégek ritkán küldik oda az ügyfeleiket.` },
     'brand-impersonation': { title: 'A feladó neve egy másik domain márkáját használja', detail: (p) => `A feladó neve ezt a márkát említi: „${p.brand}”, de az e-mail innen érkezett: ${p.domain}.` },
-    'credential-request': { title: 'A fiókodról vagy a bejelentkezési adataidról kérdez', detail: () => 'A szöveg fiókellenőrzést vagy bejelentkezési adatokat említ, és linket tartalmaz. A bankok és webáruházak nem kérnek jelszót e-mailben.' },
+    'credential-request': { title: 'A fiókodról vagy a bejelentkezési adataidról kérdez', detail: (p) => {
+      if (p.callbackBrand) return `Az e-mail a(z) ${p.callbackBrand} által felszámított díjról ír, és arra kér, hogy telefonon vitasd a terhelést. A feladó domainje nem tartozik a márka ismert domainjei közé.`;
+      if (p.rejectedPaymentHost) return `Az e-mail szerint a fizetést elutasították. A fizetési gomb a(z) ${p.rejectedPaymentHost} webhelyre vezet, amely kívül esik a feladó és a címzett domainjén.`;
+      if (p.recipientActionHost) return `A fiókhoz tartozó link továbbítja az e-mail-címedet a(z) ${p.recipientActionHost} webhelynek, amely kívül esik a feladó és a címzett domainjén.`;
+      return 'A szöveg fiókellenőrzést vagy bejelentkezési adatokat említ, és linket tartalmaz. A bankok és webáruházak nem kérnek jelszót e-mailben.';
+    } },
     'risky-attachment': { title: 'Kockázatos melléklet', detail: (p) => `A(z) „${p.name}” melléklet kódot futtathat, vagy hamis bejelentkezési oldalt nyithat meg. Ne nyisd meg.` },
     'hidden-characters': { title: 'Láthatatlan karakterek a szavakban', detail: () => 'A szöveg a szavak belsejében láthatatlan karaktereket tartalmaz. A csalók ezekkel kerülik meg a levélszemétszűrőket.' },
     'styled-letters': { title: 'Álcázott betűk', detail: () => 'A szöveg díszes matematikai betűket használ, amelyek csak hasonlítanak a normálisakra. A csalók ezekkel kerülik meg a levélszemétszűrőket.' },

@@ -396,7 +396,12 @@ export const pl: Messages = {
     'link-shortener': { title: 'Link ukrywa swój cel', detail: (p) => `Link korzysta ze skracacza adresów ${p.host}, więc prawdziwy cel nie jest widoczny. To zawsze podejrzane, bo uczciwi nadawcy mogą użyć pełnego linku.` },
     'link-public-host': { title: 'Link prowadzi do darmowego publicznego hostingu', detail: (p) => `Link korzysta z ${p.host}, gdzie każdy może opublikować stronę. Zwykłe firmy rzadko kierują tam klientów.` },
     'brand-impersonation': { title: 'Nazwa nadawcy używa marki z innej domeny', detail: (p) => `Nazwa nadawcy wymienia „${p.brand}”, ale wiadomość pochodzi z ${p.domain}.` },
-    'credential-request': { title: 'Pyta o twoje konto lub dane logowania', detail: () => 'Treść wspomina o weryfikacji konta lub danych logowania i zawiera link. Banki i sklepy nie proszą o hasła e-mailem.' },
+    'credential-request': { title: 'Pyta o twoje konto lub dane logowania', detail: (p) => {
+      if (p.callbackBrand) return `Wiadomość informuje o obciążeniu przez ${p.callbackBrand} i prosi o zakwestionowanie go telefonicznie. Domena nadawcy nie należy do znanych domen tej marki.`;
+      if (p.rejectedPaymentHost) return `Wiadomość informuje, że płatność została odrzucona. Przycisk płatności prowadzi do ${p.rejectedPaymentHost}, poza domenami nadawcy i odbiorcy.`;
+      if (p.recipientActionHost) return `Link dotyczący konta przekazuje twój adres e-mail do ${p.recipientActionHost}, poza domenami nadawcy i odbiorcy.`;
+      return 'Treść wspomina o weryfikacji konta lub danych logowania i zawiera link. Banki i sklepy nie proszą o hasła e-mailem.';
+    } },
     'risky-attachment': { title: 'Ryzykowny załącznik', detail: (p) => `Załącznik „${p.name}” może uruchomić kod lub otworzyć fałszywą stronę logowania. Nie otwieraj go.` },
     'hidden-characters': { title: 'Niewidoczne znaki w słowach', detail: () => 'Tekst zawiera niewidoczne znaki wewnątrz słów. Oszuści używają ich, aby ominąć filtry antyspamowe.' },
     'styled-letters': { title: 'Zamaskowane litery', detail: () => 'Tekst używa ozdobnych liter matematycznych, które tylko wyglądają jak zwykłe. Oszuści używają ich, aby ominąć filtry antyspamowe.' },

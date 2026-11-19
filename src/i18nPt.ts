@@ -396,7 +396,12 @@ export const pt: Messages = {
     'link-shortener': { title: 'Uma ligação esconde o seu destino', detail: (p) => `Uma ligação usa o encurtador ${p.host}, por isso o destino real não é visível. É sempre suspeito, porque os remetentes honestos podem usar a ligação completa.` },
     'link-public-host': { title: 'Uma ligação leva a um alojamento público gratuito', detail: (p) => `Uma ligação usa ${p.host}, onde qualquer pessoa pode publicar uma página. As empresas habituais raramente enviam lá os clientes.` },
     'brand-impersonation': { title: 'O nome do remetente usa uma marca de outro domínio', detail: (p) => `O nome do remetente menciona «${p.brand}», mas o e-mail vem de ${p.domain}.` },
-    'credential-request': { title: 'Pergunta pela tua conta ou credenciais', detail: () => 'O texto menciona verificações de conta ou credenciais e contém uma ligação. Os bancos e as lojas não pedem palavras-passe por e-mail.' },
+    'credential-request': { title: 'Pergunta pela tua conta ou credenciais', detail: (p) => {
+      if (p.callbackBrand) return `O e-mail menciona uma cobrança da marca ${p.callbackBrand} e pede-te que a contestes por telefone. O domínio do remetente não pertence aos domínios conhecidos da marca.`;
+      if (p.rejectedPaymentHost) return `O e-mail indica que um pagamento foi recusado. O botão de pagamento leva a ${p.rejectedPaymentHost}, fora dos domínios do remetente e do destinatário.`;
+      if (p.recipientActionHost) return `A ligação da conta transmite o teu endereço de e-mail a ${p.recipientActionHost}, fora dos domínios do remetente e do destinatário.`;
+      return 'O texto menciona verificações de conta ou credenciais e contém uma ligação. Os bancos e as lojas não pedem palavras-passe por e-mail.';
+    } },
     'risky-attachment': { title: 'Anexo perigoso', detail: (p) => `O anexo «${p.name}» pode executar código ou abrir uma página de início de sessão falsa. Não o abras.` },
     'hidden-characters': { title: 'Caracteres invisíveis dentro das palavras', detail: () => 'O texto contém caracteres invisíveis dentro de palavras. As burlas usam-nos para contornar os filtros de spam.' },
     'styled-letters': { title: 'Letras disfarçadas', detail: () => 'O texto usa letras matemáticas decorativas que só parecem normais. As burlas usam-nas para contornar os filtros de spam.' },
