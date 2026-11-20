@@ -4,6 +4,11 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.65 - 2026-11-20
+
+- An email from a free mail address such as Gmail that names another person at the same service in To, while it reached you, is now noted as addressed to a stranger.
+- The recipient is now taken from your own provider's delivery lines, not from those of a server the email passed earlier.
+
 ## 0.5.64 - 2026-11-19
 
 - The explanations for the three account checks of 0.5.63 are now available in all languages, not only English and German.

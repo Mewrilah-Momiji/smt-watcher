@@ -78,14 +78,26 @@ export function parseReceived(value: string): ReceivedHop {
 
 /** Addresses the receiving servers name as the recipient, which the sender cannot choose. */
 function findEnvelopeRecipients(headers: Header[]): string[] {
-  const addresses = new Set<string>();
+  const top = new Set<string>();
+  const delivered = new Set<string>();
+  const received = new Set<string>();
+  let seenReceived = false;
   for (const { name, value } of headers) {
     const lower = name.toLowerCase();
-    const relevant = ['delivered-to', 'x-original-to', 'envelope-to'].includes(lower) ? value
+    const isDelivery = ['delivered-to', 'x-original-to', 'envelope-to'].includes(lower);
+    const relevant = isDelivery ? value
       : lower === 'received' ? (/\bfor\s+<?([^\s<>;]+@[^\s<>;]+)>?/i.exec(value)?.[1] ?? '') : '';
-    for (const match of relevant.matchAll(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g)) addresses.add(match[0].toLowerCase());
+    for (const match of relevant.matchAll(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g)) {
+      const address = match[0].toLowerCase();
+      if (isDelivery && !seenReceived) top.add(address);
+      (isDelivery ? delivered : received).add(address);
+    }
+    if (lower === 'received') seenReceived = true;
   }
-  return [...addresses];
+  // The own provider's delivery headers above the first Received line name the real recipient. Lower ones and the
+  // Received lines of earlier servers can name someone else, as in an email first delivered to a stranger and then
+  // passed on in full. Added on 2026-11-20.
+  return [...(top.size > 0 ? top : delivered.size > 0 ? delivered : received)];
 }
 
 export function buildReport(raw: string, content: Partial<MailContent> = {}): HeaderReport {

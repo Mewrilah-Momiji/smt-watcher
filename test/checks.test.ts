@@ -215,6 +215,12 @@ describe('findIssues', () => {
     expect(codes({ visibleRecipients: 'someone@d.example' })).toEqual([]);
   });
 
+  it('compares whole addresses, not the domain, for a sender at a free mail service', () => {
+    const base = { from: 'Name <a@gmail.com>', envelopeRecipients: ['me@c.example'] };
+    expect(codes({ ...base, visibleRecipients: 'stranger@gmail.com' })).toContain('to-stranger');
+    expect(codes({ ...base, visibleRecipients: 'a@gmail.com' })).toContain('to-sender-only');
+  });
+
   it('notes a To that names only the sender while the email went to someone else', () => {
     const base = { envelopeRecipients: ['me@c.example'] };
     expect(codes({ ...base, visibleRecipients: 'info@a.example' })).toEqual(['to-sender-only']);

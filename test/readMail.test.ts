@@ -46,6 +46,21 @@ describe('readPastedText', () => {
     expect(report.bodyText).toBeNull();
   });
 
+  it('takes the recipient from the delivery headers above the first Received line', async () => {
+    const passedOn = [
+      'X-Original-To: me@c.example',
+      'Delivered-To: me@c.example',
+      'Received: from relay.example (relay.example [198.51.100.9]) by mx.c.example; Sun, 01 Nov 2026 10:00:05 +0100',
+      'Delivered-To: stranger@gmail.com',
+      'Received: from mail.example (mail.example [198.51.100.8]) by mx.gmail.com for <stranger@gmail.com>; Sun, 01 Nov 2026 10:00:03 +0100',
+      'From: Name <a@gmail.com>',
+      'To: stranger@gmail.com',
+      'Subject: Hello',
+    ].join('\n');
+    const { report } = await readPastedText(passedOn);
+    expect(report.findings.map((finding) => finding.code)).toContain('to-stranger');
+  });
+
   it('reads a full email source including its text', async () => {
     const { report } = await readPastedText(`${headers}\nContent-Type: text/plain\n\nTel: 0900 1234567`);
     expect(report.bodyText).toContain('0900 1234567');

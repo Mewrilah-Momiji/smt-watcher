@@ -245,7 +245,12 @@ export function findIssues(input: FindingInput): Finding[] {
     const visible = (input.visibleRecipients ?? '').toLowerCase();
     const toAddress = parseAddress(input.visibleRecipients ?? null);
     const envelopeVisible = envelope.some((address) => visible.includes(address) || visible.includes(baseDomain(address.split('@')[1] ?? '')));
-    if (envelope.length > 0 && toAddress?.domain && baseDomain(toAddress.domain) === fromBase && !input.isList && !envelopeVisible) {
+    // At a free mail service the domain says nothing about who sent it, so only the same address counts as the sender.
+    // Added on 2026-11-20 for a Gmail email addressed to another Gmail user and passed on to the recipient.
+    const toSender = Boolean(toAddress?.domain) && (FREEMAIL_DOMAINS.has(fromBase)
+      ? toAddress?.address?.toLowerCase() === from.address?.toLowerCase()
+      : baseDomain(toAddress?.domain ?? '') === fromBase);
+    if (envelope.length > 0 && toAddress?.domain && toSender && !input.isList && !envelopeVisible) {
       findings.push({
         code: 'to-sender-only',
         severity: 'note',
@@ -256,7 +261,7 @@ export function findIssues(input: FindingInput): Finding[] {
     // To names someone at another domain, and the email reached you only through Bcc. Spammers send one email
     // to a stranger and many others in Bcc. Measured on 2026-11-07: 5 of 242 private spam emails, 1 of 1872 legitimate ones,
     // 19 of 4752 public spam and phishing emails and none of 5149 emails from Apache lists.
-    if (envelope.length > 0 && toAddress?.domain && baseDomain(toAddress.domain) !== fromBase && !input.isList && !envelopeVisible) {
+    if (envelope.length > 0 && toAddress?.domain && !toSender && !input.isList && !envelopeVisible) {
       findings.push({
         code: 'to-stranger',
         severity: 'note',
