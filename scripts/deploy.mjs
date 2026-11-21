@@ -1,9 +1,9 @@
-// Uploads the built page in dist/ over encrypted FTP. Access data stays in .deploy.env, which Git ignores.
+// Uploads the built page in dist/ over SSH with a key, or over encrypted FTP. Access data stays in .deploy.env,
+// which Git ignores. scripts/remote.mjs describes both ways.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Readable, Writable } from 'node:stream';
-import { Client } from 'basic-ftp';
+import { connect, describe, missingSettings } from './remote.mjs';
 import { record } from './thunderbird-lib.mjs';
 
 // SMTW_PROFILE=old uploads with .deploy.old.env instead of .deploy.env, and .env.old.local on top of .env.local,
@@ -32,30 +32,28 @@ function readEnv(file) {
 
 // Older Thunderbird packages stay downloadable forever otherwise. Only the version that updates.json on the server
 // offers is kept, together with smt-watcher.xpi and updates.json. Without a readable updates.json nothing is removed.
-async function removeOldPackages(client) {
-  const chunks = [];
-  try {
-    await client.downloadTo(new Writable({ write(chunk, _encoding, done) { chunks.push(chunk); done(); } }), 'thunderbird/updates.json');
-  } catch {
+async function removeOldPackages(remote) {
+  const text = await remote.readFile('thunderbird/updates.json');
+  if (text === null) {
     return 'no updates.json on the server, nothing removed';
   }
   let offered;
   try {
-    offered = Object.values(JSON.parse(Buffer.concat(chunks).toString('utf8')).addons ?? {})[0]?.updates?.at(-1)?.version;
+    offered = Object.values(JSON.parse(text).addons ?? {})[0]?.updates?.at(-1)?.version;
   } catch {
     offered = undefined;
   }
   if (typeof offered !== 'string' || !/^\d+\.\d+\.\d+$/.test(offered)) {
     return 'updates.json names no version, nothing removed';
   }
-  const files = (await client.list('thunderbird')).filter((file) => file.isFile);
+  const files = (await remote.list('thunderbird')).filter((file) => file.isFile);
   const keep = `smt-watcher-${offered}.xpi`;
   if (!files.some((file) => file.name === keep)) {
     return `${keep} is missing on the server, nothing removed`;
   }
   const old = files.filter((file) => /^smt-watcher-\d+\.\d+\.\d+\.xpi$/.test(file.name) && file.name !== keep);
   for (const file of old) {
-    await client.remove(`thunderbird/${file.name}`);
+    await remote.remove(`thunderbird/${file.name}`);
   }
   return `kept ${keep}, removed ${old.length} older package${old.length === 1 ? '' : 's'}`;
 }
@@ -87,9 +85,9 @@ if (!existsSync(CONFIG_FILE) || (PROFILE_FILE && !existsSync(PROFILE_FILE))) {
   process.exit(1);
 }
 const config = readEnv(CONFIG_FILE);
-const missing = ['FTP_HOST', 'FTP_USER', 'FTP_PASSWORD', 'FTP_DIR'].filter((key) => !config[key]);
+const missing = missingSettings(config);
 if (missing.length > 0) {
-  console.error(`.deploy.env lacks: ${missing.join(', ')}`);
+  console.error(`${profile ? `.deploy.${profile}.env` : '.deploy.env'} lacks: ${missing.join(', ')}`);
   process.exit(1);
 }
 // Optional: private/ outside the web root, e.g. FTP_DIR=/smtw/ and PRIVATE_DIR=/smtw-private/. Then nothing in it can be
@@ -125,42 +123,37 @@ if (!existsSync(new URL('index.html', DIST)) || !existsSync(new URL('private/lis
   process.exit(1);
 }
 
-const client = new Client(30_000);
+let remote;
 try {
-  // Refuses unencrypted connections and invalid certificates.
-  await client.access({ host: config.FTP_HOST, user: config.FTP_USER, password: config.FTP_PASSWORD, secure: true });
-  await client.ensureDir(config.FTP_DIR);
+  console.log(`Connecting over ${describe(config)}`);
+  remote = await connect(config);
   if (privateDir) {
-    // Everything but private/ goes to the web root, private/ to its own folder. uploadFromDir returns to the web root.
-    for (const entry of readdirSync(DIST, { withFileTypes: true })) {
-      if (entry.name === 'private') continue;
-      const local = fileURLToPath(new URL(entry.name, DIST));
-      await (entry.isDirectory() ? client.uploadFromDir(local, entry.name) : client.uploadFrom(local, entry.name));
-    }
-    await client.uploadFromDir(fileURLToPath(new URL('private/', DIST)), privateDir);
-    await client.uploadFrom(Readable.from([`<?php return __DIR__ . ${phpString(`/${privatePath.replace(/\/$/, '')}`)};\n`]), 'private-dir.php');
-    if ((await client.list()).some((file) => file.name === 'private')) {
+    // Everything but private/ goes to the web root, private/ to its own folder.
+    await remote.uploadDir(fileURLToPath(DIST), '.', ['private']);
+    await remote.uploadDir(fileURLToPath(new URL('private/', DIST)), privateDir);
+    await remote.writeFile('private-dir.php', `<?php return __DIR__ . ${phpString(`/${privatePath.replace(/\/$/, '')}`)};\n`);
+    if ((await remote.list()).some((file) => file.name === 'private')) {
       console.warn(`private/ is still in the web root. Move its database and keys to ${privateDir}, then delete it by hand.`);
     }
   } else {
-    await client.uploadFromDir(fileURLToPath(DIST));
+    await remote.uploadDir(fileURLToPath(DIST));
     // A former private-dir.php would still send PHP elsewhere.
-    await client.remove('private-dir.php').catch(() => {});
+    await remote.remove('private-dir.php');
   }
   // File names change with each build, so older ones pile up. Only unused files in assets/ are removed, and only after the new pages are online.
   const current = new Set(readdirSync(new URL('assets/', DIST)));
-  const stale = (await client.list('assets')).filter((file) => file.isFile && !current.has(file.name));
+  const stale = (await remote.list('assets')).filter((file) => file.isFile && !current.has(file.name));
   for (const file of stale) {
-    await client.remove(`assets/${file.name}`);
+    await remote.remove(`assets/${file.name}`);
   }
   console.log(`Removed ${stale.length} unused files from assets/`);
   const contactSettings = `'email' => ${phpString(operatorEmail)}` + (mailFrom ? `, 'mail_from' => ${phpString(mailFrom)}` : '');
-  await client.uploadFrom(Readable.from([`<?php return [${contactSettings}];\n`]), `${privateRemote}contact.php`);
+  await remote.writeFile(`${privateRemote}contact.php`, `<?php return [${contactSettings}];\n`);
   if (withSenderDb) {
-    await client.uploadFrom(Readable.from([`<?php return ['enabled' => true];\n`]), `${privateRemote}config.php`);
+    await remote.writeFile(`${privateRemote}config.php`, `<?php return ['enabled' => true];\n`);
   }
   console.log(`Uploaded dist/ to ${config.FTP_DIR}${privateDir ? ` and private/ to ${privateDir}` : ''}${withSenderDb ? ' with the sender database on' : ''}`);
-  console.log(`Thunderbird packages: ${await removeOldPackages(client)}`);
+  console.log(`Thunderbird packages: ${await removeOldPackages(remote)}`);
   // scripts/thunderbird-release.mjs packaged the extension for this deploy only if it changed. Now that it is online, it counts as released.
   if (existsSync(new URL('thunderbird/updates.json', DIST))) {
     console.log(`Recorded Thunderbird ${record()} as released. Commit extensions/thunderbird/released.json with the release.`);
@@ -170,7 +163,7 @@ try {
   console.error(`Upload failed: ${error.message}`);
   process.exitCode = 1;
 } finally {
-  client.close();
+  remote?.close();
 }
 
 if (!process.exitCode) {

@@ -73,7 +73,7 @@ Before the first build, copy `.env.example` to `.env.local` and enter the operat
 
 The page itself is static and runs on any web server. The sender database and the contact form need PHP 8.1 or later with the PDO SQLite driver (`pdo_sqlite`), which most hosts offer. No separate database server is needed.
 
-- `npm run deploy:senderdb` uploads the page and switches the database on. On the first report or lookup, PHP creates the database file `private/smtw.sqlite` with its tables, and the keys `private/secret.php` and `private/day-key.php`. PHP must be allowed to write to `private/`.
+- `npm run deploy:senderdb` uploads the page and switches the database on. It connects over SSH with a key from the ssh-agent when `.deploy.env` sets `SSH_HOST`, `SSH_USER` and `SSH_ROOT`, so no password is stored, and over FTPS otherwise (see `.deploy.env.example`). On the first report or lookup, PHP creates the database file `private/smtw.sqlite` with its tables, and the keys `private/secret.php` and `private/day-key.php`. PHP must be allowed to write to `private/`.
 - **`private/` must be closed to the web.** It holds the database, the keys and the settings. On Apache, the included `public/private/.htaccess` does this (`Require all denied`), as long as the host allows `.htaccess` files. Other web servers ignore that file, so close the folder in their own settings, for example on nginx:
 
   ```nginx
