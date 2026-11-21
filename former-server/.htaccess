@@ -1,0 +1,23 @@
+# SMT Watcher moved to https://smtwatcher.com on 2026-11-21. This former address (smtw.pixel-heaven.net) only forwards.
+Options -Indexes
+RewriteEngine On
+
+# Certificate checks (Let's Encrypt) must still get through while this address needs a certificate.
+RewriteRule ^\.well-known/ - [L]
+
+# Installed extensions look for updates here. It stays a real file, pointing to the package on smtwatcher.com.
+RewriteRule ^thunderbird/updates\.json$ - [L]
+
+# PHP (reports, lookups, contact form): 308 keeps the method and the body, a 301 would turn POST into GET.
+RewriteRule ^(.*\.php)$ https://smtwatcher.com/$1 [R=308,L]
+
+# Everything else with the same path.
+RewriteRule ^(.*)$ https://smtwatcher.com/$1 [R=301,L]
+
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000"
+  Header always set X-Content-Type-Options "nosniff"
+  <Files "updates.json">
+    Header set Cache-Control "no-cache"
+  </Files>
+</IfModule>
