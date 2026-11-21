@@ -18,7 +18,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || !hash_equals(TOKEN_HASH, ha
     answer(404, ['result' => 'not-found']);
 }
 
-$secretFile = __DIR__ . '/../private/secret.php';
+// private/ sits next to api/, or outside the web root where private-dir.php names it (written by scripts/deploy.mjs).
+$private = is_file(__DIR__ . '/../private-dir.php') ? require __DIR__ . '/../private-dir.php' : __DIR__ . '/../private';
+$secretFile = $private . '/secret.php';
 $secretText = is_file($secretFile) ? (string) file_get_contents($secretFile) : '';
 if (preg_match('/^<\?php \/\/ ([0-9a-f]{64})$/', trim($secretText), $match) !== 1) {
     answer(503, ['result' => 'no-secret']);
@@ -32,13 +34,13 @@ if (!is_array($groups) || count($groups) > 1000) {
 }
 
 try {
-    $file = __DIR__ . '/../private/smtw.sqlite';
+    $file = $private . '/smtw.sqlite';
     $new = !is_file($file);
     $db = new PDO('sqlite:' . $file, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 5]);
     if ($new) {
         chmod($file, 0600);
     }
-    $db->exec((string) file_get_contents(__DIR__ . '/../private/schema.sql'));
+    $db->exec((string) file_get_contents($private . '/schema.sql'));
     $db->exec('BEGIN IMMEDIATE');
     $month = date('Y-m');
     // Setting the count instead of adding to it makes a repeated import harmless.

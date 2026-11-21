@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . '/../private/common.php';
+// private/ sits next to api/, or outside the web root where private-dir.php names it (written by scripts/deploy.mjs).
+require (is_file(__DIR__ . '/../private-dir.php') ? require __DIR__ . '/../private-dir.php' : __DIR__ . '/../private') . '/common.php';
 
 // Takes one consented contribution. It stores no IP address, recipient, address or email content.
 // A sender's domain is only stored readable after several independent reports. Before that, only a keyed hash exists.

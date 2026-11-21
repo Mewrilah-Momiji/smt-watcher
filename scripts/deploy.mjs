@@ -1,11 +1,21 @@
 // Uploads the built page in dist/ over encrypted FTP. Access data stays in .deploy.env, which Git ignores.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { posix } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Readable, Writable } from 'node:stream';
 import { Client } from 'basic-ftp';
 import { record } from './thunderbird-lib.mjs';
 
-const CONFIG_FILE = new URL('../.deploy.env', import.meta.url);
+// SMTW_PROFILE=old uploads with .deploy.old.env instead of .deploy.env, and .env.old.local on top of .env.local,
+// for example for a last release on a former server. vite.config.ts builds with the same files.
+const profile = process.env.SMTW_PROFILE ?? '';
+if (profile && !/^[a-z0-9-]+$/.test(profile)) {
+  console.error(`SMTW_PROFILE=${profile} is not a valid profile name.`);
+  process.exit(1);
+}
+const CONFIG_FILE = new URL(profile ? `../.deploy.${profile}.env` : '../.deploy.env', import.meta.url);
 const OPERATOR_FILE = new URL('../.env.local', import.meta.url);
+const PROFILE_FILE = profile ? new URL(`../.env.${profile}.local`, import.meta.url) : null;
 const DIST = new URL('../dist/', import.meta.url);
 // Only with this switch is the database switched on and the server accepts reports. The database is a SQLite file
 // that the server's PHP creates in private/ on first use, so it needs no access data.
@@ -72,8 +82,8 @@ async function checkPrivateClosed(siteUrl) {
 
 const phpString =(value) => `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
 
-if (!existsSync(CONFIG_FILE)) {
-  console.error('.deploy.env is missing. Copy .deploy.env.example and fill it in.');
+if (!existsSync(CONFIG_FILE) || (PROFILE_FILE && !existsSync(PROFILE_FILE))) {
+  console.error(profile ? `SMTW_PROFILE=${profile} needs .deploy.${profile}.env and .env.${profile}.local.` : '.deploy.env is missing. Copy .deploy.env.example and fill it in.');
   process.exit(1);
 }
 const config = readEnv(CONFIG_FILE);
@@ -82,11 +92,26 @@ if (missing.length > 0) {
   console.error(`.deploy.env lacks: ${missing.join(', ')}`);
   process.exit(1);
 }
+// Optional: private/ outside the web root, e.g. FTP_DIR=/smtw/ and PRIVATE_DIR=/smtw-private/. Then nothing in it can be
+// served even if the server ignored .htaccess. private-dir.php in the web root tells PHP where it is.
+const privateDir = config.PRIVATE_DIR ? posix.normalize(`${config.PRIVATE_DIR}/`) : '';
+const privatePath = privateDir ? posix.relative(posix.normalize(`${config.FTP_DIR}/`), privateDir) : '';
+if (privateDir && (!privateDir.startsWith('/') || !config.FTP_DIR.startsWith('/') || !privatePath.startsWith('../'))) {
+  console.error('PRIVATE_DIR and FTP_DIR in .deploy.env must be absolute FTP paths, and PRIVATE_DIR must lie outside FTP_DIR.');
+  process.exit(1);
+}
+const privateRemote = privateDir || 'private/';
 // The contact form sends to the operator's address from .env.local, which the build also used for the imprint.
-const operatorEnv = existsSync(OPERATOR_FILE) ? readEnv(OPERATOR_FILE) : {};
+const operatorEnv = { ...(existsSync(OPERATOR_FILE) ? readEnv(OPERATOR_FILE) : {}), ...(PROFILE_FILE ? readEnv(PROFILE_FILE) : {}) };
 const operatorEmail = operatorEnv.VITE_OPERATOR_EMAIL;
 if (!operatorEmail) {
   console.error('.env.local lacks VITE_OPERATOR_EMAIL. Copy .env.example to .env.local and fill it in.');
+  process.exit(1);
+}
+// Optional sender of the contact form, e.g. noreply@ of the site's own domain. Without it, mail is sent from the operator's address.
+const mailFrom = operatorEnv.MAIL_FROM ?? '';
+if (mailFrom && !/^[^\s@]+@[^\s@]+$/.test(mailFrom)) {
+  console.error('MAIL_FROM in .env.local is not an e-mail address.');
   process.exit(1);
 }
 // The live address, used after the upload to check that private/ stays closed.
@@ -105,7 +130,23 @@ try {
   // Refuses unencrypted connections and invalid certificates.
   await client.access({ host: config.FTP_HOST, user: config.FTP_USER, password: config.FTP_PASSWORD, secure: true });
   await client.ensureDir(config.FTP_DIR);
-  await client.uploadFromDir(DIST.pathname.replace(/^\/([A-Za-z]:)/, '$1'));
+  if (privateDir) {
+    // Everything but private/ goes to the web root, private/ to its own folder. uploadFromDir returns to the web root.
+    for (const entry of readdirSync(DIST, { withFileTypes: true })) {
+      if (entry.name === 'private') continue;
+      const local = fileURLToPath(new URL(entry.name, DIST));
+      await (entry.isDirectory() ? client.uploadFromDir(local, entry.name) : client.uploadFrom(local, entry.name));
+    }
+    await client.uploadFromDir(fileURLToPath(new URL('private/', DIST)), privateDir);
+    await client.uploadFrom(Readable.from([`<?php return __DIR__ . ${phpString(`/${privatePath.replace(/\/$/, '')}`)};\n`]), 'private-dir.php');
+    if ((await client.list()).some((file) => file.name === 'private')) {
+      console.warn(`private/ is still in the web root. Move its database and keys to ${privateDir}, then delete it by hand.`);
+    }
+  } else {
+    await client.uploadFromDir(fileURLToPath(DIST));
+    // A former private-dir.php would still send PHP elsewhere.
+    await client.remove('private-dir.php').catch(() => {});
+  }
   // File names change with each build, so older ones pile up. Only unused files in assets/ are removed, and only after the new pages are online.
   const current = new Set(readdirSync(new URL('assets/', DIST)));
   const stale = (await client.list('assets')).filter((file) => file.isFile && !current.has(file.name));
@@ -113,11 +154,12 @@ try {
     await client.remove(`assets/${file.name}`);
   }
   console.log(`Removed ${stale.length} unused files from assets/`);
-  await client.uploadFrom(Readable.from([`<?php return ['email' => ${phpString(operatorEmail)}];\n`]), 'private/contact.php');
+  const contactSettings = `'email' => ${phpString(operatorEmail)}` + (mailFrom ? `, 'mail_from' => ${phpString(mailFrom)}` : '');
+  await client.uploadFrom(Readable.from([`<?php return [${contactSettings}];\n`]), `${privateRemote}contact.php`);
   if (withSenderDb) {
-    await client.uploadFrom(Readable.from([`<?php return ['enabled' => true];\n`]), 'private/config.php');
+    await client.uploadFrom(Readable.from([`<?php return ['enabled' => true];\n`]), `${privateRemote}config.php`);
   }
-  console.log(`Uploaded dist/ to ${config.FTP_DIR}${withSenderDb ? ' with the sender database on' : ''}`);
+  console.log(`Uploaded dist/ to ${config.FTP_DIR}${privateDir ? ` and private/ to ${privateDir}` : ''}${withSenderDb ? ' with the sender database on' : ''}`);
   console.log(`Thunderbird packages: ${await removeOldPackages(client)}`);
   // scripts/thunderbird-release.mjs packaged the extension for this deploy only if it changed. Now that it is online, it counts as released.
   if (existsSync(new URL('thunderbird/updates.json', DIST))) {
@@ -138,5 +180,25 @@ if (!process.exitCode) {
     process.exitCode = 1;
   } else {
     console.log(`Checked ${PRIVATE_PATHS.length} paths in private/: all closed (403/404)`);
+  }
+  // lookup.php loads private/common.php before it looks at the request, so 405 shows that PHP found private/.
+  // private-dir.php only returns the path and must print nothing.
+  const problems = [];
+  try {
+    const lookup = await fetch(new URL('api/lookup.php', siteUrl), { cache: 'no-store' });
+    await lookup.body?.cancel();
+    if (lookup.status !== 405) problems.push(`api/lookup.php answered ${lookup.status} instead of 405: PHP may not find private/.`);
+    if (privateDir) {
+      const pointer = await fetch(new URL('private-dir.php', siteUrl), { cache: 'no-store' });
+      if ((await pointer.text()) !== '') problems.push('private-dir.php printed something. It must only return the path.');
+    }
+  } catch (error) {
+    problems.push(`The PHP check failed: ${error.message}`);
+  }
+  if (problems.length > 0) {
+    console.error(problems.join('\n'));
+    process.exitCode = 1;
+  } else {
+    console.log(`PHP finds private/${privateDir ? ` in ${privateDir}` : ''}`);
   }
 }

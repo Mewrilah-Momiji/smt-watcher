@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 // Sends the contact form to the operator. It stores nothing except a count per hour against mass mailing.
 // The operator's address is a setting: npm run deploy writes it from .env.local to private/contact.php.
-const ADDRESS_FILE = __DIR__ . '/private/contact.php';
+// private/ sits next to this file, or outside the web root where private-dir.php names it.
+define('ADDRESS_FILE', (is_file(__DIR__ . '/private-dir.php') ? require __DIR__ . '/private-dir.php' : __DIR__ . '/private') . '/contact.php');
 const MAX_MESSAGES_PER_HOUR = 20;
 const MAX_MESSAGE_LENGTH = 5000;
 const MIN_SECONDS_TO_FILL = 3;
@@ -20,11 +21,24 @@ function field(string $name): string
     return is_string($value) ? trim($value) : '';
 }
 
+function configuredAddress(string $key): ?string
+{
+    static $config = null;
+    $config ??= is_file(ADDRESS_FILE) ? require ADDRESS_FILE : [];
+    $address = is_array($config) ? ($config[$key] ?? null) : null;
+    return is_string($address) && filter_var($address, FILTER_VALIDATE_EMAIL) !== false ? $address : null;
+}
+
 function operatorAddress(): ?string
 {
-    $config = is_file(ADDRESS_FILE) ? require ADDRESS_FILE : null;
-    $address = is_array($config) ? ($config['email'] ?? null) : null;
-    return is_string($address) && filter_var($address, FILTER_VALIDATE_EMAIL) !== false ? $address : null;
+    return configuredAddress('email');
+}
+
+// The sender, e.g. noreply@ of the site's own domain, so that the mail matches the domain's SPF and DKIM.
+// Without it, the operator's address sends. Replies go to the writer through Reply-To.
+function senderAddress(string $operator): string
+{
+    return configuredAddress('mail_from') ?? $operator;
 }
 
 function withinHourlyLimit(): bool
@@ -83,8 +97,9 @@ if ($operator === null) {
 }
 
 // The address was validated, which rules out line breaks in the header.
+$sender = senderAddress($operator);
 $headers = [
-    'From' => 'SMT Watcher <' . $operator . '>',
+    'From' => 'SMT Watcher <' . $sender . '>',
     'Reply-To' => $email,
     'MIME-Version' => '1.0',
     'Content-Type' => 'text/plain; charset=UTF-8',
@@ -100,5 +115,5 @@ if (field('topic') === 'translation') {
     $details = 'Language: ' . $lang . "\nPage: " . $page . "\n";
 }
 $body = 'Name: ' . ($name === '' ? '-' : $name) . "\nE-Mail: " . $email . "\nTime to fill in: " . (int) $seconds . " s\n" . $details . "\n" . $message . "\n";
-$sent = mail($operator, $subject, chunk_split(base64_encode($body)), $headers, '-f' . $operator);
+$sent = mail($operator, $subject, chunk_split(base64_encode($body)), $headers, '-f' . $sender);
 finish($sent ? 'sent' : 'failed');

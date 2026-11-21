@@ -36,7 +36,7 @@ See the [privacy policy](https://smtw.pixel-heaven.net/privacy.html) and the [ro
 
 ## Commands
 
-Before the first build, copy `.env.example` to `.env.local` and enter the operator's name, address and email address. They appear in the imprint, and the contact form sends to the address. For the Thunderbird extension and the seed script, also enter the address of your own copy of the page and an add-on ID of your own: the extension links to that page and sends reports and lookups to its server. Git ignores `.env.local`, and the build stops if a value is missing.
+Before the first build, copy `.env.example` to `.env.local` and enter the operator's name, address and email address. They appear in the imprint, and the contact form sends to the address. Optionally, `MAIL_FROM` sets the sender of the contact form, best a mailbox of the site's own domain such as `noreply@` that forwards replies to the operator, so that the mail matches the domain's SPF and DKIM. For the Thunderbird extension and the seed script, also enter the address of your own copy of the page and an add-on ID of your own: the extension links to that page and sends reports and lookups to its server. Git ignores `.env.local`, and the build stops if a value is missing.
 
 | Command | Purpose |
 |---|---|
@@ -81,6 +81,7 @@ The page itself is static and runs on any web server. The sender database and th
   ```
 
   After each upload, `scripts/deploy.mjs` checks that `private/`, the database, the keys and the settings at `VITE_SITE_URL` answer 403 or 404, and fails if any of them answers otherwise or cannot be reached.
+- **Better: keep `private/` outside the web root.** If the FTP user also sees the folder above the web root, set `PRIVATE_DIR` in `.deploy.env`, for example `FTP_DIR=/smtw/` and `PRIVATE_DIR=/smtw-private/`. The deploy then uploads `private/` there and writes `private-dir.php` into the web root, which only tells PHP the path. Nothing in `private/` can then be served, even where `.htaccess` is ignored. After the upload, the deploy also checks that `api/lookup.php` answers 405, which shows that PHP finds `private/`.
 - A backup is a copy of `private/smtw.sqlite`, taken over FTP while nobody reports. Keep `private/secret.php` with it: without that key, the stored hashes no longer match any domain.
 - The public `.htaccess` also redirects to https and sets security headers. On other web servers, set the same headers yourself.
 

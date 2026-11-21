@@ -14,6 +14,8 @@ test-results/
 legit-review.csv
 legit-review-*.csv
 .deploy.env
+# Deploy profiles such as .deploy.old.env (SMTW_PROFILE=old)
+.deploy.*.env
 WS_FTP.LOG
 .database.env
 *.xpi

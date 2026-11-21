@@ -8,6 +8,18 @@ import { messagesFor, pageTitle } from './src/i18n';
 import { fillStaticText, headTags, helpHtml, SEO_PAGES, sitemapXml } from './src/seo';
 
 const require = createRequire(import.meta.url);
+
+// SMTW_PROFILE=old builds with .env.old.local on top of .env.local, for example for a last release on a former server.
+// Vite gives values in process.env priority over its .env files, and so does scripts/deploy.mjs.
+const profile = process.env.SMTW_PROFILE;
+if (profile) {
+  const file = `.env.${profile}.local`;
+  if (!/^[a-z0-9-]+$/.test(profile) || !existsSync(file)) throw new Error(`SMTW_PROFILE=${profile} needs the file ${file}.`);
+  for (const line of readFileSync(file, 'utf8').split(/\r?\n/)) {
+    const match = /^([A-Z_]+)=(.*)$/.exec(line);
+    if (match) process.env[match[1]] = match[2].trim();
+  }
+}
 // package.json holds both versions. The extension has its own, so that it is only released when its build changes.
 const { version: pageVersion, thunderbirdVersion } = JSON.parse(readFileSync('package.json', 'utf8')) as { version: string; thunderbirdVersion: string };
 
@@ -30,11 +42,18 @@ export default defineConfig(({ mode }) => {
   // does not send reports to someone else's server.
   const env = loadEnv(mode, process.cwd(), 'VITE_');
   const site = mode === 'thunderbird' ? env.VITE_SITE_URL ?? '' : '';
+  // Before the server moves to another address, the extension may already reach the new one. The update that then
+  // switches over asks for no new permission, and installed copies can follow the old server's redirect.
+  const nextSite = mode === 'thunderbird' ? env.VITE_NEXT_SITE_URL ?? '' : '';
   const addonId = env.VITE_ADDON_ID ?? '';
   // The page's own address for search engines. Without one, the build leaves out canonical links and the sitemap.
   const siteUrl = /^https:\/\/[^/]+\/$/.test(env.VITE_SITE_URL ?? '') ? env.VITE_SITE_URL! : '';
   // The normal build may not reach the database. The extension has to name the page's server.
-  const databaseOrigin = mode === 'senderdb' ? "'self' " : mode === 'thunderbird' && URL.canParse(site) ? `${new URL(site).origin} ` : '';
+  const databaseOrigin = mode === 'senderdb'
+    ? "'self' "
+    : mode === 'thunderbird' && URL.canParse(site)
+      ? [site, nextSite].filter((url) => URL.canParse(url)).map((url) => `${new URL(url).origin} `).join('')
+      : '';
   return {
   base: './',
   envDir: process.cwd(),
@@ -69,6 +88,7 @@ export default defineConfig(({ mode }) => {
       configResolved(config) {
         if (mode === 'thunderbird') {
           if (!/^https:\/\/[^/]+\/$/.test(site) || !addonId) throw new Error('.env.local lacks VITE_SITE_URL (https://host/) or VITE_ADDON_ID. See .env.example.');
+          if (nextSite && (!/^https:\/\/[^/]+\/$/.test(nextSite) || nextSite === site)) throw new Error('VITE_NEXT_SITE_URL must be another https://host/ than VITE_SITE_URL.');
           return;
         }
         const missing = ['VITE_OPERATOR_NAME', 'VITE_OPERATOR_STREET', 'VITE_OPERATOR_CITY', 'VITE_OPERATOR_EMAIL'].filter((key) => !config.env[key]);
@@ -85,7 +105,7 @@ export default defineConfig(({ mode }) => {
         manifest.browser_specific_settings.gecko.id = addonId;
         // The extension is offered on the page's own server, not in a catalog, and Thunderbird looks for updates there.
         manifest.browser_specific_settings.gecko.update_url = `${site}thunderbird/updates.json`;
-        manifest.host_permissions = [`${site}*`];
+        manifest.host_permissions = [site, nextSite].filter(Boolean).map((url) => `${url}*`);
         writeFileSync(file, JSON.stringify({ ...manifest, version }, null, 2));
       },
     },

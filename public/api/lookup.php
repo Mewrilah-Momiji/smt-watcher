@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . '/../private/common.php';
+// private/ sits next to api/, or outside the web root where private-dir.php names it (written by scripts/deploy.mjs).
+require (is_file(__DIR__ . '/../private-dir.php') ? require __DIR__ . '/../private-dir.php' : __DIR__ . '/../private') . '/common.php';
 
 // Answers for a single domain with a rough category. It stores nothing about the request except a count per
 // hour against someone testing many domains, and it offers no way to list entries or to see numbers.

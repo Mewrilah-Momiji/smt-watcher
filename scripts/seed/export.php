@@ -19,7 +19,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || !hash_equals(TOKEN_HASH, ha
 }
 
 try {
-    $file = __DIR__ . '/../private/smtw.sqlite';
+    $private = is_file(__DIR__ . '/../private-dir.php') ? require __DIR__ . '/../private-dir.php' : __DIR__ . '/../private';
+    $file = $private . '/smtw.sqlite';
     if (!is_file($file)) {
         answer(503, ['result' => 'no-database']);
     }
