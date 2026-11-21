@@ -1,6 +1,7 @@
 // Fills the built pages with their text, so that search engines and people without JavaScript see the content.
 // The start page and the help page also exist in German under de/, so that searches in German find them.
 // The page script still translates everything into the chosen language when it starts.
+import { checkInfoHtml } from './checkInfo';
 import { guideTitlePart, LANGS, messagesFor, pageTitle, type Lang } from './i18n';
 
 type Page = { file: string; titleKey: 'question' | 'helpLink' | 'imprintLink' | 'privacyLink'; inSitemap: boolean };
@@ -75,7 +76,8 @@ export function fillStaticText(html: string, senderDb: boolean, lang: Lang = 'en
     fill('data-i18n-program', (key) => (texts[key] === undefined ? undefined : guideTitlePart(texts[key], 'program'))),
     fill('data-i18n-kind', (key) => (texts[key] === undefined ? undefined : guideTitlePart(texts[key], 'kind'))),
   ];
-  return steps.reduce((result, step) => step(result), html);
+  const filled = steps.reduce((result, step) => step(result), html);
+  return filled.replace('<details class="fold" id="check-info"></details>', `<details class="fold" id="check-info">${checkInfoHtml(lang, escape)}</details>`);
 }
 
 /** The help page in a language, built like src/legal.ts builds it. */
@@ -117,6 +119,7 @@ export function headTags(file: string, site: string, senderDb: boolean, lang: La
   if (!site) return tags;
   const url = pageUrl(site, file, lang);
   tags.push(link({ rel: 'canonical', href: url }));
+  tags.push(link({ rel: 'apple-touch-icon', href: `${lang === 'en' ? '' : '../'}apple-touch-icon.png` }));
   // Each language version names all of them, itself included, and English as the one for everyone else.
   if (TRANSLATED_FILES.includes(file)) {
     for (const version of ['en', ...PAGE_LANGS] as Lang[]) tags.push(link({ rel: 'alternate', hreflang: version, href: pageUrl(site, file, version) }));
@@ -128,7 +131,12 @@ export function headTags(file: string, site: string, senderDb: boolean, lang: La
     meta({ property: 'og:title', content: title }),
     meta({ property: 'og:url', content: url }),
     meta({ property: 'og:locale', content: lang === 'en' ? 'en_US' : `${lang}_${lang.toUpperCase()}` }),
-    meta({ name: 'twitter:card', content: 'summary' }),
+    // The preview image shows the start page's question in the page's language. scripts/site-images.mjs draws it.
+    meta({ property: 'og:image', content: `${site}${lang === 'en' || !PAGE_LANGS.includes(lang) ? 'og-image.png' : `og-image-${lang}.png`}` }),
+    meta({ property: 'og:image:width', content: '1200' }),
+    meta({ property: 'og:image:height', content: '630' }),
+    meta({ property: 'og:image:alt', content: `${m.static.brand}: ${m.static.question}` }),
+    meta({ name: 'twitter:card', content: 'summary_large_image' }),
   );
   if (text) tags.push(meta({ property: 'og:description', content: text }));
   if (file === 'index.html') {

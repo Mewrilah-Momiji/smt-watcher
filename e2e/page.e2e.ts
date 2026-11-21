@@ -282,13 +282,23 @@ test.describe('getting an email into the page', () => {
     await page.goto('/de/');
     await expect(page.getByRole('heading', { level: 1, name: 'Ist diese E-Mail echt?' })).toBeVisible();
     await expect(page.locator('html')).toHaveAttribute('lang', 'de');
+    await page.goto('/privacy.html');
+    // Opening the German copy alone does not make German the choice for the other pages.
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await page.goto('/de/');
+    await page.locator('#check-info summary').click();
+    await expect(page.getByText('Die Meldung: Bei Spam und Phishing', { exact: false })).toBeVisible();
+    await choose(page.getByRole('combobox', { name: 'Sprache' }), 'fr');
+    await expect(page.locator('#check-info summary')).toHaveText('Ce que la vérification examine');
+    await expect(page.locator('#check-info')).toHaveAttribute('open', '');
+    await page.goto('/de/');
     await page.getByRole('link', { name: 'So funktioniert es' }).click();
     await expect(page).toHaveURL(/\/de\/help\.html$/);
     await expect(page.getByRole('heading', { level: 1, name: 'So funktioniert der SMT Wächter' })).toBeVisible();
     await page.getByRole('link', { name: 'Alle Einzelheiten stehen in der Datenschutzerklärung.' }).click();
     await expect(page).toHaveURL(/\/privacy\.html$/);
-    // The German copy did not become the visitor's choice for the other pages.
-    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    // French was chosen on purpose, so it stays.
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
     await page.goto('/de/');
     await page.getByRole('link', { name: 'Impressum' }).click();
     await expect(page).toHaveURL(/\/imprint\.html$/);

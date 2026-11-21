@@ -1,9 +1,11 @@
 import './style.css';
+import './site.css';
 import { renderBatch, type BatchEntry } from './batchView';
 import { setupControls } from './chrome';
 import type { HeaderReport } from './core/headers';
 import { MailReadError, readMail, readPastedText, textAsEml } from './core/readMail';
-import { applyPageTitle, t } from './i18n';
+import { renderCheckInfo } from './checkInfo';
+import { applyPageTitle, getLang, t } from './i18n';
 import { fixRootLinks, useLanguagePage } from './languagePage';
 import type { MailSource } from './reportView';
 import { renderResult } from './resultView';
@@ -26,6 +28,7 @@ let currentRun = 0;
 useLanguagePage();
 setupControls(() => {
   applyPageTitle();
+  renderCheckInfo(getLang());
   error.hidden = true;
   if (result.hidden) return;
   if (shown) renderResult(result, shown.report, shown.source, { keepView: true, backToList: shown.backToList });
@@ -39,6 +42,7 @@ setupControls(() => {
 });
 fixRootLinks();
 applyPageTitle();
+renderCheckInfo(getLang());
 
 function showError(message: string): void {
   result.hidden = true;

@@ -4,6 +4,11 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.69 - 2026-11-21
+
+- The start page has a short list of what the check looks at, in every language.
+- Shared links show a preview image, in German for the German pages. The site also has a favicon.ico and an icon for the home screen on Apple devices.
+
 ## 0.5.68 - 2026-11-21
 
 - The start page and the help page also exist in German at https://smtwatcher.com/de/, so that searches in German find them. Both always open in German; the language you chose stays for the other pages.

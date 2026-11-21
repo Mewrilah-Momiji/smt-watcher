@@ -1,0 +1,14 @@
+/* Styles only the website uses. The Thunderbird extension shares style.css, so these stay out of it. */
+
+/* What the check looks at */
+
+.check-info {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.check-info li + li {
+  margin-top: 0.45rem;
+}

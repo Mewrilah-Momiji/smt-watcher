@@ -77,6 +77,8 @@ export default defineConfig(({ mode }) => {
         },
       }
     : {
+        // The dev server looks for dependencies in the source pages only. The language copies exist only in the build.
+        optimizeDeps: { entries: ['index.html', 'help.html', 'imprint.html', 'privacy.html'] },
         build: {
           rollupOptions: {
             // The copies per language, such as de/index.html, have no source file. The plugin "language-pages" makes them from the English one.
