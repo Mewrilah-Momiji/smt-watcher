@@ -82,6 +82,6 @@ Signed for You by: name ________, title ________, date ________
 
 ---
 
-Signing: A person who may act for the Legal Entity fills in the lines above and sends the completed Agreement through the contact form in the imprint at https://smtw.pixel-heaven.net/imprint.html. The pull requests of its staff are merged once We have confirmed it.
+Signing: A person who may act for the Legal Entity fills in the lines above and sends the completed Agreement through the contact form in the imprint at https://smtwatcher.com/imprint.html. The pull requests of its staff are merged once We have confirmed it.
 
 Based on the Harmony Agreements 1.0 (https://www.harmonyagreements.org), licensed under the Creative Commons Attribution 3.0 Unported License. The only changes are the filled-in placeholders, the chosen outbound license option (Option Five), the removed optional sentence on media licenses and the signing above.

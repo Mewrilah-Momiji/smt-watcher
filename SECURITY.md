@@ -2,7 +2,7 @@
 
 Please do not report security problems in a public issue.
 
-Report them privately, either through GitHub's "Report a vulnerability" button on the Security tab of this repository, if it is shown, or through the contact form on the [imprint page](https://smtw.pixel-heaven.net/imprint.html). Say what is affected, how to reproduce it and what an attacker could gain.
+Report them privately, either through GitHub's "Report a vulnerability" button on the Security tab of this repository, if it is shown, or through the contact form on the [imprint page](https://smtwatcher.com/imprint.html). Say what is affected, how to reproduce it and what an attacker could gain.
 
 Of interest are in particular:
 

@@ -52,4 +52,4 @@ Only submit work whose copyright you hold. If a contribution contains work of ot
 
 ## Questions
 
-Use the contact form on the [imprint page](https://smtw.pixel-heaven.net/imprint.html).
+Use the contact form on the [imprint page](https://smtwatcher.com/imprint.html).

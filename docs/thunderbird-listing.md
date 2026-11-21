@@ -24,7 +24,7 @@ If you want to report the email, SMT Watcher names checked reporting bodies for 
 - "Check sender in the database": the sender's base domain, such as example.com, goes to the SMT Watcher server, which answers whether reports about it exist.
 - "Send" in "Help improve the sender database": after you choose an answer and read what would be sent, a few details about the sender go to the SMT Watcher server, never the email itself, your address or the text.
 
-The full privacy policy is below and on <https://smtw.pixel-heaven.net/privacy.html>. Source code: <https://github.com/Mewrilah-Momiji/smt-watcher> (AGPL-3.0).
+The full privacy policy is below and on <https://smtwatcher.com/privacy.html>. Source code: <https://github.com/Mewrilah-Momiji/smt-watcher> (AGPL-3.0).
 
 ## Description (de)
 
@@ -40,7 +40,7 @@ Wenn du die E-Mail melden möchtest, nennt SMT Wächter geprüfte Meldestellen f
 - „Absender in der Datenbank prüfen“: Die Stammdomain des Absenders, etwa example.com, geht an den Server von SMT Wächter, der antwortet, ob es Meldungen dazu gibt.
 - „Senden“ unter „Die Absender-Datenbank verbessern“: Nachdem du eine Antwort gewählt und gelesen hast, was gesendet würde, gehen wenige Angaben zum Absender an den Server von SMT Wächter, nie die E-Mail selbst, deine Adresse oder der Text.
 
-Die vollständige Datenschutzerklärung steht unten und auf <https://smtw.pixel-heaven.net/privacy.html>. Quellcode: <https://github.com/Mewrilah-Momiji/smt-watcher> (AGPL-3.0).
+Die vollständige Datenschutzerklärung steht unten und auf <https://smtwatcher.com/privacy.html>. Quellcode: <https://github.com/Mewrilah-Momiji/smt-watcher> (AGPL-3.0).
 
 ## Privacy policy for the ATN field (en)
 
@@ -48,18 +48,18 @@ ATN wants the full text in its own field, specific to the add-on, not a link.
 
 **Privacy policy of the SMT Watcher Thunderbird add-on**
 
-Controller: the maintainer of SMT Watcher, as named in the imprint at https://smtw.pixel-heaven.net/imprint.html.
+Controller: the maintainer of SMT Watcher, as named in the imprint at https://smtwatcher.com/imprint.html.
 
 1. **The email you check.** When you click the SMT Watcher button, the add-on reads the open email through Thunderbird's message API and analyzes it inside Thunderbird. The email and its content are not sent anywhere for this.
 2. **Reports.** The add-on prepares reports to reporting bodies and to the abuse contact of the sending network. It only creates a draft through Thunderbird's compose API. It never sends anything itself. You decide what you send and to whom, and that body then processes it under its own responsibility.
 3. **Abuse contact lookup.** Only if you click the lookup, the add-on sends the IP address of the server that sent the email to rdap.org and to a regional internet registry (ARIN, RIPE NCC, APNIC, LACNIC or AFRINIC), which may forward it to a national registry. These bodies also see your own IP address and may be located outside the EU. The operator of SMT Watcher receives none of this. Legal basis: your consent by the click (Art. 6(1)(a) GDPR), for this one lookup only.
-4. **Checking a sender.** Only if you click the check, the add-on sends the base domain of the sender to the SMT Watcher server (smtw.pixel-heaven.net) to compare it with the database. The domain is not stored for this. Only a hash of your IP address is kept for about 2 hours, to limit the number of checks. Legal basis: your consent by the click (Art. 6(1)(a) GDPR).
+4. **Checking a sender.** Only if you click the check, the add-on sends the base domain of the sender to the SMT Watcher server (smtwatcher.com) to compare it with the database. The domain is not stored for this. Only a hash of your IP address is kept for about 2 hours, to limit the number of checks. Legal basis: your consent by the click (Art. 6(1)(a) GDPR).
 5. **Improving the sender database.** Only if you choose an answer and click "Send", the add-on sends to the SMT Watcher server: the base domain of the sender, the results of the sender checks, whether the sender's domain signed the email, the finding codes, the assessment level, the base domains of the links, your answer and whether you reported the assessment as wrong. The add-on describes these details before you click. The email itself, your address, the sender's name, the part of the address before the @, the subject and the text are not sent. The report is added to counters and not stored as a single record. A sender's domain is first stored only as a keyed hash and becomes readable only after at least 5 independent reports. Your IP address is not stored, only a hash of it with a key that is discarded after one day, deleted after 30 days at the latest. Legal basis: your consent (Art. 6(1)(a) GDPR), which you can withdraw at any time for the future by writing to the operator. A counted report cannot be removed individually afterwards.
 6. **Connections.** All connections use HTTPS. The add-on loads no remote code, sets no cookies, has no tracking and collects no usage statistics.
 7. **Hosting.** The SMT Watcher server is hosted by ALL-INKL.COM - Neue Medien Münnich, Germany, under a data processing agreement. Its server logs keep a shortened IP address for 7 days.
 8. **Your rights.** You have the right to access, rectification, erasure, restriction of processing, data portability and objection, and you can withdraw consent with effect for the future. You can complain to a supervisory authority, for example the Bayerisches Landesamt für Datenschutzaufsicht, Promenade 18, 91522 Ansbach, Germany.
 
-The privacy policy of the web page applies in addition: https://smtw.pixel-heaven.net/privacy.html
+The privacy policy of the web page applies in addition: https://smtwatcher.com/privacy.html
 
 ## Notes to the reviewer
 
@@ -71,7 +71,7 @@ The privacy policy of the web page applies in addition: https://smtw.pixel-heave
 2. Create a file `.env.local` in the project folder with these two lines. They are the address of the server and the add-on ID of this listing, not secrets:
 
    ```
-   VITE_SITE_URL=https://smtw.pixel-heaven.net/
+   VITE_SITE_URL=https://smtwatcher.com/
    VITE_ADDON_ID=smt-watcher@pixel-heaven.net
    ```
 

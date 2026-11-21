@@ -32,7 +32,7 @@ The screenshots show a made-up test email.
 - Reports are never sent from the page: the user reviews and sends them. The Thunderbird extension only creates drafts and has no permission to send.
 - Images and other content from the email are never loaded.
 
-See the [privacy policy](https://smtw.pixel-heaven.net/privacy.html) and the [roadmap](docs/roadmap.md#4-sender-database) for the sender database.
+See the [privacy policy](https://smtwatcher.com/privacy.html) and the [roadmap](docs/roadmap.md#4-sender-database) for the sender database.
 
 ## Commands
 
@@ -89,4 +89,4 @@ The page itself is static and runs on any web server. The sender database and th
 
 Copyright (C) 2026 Marc Trinklein, [pixel-heaven.net](https://pixel-heaven.net)
 
-SMT Watcher is free software: you can redistribute and change it under the terms of the GNU Affero General Public License, version 3, see [LICENSE](LICENSE). It comes without any warranty. For other license terms, use the contact form in the [imprint](https://smtw.pixel-heaven.net/imprint.html).
+SMT Watcher is free software: you can redistribute and change it under the terms of the GNU Affero General Public License, version 3, see [LICENSE](LICENSE). It comes without any warranty. For other license terms, use the contact form in the [imprint](https://smtwatcher.com/imprint.html).
