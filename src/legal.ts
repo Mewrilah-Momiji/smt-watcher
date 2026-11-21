@@ -2,6 +2,7 @@ import './style.css';
 import { setupControls } from './chrome';
 import { SENDER_DB_ENABLED } from './core/contribution';
 import { applyPageTitle, getLang, t } from './i18n';
+import { fixRootLinks, ROOT, useLanguagePage } from './languagePage';
 
 // The operator's details are settings in .env.local, so that a copy of the code does not carry them. The build checks that they are set.
 const NAME = import.meta.env.VITE_OPERATOR_NAME ?? '';
@@ -130,7 +131,7 @@ function help(): HTMLElement[] {
     ...paragraphs.map((text) => el('p', text)),
   ]);
   const privacy = el('a', m.data.more) as HTMLAnchorElement;
-  privacy.href = 'privacy.html';
+  privacy.href = `${ROOT}privacy.html`;
   const more = el('p');
   more.append(privacy);
   const data = [...m.data.points.slice(0, 1), ...(SENDER_DB_ENABLED ? m.data.senderDbPoints : []), ...m.data.points.slice(1)];
@@ -165,5 +166,7 @@ function render(): void {
   if (!current) document.querySelector(location.hash || '#none')?.scrollIntoView();
 }
 
+useLanguagePage();
 setupControls(render);
+fixRootLinks();
 render();

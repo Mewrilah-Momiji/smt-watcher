@@ -4,6 +4,7 @@ import { setupControls } from './chrome';
 import type { HeaderReport } from './core/headers';
 import { MailReadError, readMail, readPastedText, textAsEml } from './core/readMail';
 import { applyPageTitle, t } from './i18n';
+import { fixRootLinks, useLanguagePage } from './languagePage';
 import type { MailSource } from './reportView';
 import { renderResult } from './resultView';
 
@@ -22,6 +23,7 @@ let batch: { entries: BatchEntry[]; skipped: number } | null = null;
 // A newer file or text replaces a check that is still reading.
 let currentRun = 0;
 
+useLanguagePage();
 setupControls(() => {
   applyPageTitle();
   error.hidden = true;
@@ -35,6 +37,7 @@ setupControls(() => {
   renderResult(result, shown.report, shown.source, { keepView: true, backToList: shown.backToList });
   if (fromReport) result.querySelector<HTMLElement>('#report-country')?.focus();
 });
+fixRootLinks();
 applyPageTitle();
 
 function showError(message: string): void {

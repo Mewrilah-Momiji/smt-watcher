@@ -272,10 +272,28 @@ test.describe('getting an email into the page', () => {
 
   test('shows the version from package.json', async ({ page }) => {
     const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as { version: string };
-    for (const path of ['/', '/help.html', '/imprint.html', '/privacy.html']) {
+    for (const path of ['/', '/help.html', '/imprint.html', '/privacy.html', '/de/', '/de/help.html']) {
       await page.goto(path);
       await expect(page.locator('.foot .version')).toHaveText(`Beta ${version}`);
     }
+  });
+
+  test('has German copies of the start and help page that link back to the root', async ({ page }) => {
+    await page.goto('/de/');
+    await expect(page.getByRole('heading', { level: 1, name: 'Ist diese E-Mail echt?' })).toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'de');
+    await page.getByRole('link', { name: 'So funktioniert es' }).click();
+    await expect(page).toHaveURL(/\/de\/help\.html$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'So funktioniert der SMT Wächter' })).toBeVisible();
+    await page.getByRole('link', { name: 'Alle Einzelheiten stehen in der Datenschutzerklärung.' }).click();
+    await expect(page).toHaveURL(/\/privacy\.html$/);
+    // The German copy did not become the visitor's choice for the other pages.
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await page.goto('/de/');
+    await page.getByRole('link', { name: 'Impressum' }).click();
+    await expect(page).toHaveURL(/\/imprint\.html$/);
+    await page.goto('/de/');
+    await expect(page.getByRole('link', { name: 'Übersetzungsfehler melden' })).toHaveAttribute('href', /^\.\.\/imprint\.html\?/);
   });
 
   test('offers checked bodies per country, and says when there is none', async ({ page }) => {

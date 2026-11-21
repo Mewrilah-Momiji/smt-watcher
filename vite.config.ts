@@ -1,11 +1,10 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { resolve } from 'node:path';
+import { relative, resolve, sep } from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import { RDAP_HOSTS } from './src/core/abuseContact';
 import { serverListsPhp } from './src/core/sharedLists';
-import { messagesFor, pageTitle } from './src/i18n';
-import { fillStaticText, headTags, helpHtml, SEO_PAGES, sitemapXml } from './src/seo';
+import { fillStaticText, headTags, helpHtml, langFile, langSource, PAGE_LANGS, seoTitle, sitemapXml, splitLangFile, TRANSLATED_FILES } from './src/seo';
 
 const require = createRequire(import.meta.url);
 
@@ -35,6 +34,13 @@ const cspBase = (database: string): string[] => [
 
 // Only the imprint may send a form, and only to this site. The page that reads emails may not.
 const cspFor = (path: string, database: string): string => [...cspBase(database), `form-action ${path.endsWith('imprint.html') ? "'self'" : "'none'"}`].join('; ');
+
+/** The page and language of a language copy such as de/index.html, from its path. Other paths give null. */
+function languagePage(id: string): ReturnType<typeof splitLangFile> | null {
+  const path = relative(process.cwd(), resolve(id)).split(sep).join('/');
+  const page = splitLangFile(path);
+  return page.lang !== 'en' && TRANSLATED_FILES.includes(page.file) ? page : null;
+}
 
 export default defineConfig(({ mode }) => {
   const version = mode === 'thunderbird' ? thunderbirdVersion : pageVersion;
@@ -70,7 +76,17 @@ export default defineConfig(({ mode }) => {
           },
         },
       }
-    : { build: { rollupOptions: { input: ['index.html', 'help.html', 'imprint.html', 'privacy.html'] } } }),
+    : {
+        build: {
+          rollupOptions: {
+            // The copies per language, such as de/index.html, have no source file. The plugin "language-pages" makes them from the English one.
+            input: [
+              'index.html', 'help.html', 'imprint.html', 'privacy.html',
+              ...PAGE_LANGS.flatMap((lang) => TRANSLATED_FILES.map((file) => resolve(langFile(file, lang)))),
+            ],
+          },
+        },
+      }),
   resolve: {
     // The .msg and RTF libraries also need these Node modules in the browser.
     alias: [
@@ -81,6 +97,22 @@ export default defineConfig(({ mode }) => {
     ],
   },
   plugins: [
+    {
+      // Makes de/index.html and the other language copies from the English source pages. They exist only in the build.
+      name: 'language-pages',
+      apply: 'build',
+      enforce: 'pre',
+      resolveId(id) {
+        if (mode === 'thunderbird') return null;
+        const page = languagePage(id);
+        return page ? resolve(langFile(page.file, page.lang)) : null;
+      },
+      load(id) {
+        if (mode === 'thunderbird') return null;
+        const page = languagePage(id);
+        return page ? langSource(readFileSync(resolve(page.file), 'utf8'), page.lang) : null;
+      },
+    },
     {
       // The imprint needs the operator's details from .env.local. The extension links to the page's imprint and needs its address.
       name: 'operator-settings',
@@ -118,19 +150,19 @@ export default defineConfig(({ mode }) => {
       },
     },
     {
-      // Search engines get each page's text in English, a title and description, and, with VITE_SITE_URL set,
+      // Search engines get each page's text in its language (English, or the language of its folder), a title and description, and, with VITE_SITE_URL set,
       // its address, preview data and a sitemap. The extension is not a website and gets none of it.
       name: 'search-engines',
       apply: 'build',
       transformIndexHtml(html, { path }) {
         if (mode === 'thunderbird') return html;
-        const file = path.replace(/^\//, '');
+        const { file, lang } = splitLangFile(path.replace(/^\//, ''));
         const senderDb = env.VITE_SENDER_DB === '1';
-        const page = SEO_PAGES.find((entry) => entry.file === file);
-        let filled = fillStaticText(html, senderDb);
-        if (page) filled = filled.replace(/<title>[^<]*<\/title>/, `<title>${pageTitle(messagesFor('en').static, page.titleKey)}</title>`);
-        if (file === 'help.html') filled = filled.replace('<main id="legal" class="legal" data-page="help"></main>', `<main id="legal" class="legal" data-page="help">${helpHtml(senderDb)}</main>`);
-        return { html: filled, tags: headTags(file, siteUrl, senderDb) };
+        const title = seoTitle(file, lang);
+        let filled = fillStaticText(html, senderDb, lang);
+        if (title) filled = filled.replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`);
+        if (file === 'help.html') filled = filled.replace('<main id="legal" class="legal" data-page="help"></main>', `<main id="legal" class="legal" data-page="help">${helpHtml(senderDb, lang)}</main>`);
+        return { html: filled, tags: headTags(file, siteUrl, senderDb, lang) };
       },
       generateBundle() {
         if (mode !== 'thunderbird' && siteUrl) this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemapXml(siteUrl) });

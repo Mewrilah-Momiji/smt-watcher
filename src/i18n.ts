@@ -930,6 +930,11 @@ export function setLang(lang: Lang): void {
   }
 }
 
+/** Shows a language for this visit only, without keeping it as the choice for the next one. */
+export function showLang(lang: Lang): void {
+  current = lang;
+}
+
 export function t(): Messages {
   return MESSAGES[current];
 }
