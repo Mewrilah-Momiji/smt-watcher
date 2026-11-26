@@ -113,6 +113,11 @@ export function setupControls(onLanguageChange: () => void, onCountryChanged?: (
     translation.target = '_blank';
     translation.rel = 'noopener noreferrer';
   }
+  // On the website, nofollow keeps crawlers from fetching one prefilled contact form per page.
+  // The mode check drops this line from the Thunderbird build, so the extension stays unchanged.
+  if (import.meta.env.MODE !== 'thunderbird' && !site) {
+    translation.rel = 'nofollow';
+  }
   translation.dataset.i18n = 'translationLink';
   document.querySelector('.foot')?.append(translation);
 

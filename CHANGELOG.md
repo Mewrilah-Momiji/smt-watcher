@@ -4,6 +4,10 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.70 - 2026-11-26
+
+- Search engines no longer follow the link for reporting a translation error, so they stop fetching one contact form per page.
+
 ## 0.5.69 - 2026-11-21
 
 - The start page has a short list of what the check looks at, in every language.

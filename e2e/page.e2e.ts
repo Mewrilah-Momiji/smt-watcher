@@ -376,6 +376,7 @@ test.describe('getting an email into the page', () => {
   test('reports a translation error with the language and page', async ({ page }) => {
     await page.goto('/help.html');
     await choose(page.getByRole('combobox', { name: 'Language' }), 'pl');
+    await expect(page.getByRole('link', { name: 'Zgłoś błąd w tłumaczeniu' })).toHaveAttribute('rel', 'nofollow');
     await page.getByRole('link', { name: 'Zgłoś błąd w tłumaczeniu' }).click();
     await expect(page).toHaveURL(/imprint\.html\?topic=translation&page=help\.html#contact$/);
     await expect(page.getByText('Zgłaszasz błąd w tłumaczeniu na język polski.')).toBeVisible();
