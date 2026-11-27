@@ -60,7 +60,7 @@ async function removeOldPackages(remote) {
 
 // private/ holds the database, the keys and the settings and must never be served. Each file must answer 403 or 404;
 // anything else, including a network error, fails the deploy. Bodies are discarded unread.
-const PRIVATE_PATHS = ['private/', 'private/smtw.sqlite', 'private/secret.php', 'private/day-key.php', 'private/config.php', 'private/contact.php', 'private/common.php'];
+const PRIVATE_PATHS = ['private/', 'private/smtw.sqlite', 'private/secret.php', 'private/day-key.php', 'private/config.php', 'private/contact.php', 'private/common.php', 'private/contact-rate.json', 'private/last-cleanup'];
 async function checkPrivateClosed(siteUrl) {
   const open = [];
   for (const path of PRIVATE_PATHS) {

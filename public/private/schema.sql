@@ -23,13 +23,16 @@ CREATE TABLE IF NOT EXISTS smtw_codes (
   reports INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (group_id, code)
 );
-CREATE TABLE IF NOT EXISTS smtw_sources (
-  group_id INTEGER NOT NULL,
+-- One source counts once per sender domain, whatever group its report falls into.
+CREATE TABLE IF NOT EXISTS smtw_domain_sources (
+  domain_hash TEXT NOT NULL,
   source_hash TEXT NOT NULL,
   seen TEXT NOT NULL,
-  PRIMARY KEY (group_id, source_hash)
+  PRIMARY KEY (domain_hash, source_hash)
 );
-CREATE INDEX IF NOT EXISTS smtw_sources_seen ON smtw_sources (seen);
+CREATE INDEX IF NOT EXISTS smtw_domain_sources_seen ON smtw_domain_sources (seen);
+-- Up to 0.5.70, sources were counted per group. That table is no longer read.
+DROP TABLE IF EXISTS smtw_sources;
 CREATE TABLE IF NOT EXISTS smtw_rate (
   source_hash TEXT NOT NULL,
   hour_start TEXT NOT NULL,

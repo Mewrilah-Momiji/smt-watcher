@@ -143,10 +143,86 @@ function openDatabase(): PDO
     if ($new) {
         chmod(DATABASE_FILE, 0600);
     }
-    if ($db->query("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'smtw_rate'")->fetchColumn() === false) {
+    // The schema only creates what is missing, so it also brings an older database up to date.
+    if ($db->query("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'smtw_domain_sources'")->fetchColumn() === false) {
         $db->exec((string) file_get_contents(__DIR__ . '/schema.sql'));
     }
     return $db;
+}
+
+// How long the hashes of addresses are kept. The privacy policy names these times.
+const SOURCE_RETENTION_DAYS = 30;
+const RATE_RETENTION_SECONDS = 2 * 3600;
+const GROUP_RETENTION_YEARS = 3;
+
+/** Deletes everything past its time. Runs with each report and from the hourly cron job, so that no data waits for the next visitor. */
+function cleanUp(PDO $db): void
+{
+    $db->prepare('DELETE FROM smtw_domain_sources WHERE seen < ?')->execute([date('Y-m-d', strtotime('-' . SOURCE_RETENTION_DAYS . ' days'))]);
+    $db->prepare('DELETE FROM smtw_rate WHERE hour_start < ?')->execute([date('Y-m-d H:00:00', time() - RATE_RETENTION_SECONDS)]);
+    $oldest = date('Y-m', strtotime('-' . GROUP_RETENTION_YEARS . ' years'));
+    $db->prepare('DELETE FROM smtw_codes WHERE group_id IN (SELECT id FROM smtw_groups WHERE last_month < ?)')->execute([$oldest]);
+    $db->prepare('DELETE FROM smtw_groups WHERE last_month < ?')->execute([$oldest]);
+}
+
+/** Removes a day key from an earlier day, so that it is gone even if nobody comes back to replace it. */
+function discardOldDayKey(): void
+{
+    $file = __DIR__ . '/day-key.php';
+    $stored = is_file($file) ? (string) file_get_contents($file) : '';
+    if ($stored !== '' && !str_starts_with($stored, '<?php // ' . date('Y-m-d') . ' ')) {
+        unlink($file);
+    }
+}
+
+// The contact form counts messages per hour, in total and per source, in this closed folder.
+const CONTACT_RATE_FILE = __DIR__ . '/contact-rate.json';
+
+/**
+ * Counts one message and returns false above either limit. The file only ever holds the current hour, and the
+ * cron job empties it once the hour is over.
+ */
+function contactWithinLimit(string $source, int $total, int $perSource): bool
+{
+    $handle = fopen(CONTACT_RATE_FILE, 'c+');
+    if ($handle === false || !flock($handle, LOCK_EX)) {
+        return false;
+    }
+    $hour = date('Y-m-d H');
+    $counts = json_decode((string) stream_get_contents($handle), true);
+    if (!is_array($counts) || ($counts['hour'] ?? null) !== $hour || !is_array($counts['sources'] ?? null)) {
+        $counts = ['hour' => $hour, 'total' => 0, 'sources' => []];
+    }
+    $allowed = $counts['total'] < $total && ($counts['sources'][$source] ?? 0) < $perSource;
+    if ($allowed) {
+        $counts['total']++;
+        $counts['sources'][$source] = ($counts['sources'][$source] ?? 0) + 1;
+        rewind($handle);
+        ftruncate($handle, 0);
+        fwrite($handle, (string) json_encode($counts));
+    }
+    flock($handle, LOCK_UN);
+    fclose($handle);
+    chmod(CONTACT_RATE_FILE, 0600);
+    return $allowed;
+}
+
+/** Empties the contact counts once their hour is over. */
+function clearOldContactCounts(): void
+{
+    if (!is_file(CONTACT_RATE_FILE)) {
+        return;
+    }
+    $handle = fopen(CONTACT_RATE_FILE, 'c+');
+    if ($handle === false || !flock($handle, LOCK_EX)) {
+        return;
+    }
+    $counts = json_decode((string) stream_get_contents($handle), true);
+    if (!is_array($counts) || ($counts['hour'] ?? null) !== date('Y-m-d H')) {
+        ftruncate($handle, 0);
+    }
+    flock($handle, LOCK_UN);
+    fclose($handle);
 }
 
 /** Takes the write lock right away, so that two reports at the same moment wait in turn instead of failing. */
@@ -159,7 +235,7 @@ function beginWriting(PDO $db): void
 function withinLimit(PDO $db, string $source, int $limit): bool
 {
     $hour = date('Y-m-d H:00:00');
-    $db->prepare('DELETE FROM smtw_rate WHERE hour_start < ?')->execute([date('Y-m-d H:00:00', time() - 2 * 3600)]);
+    $db->prepare('DELETE FROM smtw_rate WHERE hour_start < ?')->execute([date('Y-m-d H:00:00', time() - RATE_RETENTION_SECONDS)]);
     $db->prepare('INSERT INTO smtw_rate (source_hash, hour_start, reports) VALUES (?, ?, 1) ON CONFLICT (source_hash, hour_start) DO UPDATE SET reports = reports + 1')->execute([$source, $hour]);
     $count = $db->prepare('SELECT reports FROM smtw_rate WHERE source_hash = ? AND hour_start = ?');
     $count->execute([$source, $hour]);

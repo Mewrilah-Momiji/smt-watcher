@@ -4,6 +4,15 @@ Changes that people using SMT Watcher notice. The version is set in `package.jso
 
 Each uploaded version raises the last number by one, whatever it changes. The Thunderbird extension has its own version, `thunderbirdVersion` in `package.json`, and is only released when `npm run check:thunderbird` reports that its build changed. `1.0.0` follows once the levels are measured on other people's emails.
 
+## 0.5.71 - 2026-11-27
+
+- The Thunderbird extension 0.5.60 asks for access to smtwatcher.com when you report an email or look up its sender, if Thunderbird has not granted it yet. Before, the request failed until access was switched on by hand.
+- A source now counts once per sender domain in the sender database. Before, reports of one domain with different links each counted again, so that one source could make a domain readable and rated on its own.
+- Abuse reports also blank blind copies (Bcc) and forwarding headers such as Resent-To, which could name you or someone you forwarded to.
+- A damaged Outlook `.msg` file can no longer freeze the page while its RTF text is unpacked.
+- Hashes of addresses, rate counts and the day key are deleted on time by an hourly job, not only when the next person uses the page.
+- The contact form limits messages per source as well as in total, so that one sender cannot block it for everyone. The privacy policy says so.
+
 ## 0.5.70 - 2026-11-26
 
 - Search engines no longer follow the link for reporting a translation error, so they stop fetching one contact form per page.

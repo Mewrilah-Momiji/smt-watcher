@@ -8,7 +8,6 @@ require (is_file(__DIR__ . '/../private-dir.php') ? require __DIR__ . '/../priva
 // A sender's domain is only stored readable after several independent reports. Before that, only a keyed hash exists.
 const MIN_SOURCES_FOR_CLEAR_DOMAIN = 5;
 const MAX_REPORTS_PER_HOUR = 30;
-const SOURCE_RETENTION_DAYS = 30;
 // The database columns for each entry of ASSESSMENT_LEVELS and VERDICTS in lists.php. A test checks that both match.
 const LEVEL_COLUMNS = ['many-signs' => 'level_many', 'some-signs' => 'level_some', 'no-signs' => 'level_none'];
 const VERDICT_COLUMNS = ['spam' => 'votes_spam', 'legit' => 'votes_legit', 'unsure' => 'votes_unsure'];
@@ -58,28 +57,26 @@ try {
     $step = 'database-write';
     beginWriting($db);
 
-    $today = date('Y-m-d');
-    $db->prepare('DELETE FROM smtw_sources WHERE seen < ?')->execute([date('Y-m-d', strtotime('-' . SOURCE_RETENTION_DAYS . ' days'))]);
-    $oldest = date('Y-m', strtotime('-3 years'));
-    $db->prepare('DELETE FROM smtw_codes WHERE group_id IN (SELECT id FROM smtw_groups WHERE last_month < ?)')->execute([$oldest]);
-    $db->prepare('DELETE FROM smtw_groups WHERE last_month < ?')->execute([$oldest]);
+    cleanUp($db);
     if (!withinLimit($db, $source, MAX_REPORTS_PER_HOUR)) {
         $db->exec('COMMIT');
         answer(429, 'limit');
+    }
+
+    // One source counts once per sender domain, so that repeating a report, or sending it with other link domains
+    // to fill several groups, changes nothing. The daily key keeps sources apart for one day only, so on another day
+    // the same address counts as a new source.
+    $first = $db->prepare('INSERT OR IGNORE INTO smtw_domain_sources (domain_hash, source_hash, seen) VALUES (?, ?, ?)');
+    $first->execute([$domainHash, $source, date('Y-m-d')]);
+    if ($first->rowCount() === 0) {
+        $db->exec('COMMIT');
+        answer(200, 'counted');
     }
 
     $db->prepare('INSERT OR IGNORE INTO smtw_groups (fingerprint, domain_hash, first_month, last_month) VALUES (?, ?, ?, ?)')->execute([$fingerprint, $domainHash, $month, $month]);
     $find = $db->prepare('SELECT id FROM smtw_groups WHERE fingerprint = ?');
     $find->execute([$fingerprint]);
     $group = (int) $find->fetchColumn();
-
-    // One source counts once per group, so that repeating a report changes nothing.
-    $first = $db->prepare('INSERT OR IGNORE INTO smtw_sources (group_id, source_hash, seen) VALUES (?, ?, ?)');
-    $first->execute([$group, $source, $today]);
-    if ($first->rowCount() === 0) {
-        $db->exec('COMMIT');
-        answer(200, 'counted');
-    }
 
     $level = LEVEL_COLUMNS[$input['level']];
     $vote = VERDICT_COLUMNS[$input['verdict']];
@@ -97,6 +94,7 @@ try {
         }
     }
 
+    // Each source adds to only one group of a domain, so the sum over its groups counts sources, not reports.
     $total = $db->prepare('SELECT SUM(sources) FROM smtw_groups WHERE domain_hash = ?');
     $total->execute([$domainHash]);
     if ((int) $total->fetchColumn() >= MIN_SOURCES_FOR_CLEAR_DOMAIN) {

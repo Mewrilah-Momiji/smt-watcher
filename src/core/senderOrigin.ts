@@ -102,19 +102,29 @@ export function redactRecipients(text: string, addresses: string[]): string {
   return result;
 }
 
-/** Blanks recipient headers entirely, as they also hold names, and redacts the addresses elsewhere. */
+// Blind copies and forwarding can name the person reporting, or someone they forwarded to. These headers do not count
+// as recipients for the checks, but leave the browser only blanked.
+const PRIVATE_HEADERS = new Set([
+  ...RECIPIENT_HEADERS,
+  'bcc', 'resent-to', 'resent-cc', 'resent-bcc', 'resent-from', 'resent-sender',
+  'x-forwarded-to', 'x-forwarded-for', 'x-original-recipient', 'original-recipient',
+]);
+
+/** Blanks recipient and forwarding headers entirely, as they also hold names, and redacts their addresses elsewhere. */
 export function redactHeaderBlock(raw: string, addresses: string[]): string {
   const lines: string[] = [];
-  let insideRecipientHeader = false;
+  const found = new Set(addresses);
+  let insidePrivateHeader = false;
   for (const line of raw.split(/\r?\n/)) {
     const isContinuation = /^[ \t]/.test(line);
     if (!isContinuation) {
       const name = line.slice(0, Math.max(line.indexOf(':'), 0)).trim().toLowerCase();
-      insideRecipientHeader = RECIPIENT_HEADERS.has(name);
-      lines.push(insideRecipientHeader ? `${line.slice(0, line.indexOf(':'))}: [redacted]` : line);
-    } else if (!insideRecipientHeader) {
+      insidePrivateHeader = PRIVATE_HEADERS.has(name);
+      lines.push(insidePrivateHeader ? `${line.slice(0, line.indexOf(':'))}: [redacted]` : line);
+    } else if (!insidePrivateHeader) {
       lines.push(line);
     }
+    if (insidePrivateHeader) for (const match of line.matchAll(ADDRESS_PATTERN)) found.add(match[0]);
   }
-  return redactRecipients(lines.join('\n'), addresses);
+  return redactRecipients(lines.join('\n'), [...found]);
 }

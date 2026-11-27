@@ -41,7 +41,7 @@ try {
         $group['codes'] = $codes[$group['id']] ?? (object) [];
     }
     unset($group);
-    $lastReport = $db->query('SELECT MAX(seen) FROM smtw_sources')->fetchColumn();
+    $lastReport = $db->query('SELECT MAX(seen) FROM smtw_domain_sources')->fetchColumn();
     answer(200, ['result' => 'exported', 'exported' => date('c'), 'lastReport' => $lastReport ?: null, 'groups' => $groups]);
 } catch (Throwable) {
     answer(503, ['result' => 'database']);

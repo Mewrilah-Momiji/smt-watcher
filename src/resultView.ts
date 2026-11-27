@@ -6,6 +6,7 @@ import { ADVICE_SOURCES, BLOCKLIST_PAGES, hasUnsubscribeHeader, type AdviceSourc
 import { findSenderOrigin } from './core/senderOrigin';
 import { findingText, getLang, t } from './i18n';
 import { lookupDomain, lookupFinding, lookUpSender } from './core/senderLookup';
+import { requestServerAccess } from './serverAccess';
 import { externalLink, renderReportSection, type MailSource } from './reportView';
 
 // Email content comes from attackers: output via textContent only, never as HTML.
@@ -126,7 +127,7 @@ function contributionFold(report: HeaderReport, level: AssessmentLevel): { fold:
     if (!contribution) return;
     send.disabled = true;
     status.textContent = m.sending;
-    void sendContribution(contribution).then(
+    void requestServerAccess().then((granted) => granted && sendContribution(contribution)).then(
       (ok) => {
         status.textContent = ok ? m.sent : m.failed;
         send.disabled = ok;
@@ -184,7 +185,10 @@ function senderLookup(report: HeaderReport, rerender: () => void): HTMLElement |
   button.addEventListener('click', () => {
     button.disabled = true;
     status.textContent = m.searching;
-    void lookUpSender(domain).then(
+    void requestServerAccess().then((granted) => {
+      if (!granted) throw new Error('no access');
+      return lookUpSender(domain);
+    }).then(
       (result) => {
         const finding = lookupFinding(report, result);
         if (finding) report.findings.push(finding);

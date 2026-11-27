@@ -82,6 +82,7 @@ The page itself is static and runs on any web server. The sender database and th
 
   After each upload, `scripts/deploy.mjs` checks that `private/`, the database, the keys and the settings at `VITE_SITE_URL` answer 403 or 404, and fails if any of them answers otherwise or cannot be reached.
 - **Better: keep `private/` outside the web root.** If the FTP user also sees the folder above the web root, set `PRIVATE_DIR` in `.deploy.env`, for example `FTP_DIR=/smtw/` and `PRIVATE_DIR=/smtw-private/`. The deploy then uploads `private/` there and writes `private-dir.php` into the web root, which only tells PHP the path. Nothing in `private/` can then be served, even where `.htaccess` is ignored. After the upload, the deploy also checks that `api/lookup.php` answers 405, which shows that PHP finds `private/`.
+- **Call `api/cleanup.php` every hour**, for example with a cron job of the host that opens `https://your-site/api/cleanup.php`. It deletes hashes of addresses, rate counts and the day key once their time is over, as the privacy policy promises, even when nobody uses the page. It takes no input and does nothing within ten minutes of its last run, so it needs no password.
 - A backup is a copy of `private/smtw.sqlite`, taken over FTP while nobody reports. Keep `private/secret.php` with it: without that key, the stored hashes no longer match any domain.
 - The public `.htaccess` also redirects to https and sets security headers. On other web servers, set the same headers yourself.
 

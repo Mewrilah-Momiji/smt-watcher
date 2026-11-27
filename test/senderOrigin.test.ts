@@ -115,6 +115,21 @@ describe('buildAbuseReport', () => {
       'To: [redacted]\nFrom: a@b.example',
     );
   });
+
+  it('blanks blind copies and forwarding headers and their addresses elsewhere', () => {
+    const raw = [
+      'Received: from mx.b.example by mx.x.example for <hidden@x.example>',
+      'Bcc: Hidden Person <hidden@x.example>',
+      'Resent-To: friend@y.example',
+      'Resent-From: me@x.example',
+      'X-Forwarded-To: other@z.example',
+      'From: a@b.example',
+    ].join('\r\n');
+    const redacted = redactHeaderBlock(raw, []);
+    for (const leak of ['hidden@', 'Hidden Person', 'friend@', 'me@x', 'other@']) expect(redacted).not.toContain(leak);
+    expect(redacted).toContain('Bcc: [redacted]');
+    expect(redacted).toContain('From: a@b.example');
+  });
 });
 
 describe('origin issues', () => {

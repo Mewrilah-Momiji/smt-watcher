@@ -1,11 +1,16 @@
 <?php
 declare(strict_types=1);
 
-// Sends the contact form to the operator. It stores nothing except a count per hour against mass mailing.
+// Sends the contact form to the operator. It stores nothing except counts for the current hour against mass mailing,
+// in total and per source, where a source is a hash of the address with the random day key.
 // The operator's address is a setting: npm run deploy writes it from .env.local to private/contact.php.
 // private/ sits next to this file, or outside the web root where private-dir.php names it.
-define('ADDRESS_FILE', (is_file(__DIR__ . '/private-dir.php') ? require __DIR__ . '/private-dir.php' : __DIR__ . '/private') . '/contact.php');
+define('PRIVATE_DIR', is_file(__DIR__ . '/private-dir.php') ? require __DIR__ . '/private-dir.php' : __DIR__ . '/private');
+define('ADDRESS_FILE', PRIVATE_DIR . '/contact.php');
+require PRIVATE_DIR . '/common.php';
 const MAX_MESSAGES_PER_HOUR = 20;
+// One sender cannot use up the hour for everyone else.
+const MAX_MESSAGES_PER_SOURCE_PER_HOUR = 5;
 const MAX_MESSAGE_LENGTH = 5000;
 const MIN_SECONDS_TO_FILL = 3;
 
@@ -43,20 +48,7 @@ function senderAddress(string $operator): string
 
 function withinHourlyLimit(): bool
 {
-    $file = sys_get_temp_dir() . '/smtw-contact-' . date('YmdH');
-    $handle = fopen($file, 'c+');
-    if ($handle === false || !flock($handle, LOCK_EX)) {
-        return false;
-    }
-    $count = (int) stream_get_contents($handle);
-    if ($count < MAX_MESSAGES_PER_HOUR) {
-        rewind($handle);
-        ftruncate($handle, 0);
-        fwrite($handle, (string) ($count + 1));
-    }
-    flock($handle, LOCK_UN);
-    fclose($handle);
-    return $count < MAX_MESSAGES_PER_HOUR;
+    return contactWithinLimit(sourceHash(), MAX_MESSAGES_PER_HOUR, MAX_MESSAGES_PER_SOURCE_PER_HOUR);
 }
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
